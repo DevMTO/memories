@@ -23,8 +23,8 @@ const { tour } = Astro.props;
   <section class="hero-small" style={`background-image: url('${tour.imageUrl}');`}>
     <div class="overlay"></div>
     <div class="container hero-content text-center">
-      <span class="subtitle">{tour.durationDays} DÍAS (PRIVADO O GRUPO PEQUEÑO)</span>
-      <h1 class="hero-title">{tour.title.toUpperCase()}</h1>
+      <span class="subtitle">{tour.durationDays || 1} DÍAS (PRIVADO O GRUPO PEQUEÑO)</span>
+      <h1 class="hero-title">{tour.title?.toUpperCase() || 'TOUR'}</h1>
       <p class="hero-subdesc">EXPERIENCIAS CURADAS Y EXCLUSIVAS. CONECTAMOS TU ESPÍRITU CON LA ESENCIA VIVA Y ETERNA DEL PERÚ.</p>
     </div>
   </section>
