@@ -5,20 +5,33 @@ import { MockTourRepository } from './MockTourRepository';
 
 export class FirestoreTourRepository implements ITourRepository {
   private collection = db.collection('tours');
+  private isConfigured = !!import.meta.env.FIREBASE_PROJECT_ID;
+  private mockRepo = new MockTourRepository();
 
   async getAllTours(): Promise<Tour[]> {
+    if (!this.isConfigured) {
+      console.warn('⚠️ Usando MockTourRepository porque FIREBASE_PROJECT_ID no está configurado.');
+      return this.mockRepo.getAllTours();
+    }
+
     await this.seedIfEmpty();
     const snapshot = await this.collection.get();
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Tour));
   }
 
   async getTourById(id: string): Promise<Tour | null> {
+    if (!this.isConfigured) {
+      return this.mockRepo.getTourById(id);
+    }
     const doc = await this.collection.doc(id).get();
     if (!doc.exists) return null;
     return { id: doc.id, ...doc.data() } as Tour;
   }
 
   async getFeaturedTours(): Promise<Tour[]> {
+    if (!this.isConfigured) {
+      return this.mockRepo.getFeaturedTours();
+    }
     await this.seedIfEmpty();
     const snapshot = await this.collection.limit(3).get();
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Tour));
@@ -48,6 +61,8 @@ export class FirestoreTourRepository implements ITourRepository {
   }
 
   private async seedIfEmpty() {
+    if (!this.isConfigured) return;
+    
     const snapshot = await this.collection.limit(1).get();
     if (snapshot.empty) {
       console.log('Seeding Firestore with mock data...');
