@@ -5,7 +5,6 @@ import { MockTourRepository } from './MockTourRepository';
 
 export class FirestoreTourRepository implements ITourRepository {
   private collection = db.collection('tours');
-  private destinationsCollection = db.collection('destinations');
 
   async getAllTours(): Promise<Tour[]> {
     await this.seedIfEmpty();
@@ -26,19 +25,26 @@ export class FirestoreTourRepository implements ITourRepository {
   }
 
   async getDestinations(): Promise<Destination[]> {
-    const snapshot = await this.destinationsCollection.get();
-    if (snapshot.empty) {
-      const mockRepo = new MockTourRepository();
-      const mockDestinations = await mockRepo.getDestinations();
-      const batch = db.batch();
-      for (const dest of mockDestinations) {
-        const docRef = this.destinationsCollection.doc(dest.id);
-        batch.set(docRef, dest);
+    const tours = await this.getAllTours();
+    const destinationsMap = new Map<string, Destination>();
+
+    tours.forEach(tour => {
+      if (tour.cities) {
+        tour.cities.forEach(city => {
+          if (!destinationsMap.has(city)) {
+            // Convert to lowercase and replace spaces with hyphens for a simple ID
+            const id = city.toLowerCase().replace(/\s+/g, '-');
+            destinationsMap.set(city, {
+              id: id,
+              name: city,
+              imageUrl: tour.imageUrl || '/images/hero.jpg' // Fallback to tour image or default
+            });
+          }
+        });
       }
-      await batch.commit();
-      return mockDestinations;
-    }
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Destination));
+    });
+
+    return Array.from(destinationsMap.values());
   }
 
   private async seedIfEmpty() {

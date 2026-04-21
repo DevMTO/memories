@@ -1,8 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import TourCard from '../components/TourCard.astro';
-import { getToursUseCase } from '../infrastructure/di';
-import './_tours.scss';
+import Layout from '../../layouts/Layout.astro';
+import TourCard from '../../components/TourCard.astro';
+import { getToursUseCase } from '../../infrastructure/di';
+import '../_tours.scss';
 
 const allTours = await getToursUseCase.executeAll();
 ---

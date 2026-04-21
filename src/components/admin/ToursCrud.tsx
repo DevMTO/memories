@@ -3,9 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../infrastructure/firebaseClient';
 import type { Tour } from '../../core/domain/models';
+import { useAuth } from './AuthContext';
 
 export default function ToursCrud() {
   const queryClient = useQueryClient();
+  const { logout, user } = useAuth();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Tour>>({});
 
@@ -68,12 +70,17 @@ export default function ToursCrud() {
         button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; background: #10594c; color: white; }
         .btn-delete { background: #dc3545; }
         .btn-edit { background: #ffc107; color: black; }
+        .btn-logout { background: #6c757d; }
         .tours-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         .tour-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
       `}</style>
       
       <div className="crud-header">
         <h2>Gestión de Tours</h2>
+        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <span>{user?.email}</span>
+          <button className="btn-logout" onClick={logout}>Cerrar Sesión</button>
+        </div>
       </div>
 
       <form className="crud-form" onSubmit={handleSubmit}>

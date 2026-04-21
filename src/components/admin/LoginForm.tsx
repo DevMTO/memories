@@ -1,22 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { app } from '../../infrastructure/firebaseClient'; // Make sure to export app from firebaseClient.ts
+import { app } from '../../infrastructure/firebaseClient';
+import { useAuth, AuthProvider } from './AuthContext';
 
-export default function LoginForm() {
+function LoginContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      window.location.href = '/admin/tours';
+    }
+  }, [user, loading]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const auth = getAuth(app);
       await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = '/admin/tours';
+      // Wait for AuthContext to detect user and redirect
     } catch (err: any) {
       setError('Credenciales inválidas o error de conexión.');
     }
   };
+
+  if (loading || user) return <div style={{ textAlign: 'center', padding: '50px' }}>Verificando sesión...</div>;
 
   return (
     <div className="login-container">
@@ -42,5 +52,13 @@ export default function LoginForm() {
         <button type="submit" className="btn-login">INGRESAR</button>
       </form>
     </div>
+  );
+}
+
+export default function LoginForm() {
+  return (
+    <AuthProvider>
+      <LoginContent />
+    </AuthProvider>
   );
 }
