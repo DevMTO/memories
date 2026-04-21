@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LoginForm from '../components/admin/LoginForm';
+---
+
+<Layout title="Admin Login">
+  <div style="background-color: #f4f4f4; min-height: 100vh; padding-top: 80px;">
+    <LoginForm client:load />
+  </div>
+</Layout>

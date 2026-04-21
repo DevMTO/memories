@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AdminDashboard from '../../components/admin/AdminDashboard';
+---
+
+<Layout title="Gestión de Tours">
+  <div style="background-color: #f4f4f4; min-height: 100vh; padding-top: 80px;">
+    <AdminDashboard client:load />
+  </div>
+</Layout>

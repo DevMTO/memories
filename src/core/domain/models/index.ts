@@ -4,9 +4,20 @@ export interface Tour {
   description: string;
   price: number;
   durationDays: number;
-  location: string;
+  durationNights?: number;
+  location?: string;
+  cities?: string[];
   imageUrl: string;
   features?: string[];
+  itinerary?: {
+    day: number;
+    title: string;
+    description: string;
+    accommodations?: string;
+    meals?: string;
+  }[];
+  includes?: string[];
+  notIncludes?: string[];
 }
 
 export interface Destination {
