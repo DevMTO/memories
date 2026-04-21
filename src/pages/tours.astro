@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TourCard from '../components/TourCard.astro';
+import { getToursUseCase } from '../infrastructure/di';
+import './_tours.scss';
+
+const allTours = await getToursUseCase.executeAll();
+---
+
+<Layout title="Nuestros Tours">
+  <section class="hero-small" style={`background-image: url('/images/hero.jpg');`}>
+    <div class="overlay"></div>
+    <div class="container hero-content text-center">
+      <h1 class="hero-title">NUESTROS TOURS</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container tours-layout">
+      <!-- Sidebar Filters -->
+      <aside class="sidebar">
+        <div class="filter-group">
+          <h4 class="filter-title">Travel Styles</h4>
+          <label class="filter-label"><input type="checkbox"> Vacaciones</label>
+          <label class="filter-label"><input type="checkbox"> Honeymoon</label>
+          <label class="filter-label"><input type="checkbox"> Family</label>
+          <label class="filter-label"><input type="checkbox"> Tours</label>
+        </div>
+
+        <div class="filter-group">
+          <h4 class="filter-title">Country</h4>
+          <label class="filter-label"><input type="checkbox"> Colombia</label>
+          <label class="filter-label"><input type="checkbox"> Puerto Rico</label>
+          <label class="filter-label"><input type="checkbox"> Republica Dominicana</label>
+          <label class="filter-label"><input type="checkbox"> Bolivia</label>
+        </div>
+
+        <div class="filter-group">
+          <h4 class="filter-title">Price</h4>
+          <input type="range" min="0" max="5000" class="price-slider">
+          <div class="price-range">
+            <span>$ 0</span>
+            <span>$ 5000</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-search">BUSCAR</button>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="tours-grid-main">
+        {allTours.map(tour => (
+          <TourCard tour={tour} />
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

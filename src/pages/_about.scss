@@ -1,0 +1,139 @@
+// =============================================
+// About Page Styles
+// =============================================
+@use '../styles/variables' as *;
+
+// ---- Hero ----
+.hero-small {
+  @include hero-base(60vh);
+
+  .overlay {
+    @include overlay(0.5);
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  color: $color-white;
+}
+
+.hero-title {
+  font-size: 4rem;
+  margin: 10px 0 20px;
+  color: $color-white;
+  letter-spacing: 3px;
+}
+
+.hero-subdesc {
+  font-size: 0.85rem;
+  max-width: 600px;
+  margin: 0 auto;
+  letter-spacing: 1px;
+  line-height: 1.8;
+}
+
+// ---- About Grid ----
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+
+  @include respond-to($bp-mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.about-title {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: 20px;
+
+  .culture-accent {
+    font-style: italic;
+    color: $color-primary;
+    font-weight: 400;
+  }
+}
+
+.about-paragraph {
+  margin-bottom: 15px;
+  color: $color-text-light;
+
+  &--spaced {
+    margin-bottom: 25px;
+  }
+}
+
+.about-quote {
+  font-family: $font-serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  border-left: 3px solid $color-primary;
+  padding-left: 15px;
+  color: $color-primary-dark;
+}
+
+// ---- Founder ----
+.founder-img-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 500px;
+}
+
+.founder-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.founder-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 30px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+
+  .founder-role {
+    color: $color-white;
+  }
+
+  .founder-name {
+    font-size: 2rem;
+    margin-bottom: 5px;
+  }
+
+  .founder-quote {
+    font-size: 0.8rem;
+  }
+}
+
+// ---- Mission & Vision ----
+.mission-vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+
+  @include respond-to($bp-mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mv-card {
+  background-color: $color-primary-dark;
+  padding: 40px;
+  border-radius: 12px;
+
+  .mv-title {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+  }
+
+  .mv-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}

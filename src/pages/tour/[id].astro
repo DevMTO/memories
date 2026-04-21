@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getToursUseCase } from '../../infrastructure/di';
+import type { Tour } from '../../core/domain/models';
+import './_detail.scss';
+
+export async function getStaticPaths() {
+  const tours = await getToursUseCase.executeAll();
+  return tours.map((tour) => ({
+    params: { id: tour.id },
+    props: { tour },
+  }));
+}
+
+interface Props {
+  tour: Tour;
+}
+
+const { tour } = Astro.props;
+---
+
+<Layout title={tour.title}>
+  <section class="hero-small" style={`background-image: url('${tour.imageUrl}');`}>
+    <div class="overlay"></div>
+    <div class="container hero-content text-center">
+      <span class="subtitle">{tour.durationDays} DÍAS (PRIVADO O GRUPO PEQUEÑO)</span>
+      <h1 class="hero-title">{tour.title.toUpperCase()}</h1>
+      <p class="hero-subdesc">EXPERIENCIAS CURADAS Y EXCLUSIVAS. CONECTAMOS TU ESPÍRITU CON LA ESENCIA VIVA Y ETERNA DEL PERÚ.</p>
+    </div>
+  </section>
+
+  <!-- Altitude Info Bar -->
+  <div class="container info-bar-wrapper">
+    <div class="info-bar">
+      <div class="info-item">
+        <span class="info-icon">⛰️</span>
+        <span class="info-label">ALTITUD MÁXIMA</span>
+        <span class="info-val">3400 msnm</span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🚶</span>
+        <span class="info-label">NIVEL DE DIFICULTAD</span>
+        <span class="info-val">Moderado</span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🛏️</span>
+        <span class="info-label">ALOJAMIENTO</span>
+        <span class="info-val">Hoteles de Lujo</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="tour-layout">
+        <div class="tour-details">
+          <h3 class="tour-section-title">Sobre esta experiencia</h3>
+          <p class="tour-paragraph">{tour.description}</p>
+          <p class="tour-paragraph tour-paragraph--spaced">Sumérjase en la historia viva de los Incas. Este viaje exclusivo comienza en las calles empedradas de Cusco, donde la arquitectura colonial se fusiona con muros incaicos. Explorará los tesoros del Valle Sagrado, disfrutará de experiencias gastronómicas de clase mundial y culminará su aventura con una visita privada a Machu Picchu al amanecer.</p>
+
+          <h3 class="tour-itinerary-title">Itinerario Detallado</h3>
+          
+          <div class="itinerary">
+            <div class="itinerary-day">
+              <div class="day-marker">01</div>
+              <div class="day-content">
+                <h4 class="day-title">LLEGADA A CUSCO & TRASLADO PRIVADO</h4>
+                <p class="day-desc">Recepción VIP en el aeropuerto. Traslado a su hotel boutique en el centro histórico. Tarde libre para aclimatación con mate de coca y masaje andino de bienvenida incluido.</p>
+                <div class="day-meta">
+                  <span>🏨 MONASTERIO HOTEL</span>
+                  <span>🍽️ CENA BIENVENIDA</span>
+                </div>
+              </div>
+            </div>
+            <div class="itinerary-day">
+              <div class="day-marker">02</div>
+              <div class="day-content">
+                <h4 class="day-title">CITY TOUR EXCLUSIVO & SACSAYHUAMÁN</h4>
+                <p class="day-desc">Visita guiada por la Catedral y el Qorikancha. Almuerzo en restaurante reconocido. Por la tarde, visita a las impresionantes ruinas de Sacsayhuamán con brindis al atardecer.</p>
+                <div class="day-meta">
+                  <span>🏨 MONASTERIO HOTEL</span>
+                  <span>🍽️ DESAYUNO, ALMUERZO</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="highlights-title">Highlights del Recorrido</h3>
+          <div class="highlights-grid">
+            <img src="/images/tour1.jpg" alt="Highlight 1" class="hl-img-large">
+            <div class="hl-side">
+              <img src="/images/tour2.jpg" alt="Highlight 2">
+              <img src="/images/tour3.jpg" alt="Highlight 3">
+            </div>
+          </div>
+        </div>
+
+        <div class="tour-sidebar">
+          <div class="booking-widget">
+            <h3 class="widget-title">Diseñe Su Viaje</h3>
+            <p class="widget-desc">Consultoría Gratuita Experta</p>
+            <div class="form-group">
+              <label class="form-label form-label--dark">N° DE VIAJEROS</label>
+              <input type="number" class="form-control form-control--dark" placeholder="2 Adultos">
+            </div>
+            <div class="form-group">
+              <label class="form-label form-label--dark">FECHA DE VIAJE</label>
+              <input type="date" class="form-control form-control--dark">
+            </div>
+            <button class="btn btn-primary btn-widget">SOLICITAR MI PROPUESTA PERSONALIZADA</button>
+            <p class="text-center widget-note">Sin Cargos Ocultos. Confirmación En 24h.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

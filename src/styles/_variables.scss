@@ -1,0 +1,68 @@
+// =============================================
+// Design Tokens - Memories Travel Peru
+// =============================================
+
+// Colors
+$color-primary: #10594c;
+$color-primary-dark: #0a3d34;
+$color-secondary: #0d4a41;
+$color-accent: #d8a54d;
+$color-accent-hover: #b88a3d;
+$color-text: #333333;
+$color-text-light: #666666;
+$color-white: #ffffff;
+$color-background: #f9f9f9;
+$color-border: #e0e0e0;
+$color-footer-bottom: #062b24;
+
+// Typography
+$font-serif: 'Playfair Display', serif;
+$font-sans: 'Inter', sans-serif;
+
+// Layout
+$container-max: 1200px;
+
+// Transitions
+$transition-default: all 0.3s ease;
+
+// Breakpoints
+$bp-tablet: 900px;
+$bp-mobile: 768px;
+
+// Mixins
+@mixin respond-to($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin overlay($opacity: 0.4) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, $opacity);
+}
+
+@mixin hero-base($height: 100vh) {
+  height: $height;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  @include flex-center;
+}
+
+@mixin card-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+@mixin card-shadow-hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}

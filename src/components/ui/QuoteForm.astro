@@ -1,0 +1,70 @@
+---
+import './QuoteForm.scss';
+---
+<section class="quote-section">
+  <div class="container">
+    <div class="quote-box">
+      <div class="quote-header text-center">
+        <span class="subtitle subtitle--light">DISEÑE SU VIAJE</span>
+        <h2 class="section-title text-white">Solicitar Cotización</h2>
+        <p class="quote-desc">Comparta Sus Planes Con Nosotros, Un Especialista En Viajes De Lujo Curará Una Propuesta Exclusiva Adaptada A Sus Preferencias.</p>
+      </div>
+
+      <form class="quote-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">NOMBRE COMPLETO</label>
+            <input type="text" class="form-control" placeholder="Ej. Juan Perez">
+          </div>
+          <div class="form-group">
+            <label class="form-label">N° DE VIAJEROS</label>
+            <input type="number" class="form-control" placeholder="2">
+          </div>
+          <div class="form-group">
+            <label class="form-label">FECHA DE VIAJE</label>
+            <input type="date" class="form-control" placeholder="dd/mm/yy">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">CORREO ELECTRÓNICO</label>
+            <input type="email" class="form-control" placeholder="nombre@nombre.com">
+          </div>
+          <div class="form-group form-row__span2">
+            <label class="form-label">ESTILO DE EXPERIENCIA</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="style" value="Lujo"> Lujo</label>
+              <label class="radio-label"><input type="radio" name="style" value="Aventura"> Aventura</label>
+              <label class="radio-label"><input type="radio" name="style" value="Cultural"> Cultural</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">TELÉFONO / WHATSAPP</label>
+            <input type="tel" class="form-control" placeholder="+51 999 999 999">
+          </div>
+          <div class="form-group form-row__span2">
+            <label class="form-label">DESTINO DE INTERÉS</label>
+            <select class="form-control">
+              <option>Seleccione uno</option>
+              <option>Cusco</option>
+              <option>Lima</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">DESTINO DE INTERÉS (ESPECIFICAR)</label>
+          <textarea class="form-control" rows="3" placeholder="¿Algún interés especial o requerimiento?"></textarea>
+        </div>
+
+        <div class="text-center quote-submit">
+          <button type="submit" class="btn btn-outline btn-submit">SOLICITAR MI PROPUESTA PERSONALIZADA</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

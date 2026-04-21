@@ -1,0 +1,28 @@
+---
+import type { Tour } from '../core/domain/models';
+import './TourCard.scss';
+
+interface Props {
+  tour: Tour;
+}
+
+const { tour } = Astro.props;
+---
+<div class="tour-card">
+  <div class="tour-img-wrapper">
+    <div class="duration-badge">{tour.durationDays} DÍAS</div>
+    <img src={tour.imageUrl} alt={tour.title} class="tour-img" />
+  </div>
+  <div class="tour-content">
+    <span class="tour-location">{tour.location.toUpperCase()}</span>
+    <h3 class="tour-title">{tour.title}</h3>
+    <p class="tour-desc">{tour.description}</p>
+    <div class="tour-footer">
+      <div class="price">
+        <span class="price-label">DESDE</span>
+        <span class="price-amount">$ {tour.price.toLocaleString()}</span>
+      </div>
+      <a href={`/tour/${tour.id}`} class="btn-arrow">→</a>
+    </div>
+  </div>
+</div>

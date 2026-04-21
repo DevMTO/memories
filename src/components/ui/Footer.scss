@@ -1,0 +1,78 @@
+// =============================================
+// Footer Component Styles
+// =============================================
+@use '../../styles/variables' as *;
+
+.footer {
+  background-color: $color-primary-dark;
+  color: $color-white;
+  position: relative;
+  padding-top: 150px;
+
+  &-art {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    background: url('/images/footer-silhouette.svg') bottom center no-repeat;
+    background-size: cover;
+    pointer-events: none;
+  }
+
+  &-content {
+    padding: 60px 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+
+    @include respond-to($bp-mobile) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &-col {
+    .logo {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    h4 {
+      color: $color-accent;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      font-family: $font-sans;
+    }
+
+    p, a {
+      font-size: 0.85rem;
+      color: rgba($color-white, 0.8);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    a:hover {
+      color: $color-accent;
+    }
+  }
+
+  &-bottom {
+    background-color: $color-footer-bottom;
+    padding: 15px 0;
+    font-size: 0.75rem;
+    color: rgba($color-white, 0.5);
+  }
+}
+
+.socials {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}

@@ -1,0 +1,212 @@
+// =============================================
+// Home Page Styles
+// =============================================
+@use '../styles/variables' as *;
+
+// ---- Hero ----
+.hero {
+  @include hero-base(100vh);
+
+  .overlay {
+    @include overlay(0.4);
+  }
+
+  &-content {
+    position: relative;
+    z-index: 10;
+    color: $color-white;
+  }
+
+  &-title {
+    font-size: 5rem;
+    margin: 10px 0;
+    color: $color-white;
+    letter-spacing: 5px;
+  }
+
+  &-desc {
+    font-family: $font-serif;
+    font-size: 2rem;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  &-subdesc {
+    font-size: 0.85rem;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    letter-spacing: 1px;
+    line-height: 1.8;
+  }
+
+  &-cta {
+    border-radius: 30px;
+  }
+}
+
+// ---- Transformative Section ----
+.transformative-section {
+  background-color: $color-white;
+  background-image: radial-gradient(circle, rgba($color-primary, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  padding: 100px 0;
+}
+
+.transformative-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+
+  @include respond-to($bp-tablet) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.text-content {
+  .description {
+    color: $color-text-light;
+    margin: 20px 0;
+    line-height: 1.8;
+  }
+
+  h2 {
+    color: $color-primary-dark;
+  }
+
+  .italic-title {
+    font-style: italic;
+    font-weight: 400;
+    color: $color-primary;
+  }
+
+  .cta-link {
+    display: inline-block;
+    margin-top: 30px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 30px;
+
+  h4 {
+    color: $color-primary-dark;
+  }
+
+  .stat-desc {
+    font-size: 0.8rem;
+    color: $color-text-light;
+  }
+}
+
+.img-content img {
+  width: 100%;
+  border-radius: 12px;
+  height: 350px;
+  object-fit: cover;
+}
+
+// ---- Tours Section ----
+.tours-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+
+  @include respond-to($bp-tablet) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ---- Destinations Section ----
+.dest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
+
+  .dest-link {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  .dest-title-italic {
+    font-style: italic;
+    font-weight: 400;
+    color: $color-primary;
+  }
+}
+
+.dest-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  height: 500px;
+
+  @include respond-to($bp-tablet) {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+.dest-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dest-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  height: 50%;
+}
+
+.top-dest {
+  height: 50%;
+}
+
+.dest-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+
+  @include respond-to($bp-tablet) {
+    height: 250px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: $transition-default;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+
+  h3 {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: $color-white;
+    font-size: 1.5rem;
+    z-index: 2;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  }
+}

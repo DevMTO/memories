@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TourCard from '../components/TourCard.astro';
+import { getToursUseCase } from '../infrastructure/di';
+import './_home.scss';
+
+const featuredTours = await getToursUseCase.executeFeatured();
+const destinations = await getToursUseCase.executeDestinations();
+---
+
+<Layout title="Home">
+  <!-- Hero Section -->
+  <section class="hero" style={`background-image: url('/images/hero.jpg');`}>
+    <div class="overlay"></div>
+    <div class="container hero-content text-center">
+      <span class="subtitle">AGENCIA DE VIAJES / TOUR OPERADOR</span>
+      <h1 class="hero-title">MEMORIES</h1>
+      <p class="hero-desc">Travel Perú</p>
+      <p class="hero-subdesc">EXPERIENCIAS CURADAS Y EXCLUSIVAS. CONECTAMOS TU ESPÍRITU CON LA ESENCIA VIVA Y ETERNA DEL PERÚ.</p>
+      <a href="/design-trip" class="btn btn-primary btn-rounded hero-cta">DESIGN TRIP</a>
+    </div>
+  </section>
+
+  <!-- Transformative Journeys Section -->
+  <section class="transformative-section">
+    <div class="container transformative-grid">
+      <div class="text-content">
+        <span class="subtitle">EXPERIENCIAS EXCLUSIVAS</span>
+        <h2>Viajes Que <br><span class="italic-title">Transforman</span></h2>
+        <p class="description">Somos Arquitectos De Experiencias. No Solo Vendemos Tours, Diseñamos Momentos Que Se Convierten En Recuerdos Imborrables.</p>
+        <div class="stats-grid">
+          <div>
+            <h4 class="text-accent">Nuestros Tours</h4>
+            <p class="stat-desc">Guías Nativos Certificados</p>
+          </div>
+          <div>
+            <h4 class="text-accent">Sin Límites</h4>
+            <p class="stat-desc">Personalización Total</p>
+          </div>
+        </div>
+        <a href="/tours" class="text-accent cta-link">VER MÁS DESTINOS →</a>
+      </div>
+      <div class="img-content">
+        <img src="/images/tour1.jpg" alt="Viajes Que Transforman">
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Tours -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="subtitle text-primary">EXPERIENCIAS EXCLUSIVAS</span>
+        <h2>Nuestros Tours</h2>
+        <p>Itinerarios Diseñados Meticulosamente Para Viajeros Que Buscan Autenticidad.</p>
+      </div>
+      <div class="tours-grid">
+        {featuredTours.map(tour => (
+          <TourCard tour={tour} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Destinations -->
+  <section class="section">
+    <div class="container">
+      <div class="dest-header">
+        <div>
+          <span class="subtitle text-primary">COLECCIÓN 2026</span>
+          <h2>Destinos <span class="dest-title-italic">Icónicos</span></h2>
+        </div>
+        <a href="/destinations" class="dest-link">VER MÁS DESTINOS</a>
+      </div>
+      <div class="dest-grid">
+        <div class="dest-item main-dest">
+          <img src={destinations[0]?.imageUrl || '/images/hero.jpg'} alt={destinations[0]?.name}>
+          <h3>{destinations[0]?.name}</h3>
+        </div>
+        <div class="dest-side">
+          <div class="dest-item top-dest">
+            <img src={destinations[1]?.imageUrl || '/images/hero.jpg'} alt={destinations[1]?.name}>
+            <h3>{destinations[1]?.name}</h3>
+          </div>
+          <div class="dest-bottom-row">
+            <div class="dest-item">
+              <img src={destinations[2]?.imageUrl || '/images/hero.jpg'} alt={destinations[2]?.name}>
+              <h3>{destinations[2]?.name}</h3>
+            </div>
+            <div class="dest-item">
+              <img src={destinations[3]?.imageUrl || '/images/hero.jpg'} alt={destinations[3]?.name}>
+              <h3>{destinations[3]?.name}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

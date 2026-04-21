@@ -1,0 +1,63 @@
+// =============================================
+// QuoteForm Component Styles
+// =============================================
+@use '../../styles/variables' as *;
+
+.quote-section {
+  padding: 80px 0;
+  background-color: $color-background;
+}
+
+.quote-box {
+  background-color: $color-primary;
+  border-radius: 12px;
+  padding: 60px;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+
+  @include respond-to($bp-mobile) {
+    padding: 30px;
+  }
+}
+
+.quote-header {
+  .subtitle {
+    color: rgba($color-white, 0.7);
+  }
+}
+
+.quote-desc {
+  color: $color-white;
+  margin-bottom: 40px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+
+  @include respond-to($bp-mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-row__span2 {
+  grid-column: span 2;
+
+  @include respond-to($bp-mobile) {
+    grid-column: span 1;
+  }
+}
+
+.quote-submit {
+  margin-top: 30px;
+}
+
+.btn-submit {
+  border-radius: 30px;
+  padding: 12px 40px;
+}

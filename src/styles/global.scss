@@ -1,0 +1,212 @@
+// =============================================
+// Global Styles - Memories Travel Peru
+// =============================================
+@use 'variables' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+// CSS Custom Properties (for runtime theming)
+:root {
+  --color-primary: #{$color-primary};
+  --color-primary-dark: #{$color-primary-dark};
+  --color-secondary: #{$color-secondary};
+  --color-accent: #{$color-accent};
+  --color-accent-hover: #{$color-accent-hover};
+  --color-text: #{$color-text};
+  --color-text-light: #{$color-text-light};
+  --color-white: #{$color-white};
+  --color-background: #{$color-background};
+  --color-border: #{$color-border};
+  --font-serif: #{$font-serif};
+  --font-sans: #{$font-sans};
+  --container-max: #{$container-max};
+  --transition: #{$transition-default};
+}
+
+// ---- Reset ----
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-sans;
+  color: $color-text;
+  background-color: $color-background;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-serif;
+  font-weight: 600;
+  color: $color-primary-dark;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: $transition-default;
+}
+
+button {
+  font-family: $font-sans;
+  cursor: pointer;
+  border: none;
+  transition: $transition-default;
+}
+
+ul { list-style: none; }
+
+// ---- Layout ----
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+// ---- Typography Utilities ----
+.text-center   { text-align: center; }
+.text-primary  { color: $color-primary; }
+.text-accent   { color: $color-accent; }
+.text-white    { color: $color-white; }
+.font-serif    { font-family: $font-serif; }
+
+.subtitle {
+  color: $color-accent;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+  display: block;
+
+  &--light {
+    color: rgba($color-white, 0.7);
+  }
+}
+
+// ---- Buttons ----
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-align: center;
+  transition: $transition-default;
+
+  &-primary {
+    background-color: $color-primary;
+    color: $color-white;
+
+    &:hover { background-color: $color-primary-dark; }
+  }
+
+  &-outline {
+    background-color: transparent;
+    border: 1px solid $color-white;
+    color: $color-white;
+
+    &:hover {
+      background-color: $color-white;
+      color: $color-primary;
+    }
+  }
+
+  &-accent {
+    background-color: $color-accent;
+    color: $color-white;
+
+    &:hover { background-color: $color-accent-hover; }
+  }
+
+  &-rounded {
+    border-radius: 30px;
+  }
+
+  &-full {
+    width: 100%;
+  }
+}
+
+// ---- Sections ----
+.section {
+  padding: 80px 0;
+
+  &--alt {
+    background-color: #f5f5f5;
+  }
+
+  &--no-top {
+    padding-top: 0;
+  }
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-header {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+// ---- Forms ----
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: transparent;
+  border: 1px solid rgba($color-white, 0.3);
+  color: $color-white;
+  border-radius: 4px;
+  font-family: $font-sans;
+  font-size: 0.85rem;
+
+  &::placeholder {
+    color: rgba($color-white, 0.7);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $color-accent;
+  }
+
+  &--dark {
+    border-color: $color-border;
+    color: $color-text;
+
+    &::placeholder {
+      color: $color-text-light;
+    }
+  }
+}
+
+.form-label {
+  display: block;
+  color: $color-white;
+  font-size: 0.7rem;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+
+  &--dark {
+    color: $color-text;
+  }
+}
+
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $color-white;
+  cursor: pointer;
+}

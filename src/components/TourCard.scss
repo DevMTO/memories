@@ -1,0 +1,97 @@
+// =============================================
+// TourCard Component Styles
+// =============================================
+@use '../styles/variables' as *;
+
+.tour-card {
+  background: $color-white;
+  border-radius: 12px;
+  overflow: hidden;
+  @include card-shadow;
+  transition: $transition-default;
+
+  &:hover {
+    transform: translateY(-5px);
+    @include card-shadow-hover;
+  }
+}
+
+.tour-img-wrapper {
+  position: relative;
+  height: 220px;
+}
+
+.tour-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.duration-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: $color-accent;
+  color: $color-white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.tour-content {
+  padding: 25px;
+}
+
+.tour-location {
+  color: $color-primary;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.tour-title {
+  font-size: 1.25rem;
+  margin-bottom: 15px;
+  color: $color-text;
+}
+
+.tour-desc {
+  color: $color-text-light;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tour-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid $color-border;
+  padding-top: 15px;
+}
+
+.price-label {
+  display: block;
+  font-size: 0.65rem;
+  color: $color-text-light;
+  font-weight: 600;
+}
+
+.price-amount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.btn-arrow {
+  color: $color-primary;
+  font-size: 1.2rem;
+}
