@@ -42,14 +42,16 @@ export class FirestoreTourRepository implements ITourRepository {
     const destinationsMap = new Map<string, Destination>();
 
     tours.forEach(tour => {
-      if (tour.cities) {
+      if (tour.cities && Array.isArray(tour.cities)) {
         tour.cities.forEach(city => {
-          if (!destinationsMap.has(city)) {
+          // Ensure city is a string (handle cases where it might be an object)
+          const cityStr = typeof city === 'string' ? city : String(city);
+          if (cityStr && !destinationsMap.has(cityStr)) {
             // Convert to lowercase and replace spaces with hyphens for a simple ID
-            const id = city.toLowerCase().replace(/\s+/g, '-');
-            destinationsMap.set(city, {
+            const id = cityStr.toLowerCase().replace(/\s+/g, '-');
+            destinationsMap.set(cityStr, {
               id: id,
-              name: city,
+              name: cityStr,
               imageUrl: tour.imageUrl || '/images/hero.jpg' // Fallback to tour image or default
             });
           }
