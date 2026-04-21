@@ -98,9 +98,12 @@ export default function ToursCrud() {
         .tour-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: white; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 30px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 80px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 0.9rem; font-weight: 600; color: #333; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+        input:focus, textarea:focus { outline: none; border-color: #10594c; box-shadow: 0 0 0 2px rgba(16,89,76,0.2); }
+        textarea { resize: vertical; min-height: 100px; }
       `}</style>
       
       <div className="crud-header">
@@ -117,28 +120,41 @@ export default function ToursCrud() {
           <div className="modal-content">
             <h3 style={{marginTop: 0}}>{editingId ? 'Editar Tour' : 'Nuevo Tour'}</h3>
             <form onSubmit={handleSubmit}>
-              <div className="form-row">
-                <input type="text" placeholder="Título" value={formData.title || ''} onChange={e => setFormData({...formData, title: e.target.value})} required />
-                <input type="number" placeholder="Precio ($)" value={formData.price || ''} onChange={e => setFormData({...formData, price: Number(e.target.value)})} required />
+              <div className="form-group">
+                <label>Título del Tour</label>
+                <input type="text" placeholder="Ej: Explora Cusco Imperial" value={formData.title || ''} onChange={e => setFormData({...formData, title: e.target.value})} required />
               </div>
               <div className="form-row">
-                <input type="number" placeholder="Días" value={formData.durationDays || ''} onChange={e => setFormData({...formData, durationDays: Number(e.target.value)})} required />
-                <input type="number" placeholder="Noches" value={formData.durationNights || ''} onChange={e => setFormData({...formData, durationNights: Number(e.target.value)})} />
+                <div className="form-group">
+                  <label>Precio ($ USD)</label>
+                  <input type="number" placeholder="Ej: 1200" value={formData.price || ''} onChange={e => setFormData({...formData, price: Number(e.target.value)})} required />
+                </div>
+                <div className="form-group">
+                  <label>Duración (Días)</label>
+                  <input type="number" placeholder="Ej: 5" value={formData.durationDays || ''} onChange={e => setFormData({...formData, durationDays: Number(e.target.value)})} required />
+                </div>
+                <div className="form-group">
+                  <label>Duración (Noches)</label>
+                  <input type="number" placeholder="Ej: 4" value={formData.durationNights || ''} onChange={e => setFormData({...formData, durationNights: Number(e.target.value)})} />
+                </div>
               </div>
-              <div style={{marginBottom: '15px'}}>
-                <input type="text" placeholder="URL Imagen" value={formData.imageUrl || ''} onChange={e => setFormData({...formData, imageUrl: e.target.value})} required />
+              <div className="form-group">
+                <label>URL de Imagen Principal</label>
+                <input type="text" placeholder="/images/tour.jpg" value={formData.imageUrl || ''} onChange={e => setFormData({...formData, imageUrl: e.target.value})} required />
               </div>
-              <div style={{marginBottom: '15px'}}>
-                <textarea placeholder="Descripción" value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} required />
+              <div className="form-group">
+                <label>Descripción detallada</label>
+                <textarea placeholder="Descripción del paquete turístico..." value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} required />
               </div>
-              <div style={{marginBottom: '15px'}}>
-                <input type="text" placeholder="Ciudades (separadas por coma)" value={formData.cities?.join(', ') || ''} onChange={e => setFormData({...formData, cities: e.target.value.split(',').map(s=>s.trim())})} />
+              <div className="form-group">
+                <label>Ciudades que recorre (separadas por coma)</label>
+                <input type="text" placeholder="Ej: Cusco, Valle Sagrado, Machu Picchu" value={formData.cities?.join(', ') || ''} onChange={e => setFormData({...formData, cities: e.target.value.split(',').map(s=>s.trim()).filter(Boolean)})} />
               </div>
               
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '25px' }}>
                 <button type="button" onClick={closeModal} style={{background: '#6c757d'}}>Cancelar</button>
                 <button type="submit" disabled={addMutation.isPending || updateMutation.isPending}>
-                  {editingId ? 'Actualizar' : 'Guardar'}
+                  {editingId ? 'Actualizar Tour' : 'Guardar Nuevo Tour'}
                 </button>
               </div>
             </form>
