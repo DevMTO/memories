@@ -3,13 +3,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  // Use public variables if you want them on the client side, but since it's an admin panel
-  // we can use PUBLIC_ prefixes so Astro exposes them to the client-side React.
   projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || 'example-project-a85a0',
-  // You would typically add apiKey, authDomain, etc., here for standard Firebase Web SDK setup.
-  // We mock a standard setup structure assuming those would be provided for Auth.
   apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY || 'fake-api-key',
   authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN || 'example-project-a85a0.firebaseapp.com',
+  storageBucket: import.meta.env.PUBLIC_FIREBASE_STORAGE_BUCKET || 'example-project-a85a0.firebasestorage.app',
+  messagingSenderId: import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '929871652293',
+  appId: import.meta.env.PUBLIC_FIREBASE_APP_ID || '1:929871652293:web:5b3503b3ea02eea06697ac'
 };
 
 // Initialize Firebase only once
