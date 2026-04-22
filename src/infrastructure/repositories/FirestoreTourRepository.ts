@@ -1,11 +1,11 @@
 import type { Tour, Destination } from '../../core/domain/models';
 import type { ITourRepository } from '../../core/domain/ports/ITourRepository';
-import { db } from '../firebase';
+import { db, isInitialized } from '../firebase';
 import { MockTourRepository } from './MockTourRepository';
 
 export class FirestoreTourRepository implements ITourRepository {
   private collection = db.collection('tours');
-  private isConfigured = !!import.meta.env.FIREBASE_PROJECT_ID;
+  private isConfigured = isInitialized;
   private mockRepo = new MockTourRepository();
 
   async getAllTours(): Promise<Tour[]> {
