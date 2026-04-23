@@ -9,48 +9,46 @@ let db: any = null;
 let isInitialized = false;
 
 try {
-  // Check if we're in a Node.js context (not browser)
-  if (typeof process !== 'undefined' && process.env) {
-    const projectId = process.env.FIREBASE_PROJECT_ID;
-    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  // Check for environment variables using import.meta.env (Astro way)
+  // or process.env (fallback for some environments)
+  const projectId = import.meta.env.FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = import.meta.env.FIREBASE_CLIENT_EMAIL || process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = import.meta.env.FIREBASE_PRIVATE_KEY || process.env.FIREBASE_PRIVATE_KEY;
 
-    if (!getApps().length) {
-      if (projectId && clientEmail && privateKey) {
-        try {
-          initializeApp({
-            credential: cert({
-              projectId,
-              clientEmail,
-              privateKey: privateKey.replace(/\\n/g, '\n'),
-            }),
-          });
-          isInitialized = true;
-          console.log('✅ Firebase Admin SDK initialized successfully with credentials');
-        } catch (credError) {
-          console.warn('⚠️ Firebase Admin SDK credential initialization failed:', credError);
-        }
-      } else {
-        console.warn(
-          '⚠️ Firebase Admin SDK credentials missing. Ensure these env vars are set:\n' +
-          `  • FIREBASE_PROJECT_ID\n` +
-          `  • FIREBASE_CLIENT_EMAIL\n` +
-          `  • FIREBASE_PRIVATE_KEY`
-        );
+  if (!getApps().length) {
+    if (projectId && clientEmail && privateKey) {
+      try {
+        initializeApp({
+          credential: cert({
+            projectId,
+            clientEmail,
+            privateKey: privateKey.replace(/\\n/g, '\n'),
+          }),
+        });
+        isInitialized = true;
+        console.log('✅ Firebase Admin SDK initialized successfully with credentials');
+      } catch (credError) {
+        console.warn('⚠️ Firebase Admin SDK credential initialization failed:', credError);
       }
-      
-      // Always get Firestore instance, fallback to dummy if init failed
-      if (!getApps().length) {
-        initializeApp({ projectId: 'dummy-project' });
-      }
-      db = getFirestore();
     } else {
-      db = getFirestore();
-      isInitialized = true;
+      console.warn(
+        '⚠️ Firebase Admin SDK credentials missing. Ensure these env vars are set:\n' +
+        `  • FIREBASE_PROJECT_ID\n` +
+        `  • FIREBASE_CLIENT_EMAIL\n` +
+        `  • FIREBASE_PRIVATE_KEY`
+      );
     }
+    
+    // Always get Firestore instance
+    if (!getApps().length) {
+      // If we don't have credentials, we might still be able to use a dummy or default app
+      // for local development if the emulator is running, etc.
+      initializeApp({ projectId: projectId || 'dummy-project' });
+    }
+    db = getFirestore();
   } else {
-    // Browser context - Firebase Admin cannot be used
-    console.warn('⚠️ Not in Node.js context. Firebase Admin SDK unavailable.');
+    db = getFirestore();
+    isInitialized = true;
   }
 } catch (error) {
   console.error('❌ Firebase initialization error:', (error as Error).message);
