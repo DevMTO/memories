@@ -1,5 +1,5 @@
-import type { Tour, Package } from '../../domain/models/';
-import type { ITourRepository } from '../../domain/ports/ITourRepository';
+import type { Tour, Package } from '../../core/domain/models';
+import type { ITourRepository } from '../../core/domain/ports/ITourRepository';
 
 type Destination = {
   id: string;
