@@ -6,7 +6,7 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
 
   useEffect(() => {
     if (!loading && !user) {
-      window.location.href = '/management/login';
+      window.location.href = '/login';
     }
   }, [user, loading]);
 

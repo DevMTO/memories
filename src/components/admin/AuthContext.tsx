@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     const auth = getAuth(app);
     await firebaseSignOut(auth);
-    window.location.href = '/management/login';
+    window.location.href = '/login';
   };
 
   return (

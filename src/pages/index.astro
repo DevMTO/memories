@@ -13,11 +13,11 @@ const featuredTours = await getToursUseCase.executeFeatured();
 const destinations = await getToursUseCase.executeDestinations();
 ---
 
-<Layout title="Home">
+<Layout title="Home" mainClass="home-main">
   <!-- Hero Section -->
   <section class="hero" style={`background-image: url('/images/hero.jpg');`}>
     <div class="overlay"></div>
-    <div class="container hero-content text-center">
+    <div class="container hero-content text-center reveal-up">
       <span class="subtitle">AGENCIA DE VIAJES / TOUR OPERADOR</span>
       <h1 class="hero-title">MEMORIES</h1>
       <p class="hero-desc">Travel Perú</p>
@@ -25,14 +25,14 @@ const destinations = await getToursUseCase.executeDestinations();
         EXPERIENCIAS CURADAS Y EXCLUSIVAS. CONECTAMOS TU ESPÍRITU CON LA ESENCIA
         VIVA Y ETERNA DEL PERÚ.
       </p>
-      <a href="/design-trip" class="btn btn-primary btn-rounded hero-cta"
+      <a href="/login" class="btn btn-primary btn-rounded hero-cta"
         >DESIGN TRIP</a
       >
     </div>
   </section>
 
   <!-- Transformative Journeys Section -->
-  <section class="transformative-section">
+  <section class="transformative-section reveal-up">
     <div class="container transformative-grid">
       <div class="text-content">
         <span class="subtitle">EXPERIENCIAS EXCLUSIVAS</span>
@@ -54,13 +54,13 @@ const destinations = await getToursUseCase.executeDestinations();
         <a href="/tours" class="text-accent cta-link">VER MÁS DESTINOS →</a>
       </div>
       <div class="img-content">
-        <img src="/images/tour1.jpg" alt="Viajes Que Transforman" />
+        <img src="/images/tour1.jpg" alt="Viajes Que Transforman" class="img-reveal" />
       </div>
     </div>
   </section>
 
   <!-- Featured Tours -->
-  <section class="section section--alt">
+  <section class="section section--alt reveal-up">
     <div class="container">
       <div class="section-header text-center">
         <span class="subtitle text-primary">EXPERIENCIAS EXCLUSIVAS</span>
@@ -77,7 +77,7 @@ const destinations = await getToursUseCase.executeDestinations();
   </section>
 
   <!-- Destinations -->
-  <section class="section">
+  <section class="section reveal-up">
     <div class="container">
       <div class="dest-header">
         <div>
@@ -123,3 +123,66 @@ const destinations = await getToursUseCase.executeDestinations();
     </div>
   </section>
 </Layout>
+
+<script>
+  // Simple Reveal Animation on Scroll
+  const revealCallback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  };
+
+  const observerOptions = {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const revealObserver = new IntersectionObserver(revealCallback, observerOptions);
+  
+  document.querySelectorAll('.reveal-up, .img-reveal').forEach(el => {
+    revealObserver.observe(el);
+  });
+
+  // Sticky Header logic
+  const header = document.querySelector('.header');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      header?.classList.add('is-scrolled');
+    } else {
+      header?.classList.remove('is-scrolled');
+    }
+  });
+</script>
+
+<style is:global>
+  /* Reveal Animations base styles */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .reveal-up.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .img-reveal {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+  }
+
+  .img-reveal.is-revealed {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
