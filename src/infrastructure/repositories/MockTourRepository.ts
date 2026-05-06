@@ -31,7 +31,7 @@ export class MockTourRepository implements ITourRepository {
         location: 'Cusco, Peru',
         cities: ['Cusco'],
 
-        imageUrl: '-------',
+        imageUrl: ' ',
         gallery: [],
 
         features: [
@@ -57,7 +57,8 @@ export class MockTourRepository implements ITourRepository {
             title: 'Explora el Valle Sagrado | Noche en Aguas Calientes',
             description:
                 'Visita al Valle Sagrado con parada en mirador, mercado y sitio arqueológico de Pisac, almuerzo buffet en Urubamba y recorrido por Ollantaytambo. Por la tarde viaje en tren hacia Aguas Calientes y pernocte.',
-            meals: ['Almuerzo'],
+            accommodations: '  ',
+                meals: ['Almuerzo'],
             includes: [
                 'Recojo del hotel',
                 'Ingreso a Pisac',
@@ -79,6 +80,7 @@ export class MockTourRepository implements ITourRepository {
             title: 'Machu Picchu y ascenso a Wayna Picchu',
             description:
                 'Visita guiada por Machu Picchu recorriendo templos, plazas y lugares sagrados. Luego ascenso a Wayna Picchu con vistas panorámicas del valle. Retorno en tren y transporte a Cusco.',
+            accommodations: '',
             meals: [],
             includes: [
                 'Guía profesional',
@@ -186,6 +188,7 @@ export class MockTourRepository implements ITourRepository {
             title: 'Excursión a Machu Picchu Full Day',
             description:
                 'Salida temprana desde Cusco hacia Ollantaytambo para abordar tren a Aguas Calientes. Ascenso en bus a Machu Picchu, visita guiada de aproximadamente 2 horas y retorno por la tarde a Cusco.',
+            accommodations: ' ',
             meals: [],
             includes: [
                 'Recojo del hotel',
@@ -288,7 +291,8 @@ export class MockTourRepository implements ITourRepository {
             title: 'Valle Sagrado y viaje a Aguas Calientes',
             description:
                 'Recorrido por el Valle Sagrado visitando mirador, mercado y sitio arqueológico de Pisac, almuerzo buffet en Urubamba y visita a Ollantaytambo. Por la tarde viaje en tren hacia Aguas Calientes y noche de hotel.',
-            meals: ['Almuerzo'],
+            accommodations: 'Hotel',
+                meals: ['Almuerzo'],
             includes: [
                 'Recojo del hotel',
                 'Ingreso a Pisac',
@@ -309,7 +313,8 @@ export class MockTourRepository implements ITourRepository {
             title: 'Tour a Machu Picchu y retorno a Cusco',
             description:
                 'Visita guiada por Machu Picchu recorriendo templos, plazas y sitios históricos. Retorno en bus a Aguas Calientes, viaje en tren a Ollantaytambo y traslado final a Cusco.',
-            meals: ['Desayuno'],
+            accommodations: '',
+                meals: ['Desayuno'],
             includes: [
                 'Desayuno en hotel',
                 'Ingreso a Machu Picchu',
@@ -413,7 +418,8 @@ export class MockTourRepository implements ITourRepository {
             title: 'Machu Picchu y ascenso a Wayna Picchu',
             description:
                 'Salida temprana desde Cusco hacia Ollantaytambo para abordar tren a Aguas Calientes. Recorrido guiado por Machu Picchu y posterior ascenso a Wayna Picchu con vistas panorámicas. Retorno por la tarde a Cusco.',
-            meals: [],
+            accommodations: 'Hotel',
+                meals: [],
             includes: [
                 'Recojo y retorno al hotel',
                 'Transporte Cusco - Ollantaytambo ida y vuelta',
@@ -2516,27 +2522,30 @@ export class MockTourRepository implements ITourRepository {
         ],
 
         itinerary: [
-            {
-                day: 1,
-                title: "BIENVENIDO A PERÚ - DISFRUTE DE LIMA",
-                description: "Bienvenido a Perú, le recibiremos en el aeropuerto internacional de Jorge Chávez a la hora de su llegada, un transporte asignado estará esperando por usted para lo cual solicitamos que nos envíe con anticipación el número y hora de vuelo, así mismo estaremos en constante comunicación para cualquier consulta. El transporte le trasladará hasta el distrito de Miraflores para que se instale en su hotel asignado con anticipación.\n\nPor la tarde disfrute de la capital donde puede optar por ir a cenar o recorrer los lugares más importantes y cercanos a su hotel como el Larco Miraflores, el Parque Kenedy entre otros, pero si usted llega por la mañana y quiere realizar un tour por la tarde no dude en consultar más opciones.",
-                accommodations: "Hotel en Lima",
-                includes: [
+        {
+            day: 1,
+            title: "BIENVENIDO A PERÚ - DISFRUTE DE LIMA",
+            description: "Recepción en el aeropuerto de Lima y traslado a Miraflores. Tarde libre para explorar la ciudad o disfrutar de sus atractivos cercanos.",
+            accommodations: "Hotel en Lima",
+            meals: ["No incluye comidas"],
+            includes: [
                 "Transporte turístico del aeropuerto internacional Jorge Chávez a su hotel asignado.",
                 "Noche de hotel en Lima"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Desayuno, Almuerzo y cena",
                 "Costes adicionales o retrasos fuera de nuestro control",
                 "Gastos extras",
                 "Seguro de Viaje"
-                ]
-            },
-            {
-                day: 2,
-                title: "TOUR ISLAS BALLESTAS + VITIVINÍCOLA Y AVENTURA EN HUACACHINA",
-                description: "Iniciamos este dia muy temprano aproximadamente 5:00 am",
-                includes: [
+            ]
+        },
+        {
+            day: 2,
+            title: "TOUR ISLAS BALLESTAS + VITIVINÍCOLA Y AVENTURA EN HUACACHINA",
+            description: "Salida temprana hacia Paracas para visitar Islas Ballestas, luego degustación de vinos en Ica y aventura en Huacachina con buggies y sandboarding.",
+            accommodations: "Hotel en Nazca",
+            meals: ["Desayuno"],
+            includes: [
                 "Desayuno - Box Breakfast en el hotel de Lima",
                 "Transporte turístico",
                 "Guia turistico Ingles - Español",
@@ -2546,19 +2555,21 @@ export class MockTourRepository implements ITourRepository {
                 "Tickets de bus de Ica a Nazca",
                 "Transporte de estación de bus de Nazca a hotel en Nazca",
                 "Noche de hotel en Nazca"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Almuerzo y cena",
                 "Costes adicionales o retrasos fuera de nuestro control",
                 "Gastos extras",
                 "Seguro de Viaje"
-                ]
-            },
-            {
-                day: 3,
-                title: "SOBREVUELO LINEAS DE NAZCA - VIAJE EN BUS A AREQUIPA",
-                description: "Por la mañana pasaremos por su hotel aproximadamente 8:00am... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 3,
+            title: "SOBREVUELO LINEAS DE NAZCA - VIAJE EN BUS A AREQUIPA",
+            description: "Sobrevuelo a las Líneas de Nazca y viaje nocturno en bus hacia la ciudad de Arequipa.",
+            accommodations: "Hotel en Arequipa",
+            meals: ["Desayuno"],
+            includes: [
                 "Desayuno en el hotel de Nazca",
                 "Transporte y Guia turistico para el sobrevuelo",
                 "Sobrevuelo de Líneas de Nazca",
@@ -2566,73 +2577,81 @@ export class MockTourRepository implements ITourRepository {
                 "Transporte de hotel a estación de bus en Nazca",
                 "Transporte de estación de bus de Nazca a hotel en Arequipa",
                 "Noche de hotel en Arequipa"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Almuerzo y cena",
                 "Costes adicionales o retrasos fuera de nuestro control",
                 "Gastos extras",
                 "Seguro de Viaje"
-                ]
-            },
-            {
-                day: 4,
-                title: "DISFRUTA DE AREQUIPA - CITY TOUR POR LA TARDE",
-                description: "Desayune en el hotel por la mañana... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 4,
+            title: "DISFRUTA DE AREQUIPA - CITY TOUR POR LA TARDE",
+            description: "Mañana libre para disfrutar Arequipa y city tour por la tarde visitando sus principales atractivos.",
+            accommodations: "Hotel en Arequipa",
+            meals: ["Desayuno"],
+            includes: [
                 "Desayuno en el hotel de Arequipa",
                 "Guia turistico para el city tour",
                 "Tickets de ingreso al mirador turístico",
                 "Noche de hotel en Arequipa"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Almuerzo y cena",
                 "Costes adicionales o retrasos fuera de nuestro control",
                 "Gastos extras",
                 "Seguro de Viaje"
-                ]
-            },
-            {
-                day: 5,
-                title: "TOUR A CAÑON DE COLCA Y MIRADOR DE 3 CRUCES EN FULL DAY",
-                description: "Listos para esta aventura?... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 5,
+            title: "TOUR A CAÑON DE COLCA Y MIRADOR DE 3 CRUCES EN FULL DAY",
+            description: "Excursión al Cañón del Colca con visitas panorámicas, aguas termales y observación de paisajes andinos.",
+            accommodations: "Hotel en Arequipa",
+            meals: ["Desayuno y Almuerzo"],
+            includes: [
                 "Transporte Turístico",
                 "Guia turistico Bilingue (Español - Ingles)",
                 "Desayuno y Almuerzo en Chivay",
                 "Tickets de Ingreso a Cañón de Colca",
                 "Tickets de Ingreso a Aguas Termales en Chivay",
                 "Noche de Hotel en Arequipa"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Cena",
                 "Costos extras adicionales no incluidos en el programa",
                 "Seguro de Viaje",
                 "Propinas"
-                ]
-            },
-            {
-                day: 6,
-                title: "VIAJE EN BUS DE AREQUIPA A PUNO",
-                description: "Disfrute del desayuno en el hotel de Arequipa... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 6,
+            title: "VIAJE EN BUS DE AREQUIPA A PUNO",
+            description: "Traslado en bus turístico desde Arequipa hacia Puno con asistencia en todo el trayecto.",
+            accommodations: "Hotel en Puno",
+            meals: ["Desayuno"],
+            includes: [
                 "Desayuno en el hotel de Arequipa",
                 "Transporte Turístico de hotel a estación de bus en Arequipa",
                 "Tickets de Bus de Arequipa a Puno",
                 "Transporte turístico de estación de bus a hotel en Puno",
                 "Noche de hotel en Puno"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Almuerzo y Cena",
                 "Costos extras adicionales no incluidos en el programa",
                 "Seguro de Viaje",
                 "Propinas"
-                ]
-            },
-            {
-                day: 7,
-                title: "TOUR A LAS ISLAS FLOTANTES DE UROS Y TAQUILE EN FULL DAY",
-                description: "Lo recogemos de su hotel temprano aproximadamente 6:40 am... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 7,
+            title: "TOUR A LAS ISLAS FLOTANTES DE UROS Y TAQUILE EN FULL DAY",
+            description: "Excursión en el Lago Titicaca visitando las islas flotantes de Uros y la isla de Taquile con almuerzo incluido.",
+            accommodations: "Hotel en Puno",
+            meals: ["Desayuno y Almuerzo"],
+            includes: [
                 "Desayuno en el hotel de Puno",
                 "Transporte Fluvial Turístico",
                 "Guia Bilingue (Español - Ingles)",
@@ -2640,19 +2659,21 @@ export class MockTourRepository implements ITourRepository {
                 "Tickets de Ingreso a la Isla de Uros",
                 "Tickets de Ingreso a la isla de Taquile",
                 "Noche de hotel en Puno"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Gastos Extras, propinas",
                 "Seguro de Viaje",
                 "Actividades extras en las islas",
                 "Costos extras adicionales no incluidos en el programa"
-                ]
-            },
-            {
-                day: 8,
-                title: "RUTA DEL SOL PUNO - CUSCO",
-                description: "Es momento de despedirse de la hermosa ciudad de Puno... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 8,
+            title: "RUTA DEL SOL PUNO - CUSCO",
+            description: "Viaje turístico de Puno a Cusco con visitas culturales y almuerzo buffet en ruta.",
+            accommodations: "Hotel en Cusco",
+            meals: ["Desayuno y Almuerzo"],
+            includes: [
                 "Desayuno-box breakfast en el hotel de Puno",
                 "Transporte de su hotel a la estación de Bus",
                 "Bus turístico de Puno a Cusco",
@@ -2662,36 +2683,40 @@ export class MockTourRepository implements ITourRepository {
                 "Almuerzo Buffet",
                 "Traslado de estación de Bus a su hotel en Cusco",
                 "Noche de hotel en Cusco"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Cena",
                 "Seguro de Viaje",
                 "Propinas, Snack",
                 "Costos extras fuera de nuestro control"
-                ]
-            },
-            {
-                day: 9,
-                title: "WALKING TOUR CUSCO",
-                description: "Disfrute de su primer desayuno en la ciudad de Cusco... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 9,
+            title: "WALKING TOUR CUSCO",
+            description: "Recorrido a pie por el centro histórico de Cusco con guía y tiempo libre.",
+            accommodations: "Hotel en Cusco",
+            meals: ["Desayuno"],
+            includes: [
                 "Desayuno en el hotel de Cusco",
                 "Walking tour por la ciudad de Cusco",
                 "Guia Turistico",
                 "Noche de hotel en Cusco"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Almuerzo y Cena",
                 "Seguro de Viaje",
                 "Propinas, Snack",
                 "Costos extras fuera de nuestro control"
-                ]
-            },
-            {
-                day: 10,
-                title: "VALLE SAGRADO - NOCHE EN OLLANTAYTAMBO",
-                description: "Temprano lo recogemos de su hotel... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 10,
+            title: "VALLE SAGRADO - NOCHE EN OLLANTAYTAMBO",
+            description: "Tour al Valle Sagrado visitando Pisac y Ollantaytambo con almuerzo buffet en Urubamba.",
+            accommodations: "Hotel en Ollantaytambo",
+            meals: ["Desayuno y Almuerzo"],
+            includes: [
                 "Desayuno en el hotel de Cusco",
                 "Transporte Turístico",
                 "Guia Turistico ingles - español",
@@ -2699,19 +2724,21 @@ export class MockTourRepository implements ITourRepository {
                 "Tickets de ingreso a centro arqueológico de Pisac",
                 "Tickets de ingreso a centro arqueológico de Ollantaytambo",
                 "Noche de hotel en Ollantaytambo"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Alimentos: Cena",
                 "Gastos extras, propinas",
                 "Actividades extras durante el tour",
                 "Seguros de viaje"
-                ]
-            },
-            {
-                day: 11,
-                title: "MACHU PICCHU - RETORNO A CUSCO",
-                description: "Por la mañana deberá dirigirse hasta la estación... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 11,
+            title: "MACHU PICCHU - RETORNO A CUSCO",
+            description: "Viaje en tren, visita guiada a Machu Picchu y retorno a Cusco.",
+            accommodations: "Hotel en Cusco",
+            meals: ["Desayuno"],
+            includes: [
                 "Desayuno o box breakfast en el hotel de Ollantaytambo",
                 "Transporte turístico privado de la estación de Ollantaytambo hacia su hotel en Cusco",
                 "Tickets de tren turístico servicio expeditions o the voyager",
@@ -2719,8 +2746,8 @@ export class MockTourRepository implements ITourRepository {
                 "Tickets de ingreso a Machu Picchu",
                 "Guía turístico profesional",
                 "Noche de hotel en Cusco"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Tickets de ingreso a la montaña Wayna Picchu",
                 "Alimentos: Almuerzo y Cena",
                 "Tickets de tren Vistadome",
@@ -2728,13 +2755,15 @@ export class MockTourRepository implements ITourRepository {
                 "Seguro de Viaje",
                 "Snack, propinas",
                 "Costos extras fuera de nuestro control"
-                ]
-            },
-            {
-                day: 12,
-                title: "MARAS & MORAY",
-                description: "Por la mañana le recogeremos de su hotel... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 12,
+            title: "MARAS & MORAY",
+            description: "Visita a las Salineras de Maras y el centro arqueológico de Moray con parada en Chinchero.",
+            accommodations: "Hotel en Cusco",
+            meals: ["Desayuno"],
+            includes: [
                 "Desayuno en el hotel de Cusco",
                 "Transporte turístico",
                 "Guia turistico ingles - español",
@@ -2742,31 +2771,33 @@ export class MockTourRepository implements ITourRepository {
                 "Tickets de ingreso a Moray",
                 "Visita a centro textil en Chinchero",
                 "Noche de hotel en Cusco"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Desayuno, Almuerzo, Cena",
                 "Costos extras",
                 "Actividades extras durante el tour",
                 "Seguro de viaje"
-                ]
-            },
-            {
-                day: 13,
-                title: "VUELO CUSCO - LIMA",
-                description: "Es momento de despedirnos... (texto completo)",
-                includes: [
+            ]
+        },
+        {
+            day: 13,
+            title: "VUELO CUSCO - LIMA",
+            description: "Traslado al aeropuerto de Cusco y vuelo de retorno a Lima para conexión internacional.",
+            accommodations: "No incluye alojamiento",
+            meals: ["Desayuno"],
+            includes: [
                 "Desayuno en el hotel de Cusco",
                 "Transporte de Hotel a Aeropuerto en Cusco",
                 "Vuelo doméstico de Cusco a Lima"
-                ],
-                notIncludes: [
+            ],
+            notIncludes: [
                 "Hotel en Lima",
                 "Alimentos: Almuerzo y cena",
                 "Seguros de viaje",
                 "Costes adicionales o retrasos fuera de nuestro control"
-                ]
-            }
-            ],
+            ]
+        }
+        ],
 
         includes: [
             'Hoteles durante todo el recorrido (12 noches: Lima, Nazca, Arequipa, Puno, Cusco y Ollantaytambo)',
@@ -2880,12 +2911,12 @@ export class MockTourRepository implements ITourRepository {
         ],
 
         itinerary: [
-            {
+        {
             day: 1,
             title: 'BIENVENIDO A CUSCO - CITY TOUR POR LA TARDE',
-            description:
-                'Recepción en aeropuerto de Cusco, traslado al hotel y city tour por Qoricancha, Sacsayhuaman, Qenqo, Puca Pucará y Tambomachay.',
+            description: 'Recepción en Cusco, traslado al hotel y city tour visitando Qoricancha y los principales centros arqueológicos cercanos.',
             accommodations: 'Hotel en Cusco',
+            meals: ['No incluye comidas'],
             includes: [
                 'Transporte turístico de Aeropuerto a Hotel en el centro histórico',
                 'City Tour a los 4 atractivos turísticos',
@@ -2905,12 +2936,11 @@ export class MockTourRepository implements ITourRepository {
                 'Vuelo nacional de Lima a Cusco',
                 'Seguro de viaje'
             ]
-            },
-            {
+        },
+        {
             day: 2,
             title: 'TOUR VALLE SAGRADO DE LOS INCAS - PERNOCTE EN OLLANTAYTAMBO',
-            description:
-                'Recorrido por Pisac, Urubamba y Ollantaytambo con almuerzo buffet y noche en Ollantaytambo.',
+            description: 'Recorrido por el Valle Sagrado visitando Pisac, Urubamba y Ollantaytambo con almuerzo buffet.',
             accommodations: 'Hotel en Ollantaytambo',
             meals: ['Desayuno', 'Almuerzo'],
             includes: [
@@ -2929,12 +2959,11 @@ export class MockTourRepository implements ITourRepository {
                 'Actividades extras durante el tour',
                 'Seguros de viaje'
             ]
-            },
-            {
+        },
+        {
             day: 3,
             title: 'TOUR A LA MARAVILLA DEL MUNDO MACHUPICCHU - RETORNO A CUSCO',
-            description:
-                'Viaje en tren a Aguas Calientes, visita guiada a Machu Picchu y retorno a Cusco.',
+            description: 'Viaje en tren a Machu Picchu, visita guiada y retorno a Cusco el mismo día.',
             accommodations: 'Hotel en Cusco',
             meals: ['Desayuno'],
             includes: [
@@ -2957,12 +2986,11 @@ export class MockTourRepository implements ITourRepository {
                 'Propinas',
                 'Costos extras fuera de nuestro control'
             ]
-            },
-            {
+        },
+        {
             day: 4,
             title: 'TREKKING A LA MONTAÑA DE COLORES VINICUNCA FULL DAY',
-            description:
-                'Excursión de trekking a Vinicunca con desayuno y almuerzo buffet en Cusipata.',
+            description: 'Excursión de trekking a la Montaña de Colores con desayuno y almuerzo incluidos.',
             accommodations: 'Hotel en Cusco',
             meals: ['Desayuno', 'Almuerzo'],
             includes: [
@@ -2983,12 +3011,11 @@ export class MockTourRepository implements ITourRepository {
                 'Caballo de Silla',
                 'Costos extras fuera de nuestro control'
             ]
-            },
-            {
+        },
+        {
             day: 5,
             title: 'RUTA DEL SOL - VIAJE DE CUSCO A PUNO EN BUS',
-            description:
-                'Viaje en bus turístico desde Cusco a Puno visitando Andahuaylillas, Raqchi, La Raya y Pucará.',
+            description: 'Viaje turístico en bus desde Cusco a Puno con visitas culturales en ruta.',
             accommodations: 'Hotel en Puno',
             meals: ['Desayuno', 'Almuerzo'],
             includes: [
@@ -3009,12 +3036,11 @@ export class MockTourRepository implements ITourRepository {
                 'Snack',
                 'Costos extras fuera de nuestro control'
             ]
-            },
-            {
+        },
+        {
             day: 6,
             title: 'TOUR A LAS ISLAS UROS Y TAQUILE FULL DAYS',
-            description:
-                'Tour navegando por el Lago Titicaca visitando Uros y Taquile con almuerzo típico.',
+            description: 'Excursión en el Lago Titicaca visitando las islas Uros y Taquile con almuerzo típico.',
             accommodations: 'Hotel en Puno',
             meals: ['Almuerzo'],
             includes: [
@@ -3034,12 +3060,12 @@ export class MockTourRepository implements ITourRepository {
                 'Actividades extras en las islas',
                 'Costos extras fuera de nuestro control'
             ]
-            },
-            {
+        },
+        {
             day: 7,
             title: 'TRASLADO DE HOTEL A AEROPUERTO - VUELO A LIMA',
-            description:
-                'Traslado desde Puno al aeropuerto de Juliaca para vuelo con destino a Lima.',
+            description: 'Traslado desde Puno al aeropuerto de Juliaca para tomar su vuelo hacia Lima.',
+            accommodations: 'No incluye alojamiento',
             meals: ['Desayuno'],
             includes: [
                 'Desayuno en el hotel de Puno',
@@ -3056,7 +3082,7 @@ export class MockTourRepository implements ITourRepository {
                 'Vuelo doméstico de Juliaca a Lima',
                 'Hotel en Lima'
             ]
-            }
+        }
         ],
 
         includes: [
@@ -3606,6 +3632,7 @@ export class MockTourRepository implements ITourRepository {
             description:
                 'Inicio del trekking desde Km 82, visita a Llactapata y llegada al campamento en Ayapata.',
             accommodations: 'Campamento en Ayapata',
+            meals: ['Almuerzo', 'Cena'],
             includes: [
                 'Transporte Cusco - Km 82',
                 'Ingreso Camino Inca',
@@ -3648,6 +3675,7 @@ export class MockTourRepository implements ITourRepository {
             title: 'Wiñayhuayna – Machu Picchu – Cusco',
             description:
                 'Ingreso por Inti Punku, visita guiada a Machu Picchu y retorno a Cusco en tren.',
+            accommodations: '',
             meals: ['Desayuno'],
             includes: [
                 'Ingreso a Machu Picchu',
@@ -3659,7 +3687,6 @@ export class MockTourRepository implements ITourRepository {
             notIncludes: ['Almuerzo', 'Cena']
             }
         ],
-
         includes: [
             'Recojo del hotel',
             'Transporte turístico',
@@ -4038,6 +4065,7 @@ export class MockTourRepository implements ITourRepository {
             title: 'Aguas Calientes – Machu Picchu – Cusco',
             description:
                 'Visita guiada a Machu Picchu y retorno a Cusco.',
+            accommodations: " ",
             meals: ['Desayuno'],
             includes: [
                 'Desayuno en el hotel de Aguas Calientes',
