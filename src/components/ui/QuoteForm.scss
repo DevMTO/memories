@@ -1,63 +1,295 @@
 // =============================================
-// QuoteForm Component Styles
+// Quote Form - Memories Travel Peru
 // =============================================
 @use '../../styles/variables' as *;
 
 .quote-section {
-  padding: 80px 0;
-  background-color: $color-background;
+  padding: 100px 0;
+  background: #ffffff;
 }
 
 .quote-box {
-  background-color: $color-primary;
-  border-radius: 12px;
-  padding: 60px;
-  max-width: 900px;
+  max-width: 1080px;
   margin: 0 auto;
-  position: relative;
-  z-index: 10;
-
-  @include respond-to($bp-mobile) {
-    padding: 30px;
-  }
+  background: #1d8078;
+  border-radius: 18px;
+  padding: 56px 84px 54px;
+  box-shadow: 0 18px 48px rgba($color-primary-dark, 0.12);
 }
 
 .quote-header {
-  .subtitle {
-    color: rgba($color-white, 0.7);
-  }
+  max-width: 760px;
+  margin: 0 auto 34px;
+}
+
+.quote-eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: rgba($color-white, 0.9);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.quote-title {
+  margin: 0 0 10px;
+  color: $color-white;
+  font-family: $font-serif;
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
 }
 
 .quote-desc {
-  color: $color-white;
-  margin-bottom: 40px;
-  font-size: 0.9rem;
-  opacity: 0.9;
+  max-width: 700px;
+  margin: 0 auto;
+  color: rgba($color-white, 0.9);
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
+/* ===============================
+   GRID
+================================ */
+.quote-form {
+  width: 100%;
+}
 
-  @include respond-to($bp-mobile) {
+.quote-grid {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.quote-grid--three {
+  grid-template-columns: 2fr 0.9fr 0.9fr;
+}
+
+.quote-grid--two {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ===============================
+   FORM
+================================ */
+.form-group {
+  width: 100%;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: $color-white;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form-label--center {
+  text-align: center;
+}
+
+.form-control {
+  width: 100%;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1px solid rgba($color-white, 0.55);
+  background: transparent;
+  color: $color-white;
+  font-family: $font-sans;
+  font-size: 0.85rem;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+
+  &::placeholder {
+    color: rgba($color-white, 0.55);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba($color-accent, 0.95);
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.12);
+  }
+}
+
+.form-control--textarea {
+  height: auto;
+  min-height: 96px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  resize: none;
+  text-align: center;
+}
+
+select.form-control {
+  appearance: none;
+  text-align: center;
+  text-align-last: center;
+  cursor: pointer;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* ===============================
+   EXPERIENCE PILLS
+================================ */
+.form-group--experience {
+  .form-label {
+    margin-bottom: 10px;
+  }
+}
+
+.experience-options {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 42px;
+}
+
+.experience-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba($color-white, 0.45);
+  color: rgba($color-white, 0.92);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+
+  &:hover {
+    border-color: rgba($color-accent, 0.85);
+    background: rgba($color-white, 0.05);
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  input:checked ~ .experience-pill__box {
+    background: $color-white;
+    border-color: $color-white;
+  }
+
+  input:checked ~ span:last-child {
+    color: $color-white;
+  }
+}
+
+.experience-pill__box {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid rgba($color-white, 0.8);
+  background: transparent;
+  flex-shrink: 0;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+/* ===============================
+   SUBMIT
+================================ */
+.quote-submit {
+  margin-top: 24px;
+}
+
+.quote-btn {
+  min-height: 40px;
+  padding: 0 26px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: $color-white;
+  font-family: $font-sans;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: $color-accent;
+    color: $color-primary-dark;
+    box-shadow: 0 10px 22px rgba($color-accent, 0.24);
+  }
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@include respond-to($bp-tablet) {
+  .quote-box {
+    padding: 46px 32px;
+  }
+
+  .quote-grid--three,
+  .quote-grid--two {
     grid-template-columns: 1fr;
   }
-}
 
-.form-row__span2 {
-  grid-column: span 2;
+  .experience-options {
+    flex-wrap: wrap;
+  }
 
-  @include respond-to($bp-mobile) {
-    grid-column: span 1;
+  .quote-title {
+    font-size: 3rem;
   }
 }
 
-.quote-submit {
-  margin-top: 30px;
-}
+@include respond-to($bp-mobile) {
+  .quote-section {
+    padding: 70px 0;
+  }
 
-.btn-submit {
-  border-radius: 30px;
-  padding: 12px 40px;
+  .quote-box {
+    padding: 34px 18px;
+    border-radius: 16px;
+  }
+
+  .quote-header {
+    margin-bottom: 26px;
+  }
+
+  .quote-title {
+    font-size: 2.5rem;
+  }
+
+  .quote-desc {
+    font-size: 0.88rem;
+  }
+
+  .form-control,
+  .experience-pill {
+    min-height: 44px;
+  }
+
+  .quote-btn {
+    width: 100%;
+    padding: 0 18px;
+  }
 }

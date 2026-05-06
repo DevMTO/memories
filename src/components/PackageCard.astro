@@ -1,0 +1,74 @@
+---
+import type { Package } from '../core/domain/models';
+import './PackageCard.scss';
+
+interface Props {
+  pkg: Package;
+}
+
+const { pkg } = Astro.props;
+
+const imageUrl =
+  pkg.imageUrl &&
+  pkg.imageUrl.trim() !== '' &&
+  !pkg.imageUrl.includes('---')
+    ? pkg.imageUrl
+    : '/images/cusco.png';
+
+const durationLabel = pkg.durationNights
+  ? `${pkg.durationDays || 1} DÍAS`
+  : `${pkg.durationDays || 1} DÍAS`;
+
+const locationLabel =
+  pkg.destinations?.map((d) => d.name).slice(0, 1).join(', ') ||
+  'Perú';
+
+const description =
+  pkg.shortDescription ||
+  pkg.description ||
+  'Descubre una experiencia diseñada con detalle, comodidad y autenticidad.';
+
+const priceLabel =
+  pkg.price && pkg.price > 0
+    ? `$ ${pkg.price.toLocaleString()}`
+    : 'A medida';
+---
+
+<article class="package-card">
+  <a href={`/packages/${pkg.slug || pkg.id}`} class="package-card__image">
+    <img src={imageUrl} alt={pkg.title} />
+
+    <span class="package-card__badge">
+      {durationLabel}
+    </span>
+  </a>
+
+  <div class="package-card__body">
+    <span class="package-card__location">
+      {locationLabel.toUpperCase()}
+    </span>
+
+    <h3>
+      <a href={`/packages/${pkg.slug || pkg.id}`}>
+        {pkg.title}
+      </a>
+    </h3>
+
+    <p>{description}</p>
+
+    <div class="package-card__footer">
+      <div class="package-card__price">
+        <span>Desde</span>
+        <strong>{priceLabel}</strong>
+      </div>
+
+      <a
+        href={`/packages/${pkg.slug || pkg.id}`}
+        class="package-card__arrow"
+        aria-label={`Ver ${pkg.title}`}
+      >
+        →
+      </a>
+    </div>
+  </div>
+</article>

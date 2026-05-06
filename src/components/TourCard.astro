@@ -13,72 +13,61 @@ const imageUrl =
   tour.imageUrl.trim() !== '' &&
   !tour.imageUrl.includes('---')
     ? tour.imageUrl
-    : '/images/hero.jpg';
+    : '/images/cusco.png';
 
-const durationDays = tour.durationDays || 1;
+const durationLabel = tour.durationNights
+  ? `${tour.durationDays || 1} DÍAS`
+  : `${tour.durationDays || 1} DÍAS`;
 
-const durationText = tour.durationNights
-  ? `${durationDays}D / ${tour.durationNights}N`
-  : `${durationDays} ${durationDays === 1 ? 'DÍA' : 'DÍAS'}`;
-
-const location = tour.location || tour.destinationName || 'Perú';
+const locationLabel = tour.destinationName || tour.location || 'Perú';
 
 const description =
-  tour.shortDescription || tour.description || 'Experiencia turística cuidadosamente diseñada para descubrir Perú.';
+  tour.shortDescription ||
+  tour.description ||
+  'Descubre una experiencia diseñada con detalle, comodidad y autenticidad.';
+
+const priceLabel =
+  tour.price && tour.price > 0
+    ? `$ ${tour.price.toLocaleString()}`
+    : 'A medida';
 
 const detailUrl = `/tours/${tour.slug || tour.id}`;
 ---
 
 <article class="tour-card">
-  <a href={detailUrl} class="tour-img-wrapper" aria-label={`Ver detalles de ${tour.title}`}>
-    <img src={imageUrl} alt={tour.title || 'Tour en Perú'} class="tour-img" loading="lazy" />
+  <a href={detailUrl} class="tour-card__image">
+    <img src={imageUrl} alt={tour.title} />
 
-    <div class="tour-img-overlay"></div>
-
-    <div class="duration-badge">
-      <span>{durationText}</span>
-    </div>
-
-    <div class="tour-destination-badge">
-      {tour.destinationName || 'Perú'}
-    </div>
+    <span class="tour-card__badge">
+      {durationLabel}
+    </span>
   </a>
 
-  <div class="tour-content">
-    <span class="tour-location">{location.toUpperCase()}</span>
+  <div class="tour-card__body">
+    <span class="tour-card__location">
+      {locationLabel.toUpperCase()}
+    </span>
 
-    <h3 class="tour-title">
-      <a href={detailUrl}>{tour.title || 'Tour'}</a>
+    <h3>
+      <a href={detailUrl}>
+        {tour.title}
+      </a>
     </h3>
 
-    <p class="tour-desc">{description}</p>
+    <p>{description}</p>
 
-    {
-      tour.highlights && tour.highlights.length > 0 && (
-        <div class="tour-tags">
-          {tour.highlights.slice(0, 3).map((highlight) => (
-            <span>{highlight}</span>
-          ))}
-        </div>
-      )
-    }
-
-    <div class="tour-footer">
-      <div class="price">
-        <span class="price-label">
-          {tour.price && tour.price > 0 ? 'DESDE' : 'CONSULTAR'}
-        </span>
-
-        <span class="price-amount">
-          {tour.price && tour.price > 0
-            ? `$ ${tour.price.toLocaleString()}`
-            : 'Precio a medida'}
-        </span>
+    <div class="tour-card__footer">
+      <div class="tour-card__price">
+        <span>{tour.price && tour.price > 0 ? 'Desde' : 'Consultar'}</span>
+        <strong>{priceLabel}</strong>
       </div>
 
-      <a href={detailUrl} class="btn-arrow" aria-label={`Ver ${tour.title}`}>
-        <span>Ver tour</span>
-        <strong>→</strong>
+      <a
+        href={detailUrl}
+        class="tour-card__arrow"
+        aria-label={`Ver ${tour.title}`}
+      >
+        →
       </a>
     </div>
   </div>

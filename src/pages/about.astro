@@ -3,48 +3,167 @@ import Layout from '../layouts/Layout.astro';
 import './_about.scss';
 ---
 
-<Layout title="About Us">
-  <section class="hero-small" style={`background-image: url('/images/hero.jpg');`}>
-    <div class="overlay"></div>
-    <div class="container hero-content text-center">
-      <span class="subtitle">UN EQUIPO CONSOLIDADO</span>
-      <h1 class="hero-title">ACERCA DE NOSOTROS</h1>
-      <p class="hero-subdesc">EXPERIENCIAS CURADAS Y EXCLUSIVAS. CONECTAMOS TU ESPÍRITU CON LA ESENCIA VIVA Y ETERNA DEL PERÚ.</p>
+<Layout title="Acerca de Nosotros | Memories Travel Perú" mainClass="about-main">
+  <!-- HERO -->
+  <section class="about-hero">
+    <div class="about-hero__overlay"></div>
+    <div class="container about-hero__content">
+      <span class="about-eyebrow">Un equipo consolidado</span>
+
+      <h1>Acerca de Nosotros</h1>
+
+      <p>
+        Experiencias curadas y exclusivas. Conectamos tu espíritu con la esencia
+        viva y eterna del Perú.
+      </p>
+
+      <a href="#quote" class="about-hero__btn">Design Trip</a>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container about-grid">
-      <div class="about-text">
-        <span class="subtitle text-primary">NUESTRA HISTORIA</span>
-        <h2 class="about-title">Profesionales<br>Apasionados Por Nuestra<br><span class="culture-accent">Cultura</span></h2>
-        <p class="about-paragraph">Memories Travel Perú Es Una Agencia De Viajes Dedicada A Organizar Paquetes Turísticos Y Tours Personalizados. Somos Profesionales En Turismo Y Apasionados De Nuestra Cultura Y Queremos Compartirla Con Todos Los Turistas Que Visitan Nuestro Hermoso Perú.</p>
-        <p class="about-paragraph about-paragraph--spaced">Contamos Con Una Experiencia De Más De 5 Años En Organizar Viajes A Nivel Perú Y Sabemos De La Exigencia De Cada Uno De Nuestros Clientes, Por Lo Que Nos Esforzamos Cada Día Para Ofrecerte La Mejor Experiencia En Su Visita.</p>
-        <blockquote class="about-quote">
-          "Olvídese De Las Preocupaciones, Nosotros Le Diseñamos Su Viaje Según Su Solicitud Para Que Pueda Disfrutar Y Llevar Un Recuerdo Único E Inolvidable."
+  <!-- HISTORIA -->
+  <section class="about-story-section">
+    <div class="container about-story-grid">
+      <div class="about-story-copy">
+        <span class="about-eyebrow about-eyebrow--dark">Nuestra historia</span>
+
+        <h2>
+          Profesionales
+          <br />
+          Apasionados Por Nuestra
+          <br />
+          <span>Cultura</span>
+        </h2>
+
+        <p>
+          Memories Travel Perú es una agencia de viajes dedicada a organizar
+          paquetes turísticos y tours personalizados. Somos profesionales en
+          turismo y apasionados de nuestra cultura, y queremos compartirla con
+          todos los turistas que visitan nuestro hermoso Perú.
+        </p>
+
+        <p>
+          Contamos con una experiencia de más de 5 años organizando viajes a
+          nivel Perú. Sabemos de la exigencia de cada uno de nuestros clientes,
+          por lo que nos esforzamos cada día para ofrecerte la mejor experiencia
+          durante tu visita.
+        </p>
+
+        <blockquote>
+          “Olvídese de las preocupaciones, nosotros le diseñamos su viaje según
+          su solicitud para que pueda disfrutar y llevar un recuerdo único e
+          inolvidable de nuestro país.”
         </blockquote>
       </div>
-      <div class="founder-img-wrapper">
-        <img src="/images/tour1.jpg" alt="Luzmilla Ttito" class="founder-img">
-        <div class="founder-info">
-          <span class="subtitle founder-role">FUNDADORA & CEO</span>
-          <h3 class="text-white founder-name">Luzmilla Ttito</h3>
-          <p class="text-white founder-quote">"Mi Misión Es Conectar Corazones Con La Magia De Los Andes"</p>
+
+      <div class="founder-card">
+        <img src="/images/luzmillattito.png" alt="Luzmilla Ttito - Fundadora de Memories Travel Perú" />
+
+        <div class="founder-card__content">
+          <span>Fundadora & CEO</span>
+          <h3>Luzmilla Ttito</h3>
+          <p>
+            “Mi misión es conectar corazones con la magia de los Andes.”
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section section--no-top">
-    <div class="container mission-vision-grid">
-      <div class="mv-card">
-        <h3 class="text-accent mv-title">Nuestra Misión</h3>
-        <p class="text-white mv-desc">Somos Una Empresa Que Proporciona Un Servicio Personalizado Y Especializado Que Realmente Hace Realidad Los Sueños De Nuestros Clientes, Descubriendo Una Experiencia Única Que Están Buscando En Diferentes Destinos.</p>
+  <!-- MISION VISION -->
+  <section class="mission-section">
+    <div class="container mission-grid">
+      <article class="mission-card">
+        <div class="mission-card__icon">◎</div>
+
+        <h3>Nuestra Misión</h3>
+
+        <p>
+          Somos una empresa que proporciona un servicio personalizado y
+          especializado, que realmente hace realidad los sueños de nuestros
+          clientes, descubriendo una experiencia única que están buscando en
+          diferentes destinos.
+        </p>
+      </article>
+
+      <article class="mission-card">
+        <div class="mission-card__icon">◉</div>
+
+        <h3>Nuestra Visión</h3>
+
+        <p>
+          Hacer felices a los viajeros y que disfruten del viaje que siempre
+          soñaron en cada destino. Nuestro principal objetivo es ofrecer una
+          alternativa diferente al turismo de masas, que muchas veces impacta
+          negativamente en las comunidades y el medio ambiente.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="why-section">
+    <div class="container">
+      <h2>¿Por Qué Elegir A Memories Travel Perú?</h2>
+
+      <div class="why-grid">
+        <article>
+          <span>Atención 24/7</span>
+
+          <p>
+            Desde el primer momento de su viaje estaremos en contacto con usted,
+            absolviendo sus dudas y consultas antes, durante y después de su
+            viaje.
+          </p>
+        </article>
+
+        <article>
+          <span>Cero preocupaciones</span>
+
+          <p>
+            Nosotros nos encargamos de toda la logística para que su viaje sea
+            más fácil. Descubre Perú con nosotros y haz de tu viaje un recuerdo
+            inolvidable.
+          </p>
+        </article>
       </div>
-      <div class="mv-card">
-        <h3 class="text-accent mv-title">Nuestra Visión</h3>
-        <p class="text-white mv-desc">Hacer Felices A Los Viajeros Y Que Disfruten Del Viaje Que Siempre Soñaron En Cada Destino. Nuestro Principal Objetivo Es Ofrecer Una Alternativa Diferente Al Turismo De Masas, Que A Menudo Tiene Un Impacto Negativo En Las Comunidades Y El Medio Ambiente.</p>
-      </div>
+    </div>
+  </section>
+
+  <!-- CUSCO INFO -->
+  <section class="cusco-info-section">
+    <div class="container cusco-info-grid">
+      <article>
+        <span>Cusco</span>
+        <h3>Altitud y ubicación</h3>
+        <p>
+          Cusco se encuentra a una altitud aproximada de 11,120 pies sobre el
+          nivel del mar, rodeado de montañas. En el Valle Sagrado la elevación es
+          menor, alrededor de 9,420 pies, y Machu Picchu se encuentra aún más
+          bajo, a unos 7,972 pies.
+        </p>
+      </article>
+
+      <article>
+        <span>Clima</span>
+        <h3>Andes peruanos</h3>
+        <p>
+          Cusco se ubica en la cordillera de los Andes, por lo que el clima puede
+          ser muy cambiante. Algunos días pueden ser cálidos y las noches frías;
+          también puede presentarse lluvia según la temporada.
+        </p>
+      </article>
+
+      <article>
+        <span>Consejo</span>
+        <h3>Mal de altura</h3>
+        <p>
+          El mal de altura puede afectar a algunos viajeros. Los síntomas pueden
+          incluir dolor de cabeza, fatiga o falta de apetito. Se recomienda
+          hidratarse, descansar al llegar y consultar con un médico antes del
+          viaje si se considera necesario.
+        </p>
+      </article>
     </div>
   </section>
 </Layout>

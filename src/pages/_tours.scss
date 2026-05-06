@@ -1,15 +1,7 @@
 @use '../styles/variables' as *;
 
-/* =============================================
-   Tours Page - Memories Travel Peru
-============================================= */
-
-.tours-main {
-  background:
-    radial-gradient(circle at 12% 0%, rgba($color-accent, 0.12), transparent 30%),
-    $color-background;
-  color: $color-text;
-  overflow: hidden;
+.tours-page {
+  background: #f7f7f7;
 }
 
 /* ===============================
@@ -17,108 +9,38 @@
 ================================ */
 .tours-hero {
   position: relative;
-  min-height: 72vh;
+  min-height: 320px;
   display: flex;
-  align-items: center;
-  background-size: cover;
-  background-position: center;
-  color: $color-white;
-  isolation: isolate;
+  align-items: flex-end;
+  background:
+    linear-gradient(rgba($color-primary-dark, 0.38), rgba($color-primary-dark, 0.45)),
+    url('/images/hero.png') center/cover no-repeat;
+  overflow: hidden;
 }
 
 .tours-hero__overlay {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 80% 20%, rgba($color-accent, 0.3), transparent 28%),
-    linear-gradient(
-      90deg,
-      rgba($color-primary-dark, 0.96),
-      rgba($color-primary-dark, 0.78) 48%,
-      rgba($color-primary-dark, 0.35)
-    ),
-    linear-gradient(
-      180deg,
-      rgba($color-primary-dark, 0.08),
-      rgba($color-primary-dark, 0.92)
-    );
-  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba($color-primary-dark, 0.1),
+    rgba($color-primary-dark, 0.52)
+  );
 }
 
 .tours-hero__content {
-  padding: 150px 0 90px;
+  position: relative;
+  z-index: 2;
+  padding-bottom: 42px;
 
   h1 {
-    max-width: 900px;
-    margin: 20px 0 22px;
+    margin: 0;
+    color: $color-white;
     font-family: $font-serif;
-    font-size: clamp(3rem, 7vw, 6.8rem);
-    line-height: 0.92;
-    letter-spacing: -0.06em;
-    color: $color-white;
-
-    span {
-      display: block;
-      font-style: italic;
-      font-weight: 400;
-      color: $color-accent;
-    }
-  }
-
-  > p {
-    max-width: 720px;
-    color: rgba($color-white, 0.84);
-    font-size: 1.05rem;
-    line-height: 1.8;
-  }
-}
-
-.tours-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: $color-accent;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-
-  &::before {
-    content: "";
-    width: 34px;
-    height: 1px;
-    background: currentColor;
-  }
-}
-
-.tours-eyebrow--dark {
-  color: $color-primary;
-}
-
-.tours-hero__stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 760px;
-  margin-top: 50px;
-  border-top: 1px solid rgba($color-white, 0.18);
-
-  div {
-    padding: 24px 24px 0 0;
-  }
-
-  strong {
-    display: block;
-    color: $color-white;
-    font-size: 1.35rem;
-    font-weight: 800;
-  }
-
-  span {
-    display: block;
-    margin-top: 6px;
-    color: rgba($color-white, 0.68);
-    font-size: 0.86rem;
-    line-height: 1.5;
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
   }
 }
 
@@ -126,260 +48,144 @@
    LAYOUT
 ================================ */
 .tours-section {
-  padding: 110px 0;
-  background:
-    radial-gradient(circle at 85% 8%, rgba($color-accent, 0.12), transparent 28%),
-    #f4f1eb;
+  padding: 68px 0 88px;
 }
 
 .tours-layout {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
-  gap: 38px;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 48px;
   align-items: start;
 }
 
-.tours-content {
-  min-width: 0;
-}
-
-.tours-content__header {
-  display: grid;
-  grid-template-columns: 1fr 0.72fr;
-  gap: 38px;
-  align-items: end;
-  margin-bottom: 34px;
-
-  h2 {
-    margin: 14px 0 0;
-    font-family: $font-serif;
-    font-size: clamp(2.2rem, 4.8vw, 4.4rem);
-    line-height: 1;
-    letter-spacing: -0.055em;
-    color: $color-primary-dark;
-  }
-
-  p {
-    margin: 0;
-    color: $color-text-light;
-    line-height: 1.8;
-
-    strong {
-      color: $color-primary-dark;
-      font-weight: 900;
-    }
-  }
-}
-
-/* ===============================
-   SIDEBAR
-================================ */
-.sidebar {
+.tours-sidebar {
   position: sticky;
-  top: 110px;
-  display: grid;
-  gap: 18px;
+  top: 120px;
 }
 
-.sidebar-card,
-.filter-group,
-.filter-note,
-.filters-clear {
-  border-radius: 26px;
-  background: $color-white;
-  border: 1px solid rgba($color-primary, 0.1);
-  box-shadow: 0 20px 50px rgba($color-primary-dark, 0.07);
-}
-
-.sidebar-card--intro {
-  padding: 26px;
-
-  h2 {
-    margin: 10px 0 10px;
-    font-family: $font-serif;
-    font-size: 1.65rem;
-    line-height: 1.1;
-    color: $color-primary-dark;
-  }
-
-  p {
-    margin: 0;
-    color: $color-text-light;
-    font-size: 0.9rem;
-    line-height: 1.7;
-  }
-}
-
-.sidebar-eyebrow {
-  color: $color-accent;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.filters-box {
+  padding: 12px 0;
 }
 
 .filter-group {
-  padding: 24px;
-}
+  margin-bottom: 34px;
 
-.filter-title {
-  position: relative;
-  margin: 0 0 18px;
-  padding-bottom: 12px;
-  font-family: $font-sans;
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: $color-primary-dark;
+  h3 {
+    margin: 0 0 18px;
+    color: $color-primary-dark;
+    font-family: $font-serif;
+    font-size: 2rem;
+    line-height: 1.1;
+    font-style: italic;
+    position: relative;
+    padding-bottom: 10px;
 
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 36px;
-    height: 2px;
-    border-radius: 999px;
-    background: $color-accent;
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 110px;
+      height: 3px;
+      border-radius: 999px;
+      background: $color-primary;
+    }
   }
 }
 
-.filter-label {
+.filter-options {
+  display: grid;
+  gap: 10px;
+}
+
+.filter-check {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 34px;
-  color: $color-text-light;
-  font-size: 0.9rem;
+  color: $color-text;
+  font-size: 0.92rem;
   cursor: pointer;
-  transition:
-    color 0.25s ease,
-    transform 0.25s ease;
-
-  &:hover {
-    color: $color-primary;
-    transform: translateX(3px);
-  }
 
   input {
-    appearance: none;
-    width: 17px;
-    height: 17px;
-    border-radius: 5px;
-    border: 1px solid rgba($color-primary, 0.28);
-    background: $color-white;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition:
-      background 0.2s ease,
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
+    width: 13px;
+    height: 13px;
+    accent-color: $color-primary;
+  }
 
-    &::before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      border-radius: 2px;
-      background: $color-white;
-      transform: scale(0);
-      transition: transform 0.2s ease;
-    }
-
-    &:checked {
-      background: $color-primary;
-      border-color: $color-primary;
-      box-shadow: 0 8px 18px rgba($color-primary, 0.22);
-
-      &::before {
-        transform: scale(1);
-      }
-    }
+  span {
+    line-height: 1.3;
   }
 }
 
-.filters-clear {
-  min-height: 48px;
-  padding: 0 22px;
-  font-family: $font-sans;
+.filter-price {
+  input[type='range'] {
+    width: 100%;
+    accent-color: $color-primary;
+    cursor: pointer;
+  }
+}
+
+.filter-price-labels {
+  display: flex;
+  justify-content: space-between;
+  color: $color-text-light;
+  font-size: 0.82rem;
+  margin-top: 6px;
+}
+
+.filter-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.filter-btn {
+  min-height: 42px;
+  border: none;
+  border-radius: 999px;
+  background: $color-primary-dark;
+  color: $color-white;
   font-size: 0.76rem;
   font-weight: 900;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: $color-primary-dark;
   cursor: pointer;
   transition:
     transform 0.25s ease,
-    background 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease;
+    background 0.25s ease;
 
   &:hover {
     transform: translateY(-2px);
-    background: $color-primary-dark;
-    color: $color-white;
-    border-color: $color-primary-dark;
+    background: $color-primary;
   }
 }
 
-.filter-note {
-  padding: 26px;
-  background:
-    radial-gradient(circle at top right, rgba($color-accent, 0.18), transparent 35%),
-    $color-primary-dark;
-  color: $color-white;
+.filter-reset {
+  min-height: 34px;
+  border: none;
+  background: transparent;
+  color: $color-primary;
+  font-family: $font-sans;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
 
-  strong {
-    display: block;
-    font-family: $font-serif;
-    font-size: 1.3rem;
-    line-height: 1.15;
-    color: $color-white;
-  }
-
-  p {
-    margin: 12px 0 20px;
-    color: rgba($color-white, 0.72);
-    font-size: 0.88rem;
-    line-height: 1.65;
-  }
-
-  a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 42px;
-    padding: 0 18px;
-    border-radius: 999px;
-    background: $color-accent;
-    color: $color-primary-dark;
-    text-decoration: none;
-    font-size: 0.72rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition:
-      transform 0.25s ease,
-      background 0.25s ease,
-      color 0.25s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      background: $color-accent-hover;
-      color: $color-white;
-    }
+  &:hover {
+    color: $color-accent;
   }
 }
 
 /* ===============================
    GRID
 ================================ */
-.tours-grid-main {
+.tours-main {
+  min-width: 0;
+}
+
+.tours-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 34px 42px;
+  align-items: start;
 }
 
 .tour-filter-item {
@@ -392,17 +198,17 @@
 }
 
 .tours-empty {
-  padding: 56px 30px;
-  border-radius: 30px;
-  text-align: center;
+  padding: 44px;
+  border-radius: 16px;
   background: $color-white;
-  border: 1px solid rgba($color-primary, 0.1);
-  box-shadow: 0 24px 60px rgba($color-primary-dark, 0.08);
+  border: 1px solid rgba($color-primary-dark, 0.08);
+  text-align: center;
+  box-shadow: 0 10px 24px rgba($color-primary-dark, 0.08);
 
   h3 {
     margin: 0 0 10px;
-    font-family: $font-serif;
     color: $color-primary-dark;
+    font-family: $font-serif;
     font-size: 2rem;
   }
 
@@ -433,75 +239,62 @@
 /* ===============================
    RESPONSIVE
 ================================ */
-@include respond-to(1180px) {
+@include respond-to(1080px) {
   .tours-layout {
-    grid-template-columns: 280px minmax(0, 1fr);
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .tours-sidebar {
+    position: static;
+  }
+
+  .filters-box {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 28px;
   }
 
-  .tours-grid-main {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .filter-group {
+    margin-bottom: 0;
+  }
+
+  .filter-actions {
+    grid-column: span 2;
   }
 }
 
-@include respond-to(920px) {
-  .tours-layout,
-  .tours-content__header {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    position: static;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .sidebar-card--intro,
-  .filter-note,
-  .filters-clear {
-    grid-column: span 2;
+@include respond-to($bp-tablet) {
+  .tours-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 @include respond-to($bp-mobile) {
   .tours-hero {
-    min-height: auto;
-  }
-
-  .tours-hero__content {
-    padding: 130px 0 78px;
-  }
-
-  .tours-hero__stats {
-    grid-template-columns: 1fr;
-
-    div {
-      padding: 18px 0;
-      border-bottom: 1px solid rgba($color-white, 0.12);
-    }
+    min-height: 250px;
   }
 
   .tours-section {
-    padding: 74px 0;
+    padding: 48px 0 70px;
   }
 
-  .sidebar,
-  .tours-grid-main {
+  .filters-box,
+  .tours-grid {
     grid-template-columns: 1fr;
   }
 
-  .sidebar-card--intro,
-  .filter-note,
-  .filters-clear {
+  .filter-actions {
     grid-column: span 1;
+  }
+
+  .filter-group h3 {
+    font-size: 1.7rem;
   }
 }
 
 @include respond-to(520px) {
-  .tours-hero__content h1 {
-    font-size: clamp(3rem, 15vw, 4.5rem);
-  }
-
-  .filter-note a {
-    width: 100%;
+  .tours-grid {
+    grid-template-columns: 1fr;
   }
 }

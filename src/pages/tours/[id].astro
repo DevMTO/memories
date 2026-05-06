@@ -7,20 +7,6 @@ import './_detail.scss';
 
 const { id } = Astro.params;
 
-/*
-  IMPORTANTE:
-  Si tus enlaces son así:
-  /tours/1
-  usa executeById(id)
-
-  Si tus enlaces son así:
-  /tours/machu-picchu-full-day
-  usa executeBySlug(id)
-
-  Esta versión intenta primero por ID y luego por slug,
-  para evitar errores si tus cards usan slug.
-*/
-
 const tour =
   id
     ? (await getToursUseCase.executeById(id)) ||
@@ -44,101 +30,99 @@ const heroImage =
   tour.imageUrl.trim() !== '' &&
   !tour.imageUrl.includes('---')
     ? tour.imageUrl
-    : '/images/hero.jpg';
+    : '/images/cusco.png';
 
 const durationDays = tour.durationDays || 1;
+const durationNights = tour.durationNights || 0;
 
-const durationText = tour.durationNights
-  ? `${durationDays} días / ${tour.durationNights} noches`
+const durationText = durationNights
+  ? `${durationDays} días / ${durationNights} noches`
   : `${durationDays} día${durationDays === 1 ? '' : 's'}`;
 
-const destinationName = tour.destinationName || 'Perú';
+const heroDuration = durationNights
+  ? `${durationDays} días / ${durationNights} noches`
+  : `${durationDays} día${durationDays === 1 ? '' : 's'}`;
+
+const destinationName = tour.destinationName || tour.location || 'Perú';
 
 const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`;
+
+const galleryImages =
+  gallery.length > 0
+    ? gallery
+    : [
+        '/images/cusco.png',
+        '/images/hero.png',
+        '/images/lima.png',
+      ];
 ---
 
 <Layout title={`${tour.title} | Memories Travel Perú`} mainClass="tour-detail-main">
-  <section class="tour-detail-hero" style={`background-image: url('${heroImage}');`}>
-    <div class="tour-detail-hero__overlay"></div>
+  <!-- HERO -->
+  <section class="tour-hero" style={`background-image: url('${heroImage}');`}>
+    <div class="tour-hero__overlay"></div>
 
-    <div class="container tour-detail-hero__content">
-      <span class="tour-detail-eyebrow">
-        {destinationName}
+    <div class="container tour-hero__content">
+      <span class="tour-hero__eyebrow">
+        {heroDuration.toUpperCase()} {durationNights ? '(PRIVADO O GRUPO PEQUEÑO)' : '(EXPERIENCIA PERSONALIZADA)'}
       </span>
 
       <h1>{tour.title}</h1>
 
       <p>
         {tour.shortDescription ||
-          'Una experiencia cuidadosamente diseñada para descubrir Perú con comodidad, cultura y acompañamiento profesional.'}
+          'Experiencias curadas y exclusivas. Conectamos tu espíritu con la esencia viva y eterna del Perú.'}
       </p>
-
-      <div class="tour-detail-hero__actions">
-        <a
-          href={`https://wa.me/51984544245?text=${encodeURIComponent(whatsappMessage)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="detail-btn detail-btn--primary"
-        >
-          Cotizar experiencia
-        </a>
-
-        <a href="/tours" class="detail-btn detail-btn--ghost">
-          Ver más tours
-        </a>
-      </div>
     </div>
   </section>
 
-  <div class="container info-bar-wrapper">
-    <div class="info-bar">
-      <div class="info-item">
-        <span class="info-icon">01</span>
-        <span class="info-label">Duración</span>
-        <span class="info-val">{durationText}</span>
+  <!-- INFO BAR -->
+  <div class="container tour-info-wrapper">
+    <div class="tour-info-bar">
+      <div class="tour-info-item">
+        <span class="tour-info-icon">♧</span>
+        <span class="tour-info-label">Duración</span>
+        <span class="tour-info-value">{durationText}</span>
       </div>
 
-      <div class="info-item">
-        <span class="info-icon">02</span>
-        <span class="info-label">Destino</span>
-        <span class="info-val">{destinationName}</span>
+      <div class="tour-info-item">
+        <span class="tour-info-icon">⌁</span>
+        <span class="tour-info-label">Destino</span>
+        <span class="tour-info-value">{destinationName}</span>
       </div>
 
-      <div class="info-item">
-        <span class="info-icon">03</span>
-        <span class="info-label">Modalidad</span>
-        <span class="info-val">
-          {features[0] || 'Servicio turístico'}
+      <div class="tour-info-item">
+        <span class="tour-info-icon">□</span>
+        <span class="tour-info-label">Servicio</span>
+        <span class="tour-info-value">{features[0] || 'Tour guiado'}</span>
+      </div>
+
+      <div class="tour-info-item">
+        <span class="tour-info-icon">◇</span>
+        <span class="tour-info-label">Modalidad</span>
+        <span class="tour-info-value">
+          {tour.price && tour.price > 0 ? `Desde $ ${tour.price.toLocaleString()}` : 'A medida'}
         </span>
-      </div>
-
-      <div class="info-item">
-        <span class="info-icon">04</span>
-        <span class="info-label">Acompañamiento</span>
-        <span class="info-val">Guía profesional</span>
       </div>
     </div>
   </div>
 
+  <!-- CONTENT -->
   <section class="tour-detail-section">
-    <div class="container tour-layout">
-      <main class="tour-details">
-        <section class="detail-block detail-block--intro">
-          <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
-            Sobre esta experiencia
-          </span>
+    <div class="container tour-detail-layout">
+      <main class="tour-main-content">
+        <section class="tour-copy-block">
+          <h2>Sobre esta experiencia</h2>
 
-          <h2>{tour.title}</h2>
-
-          <p class="tour-paragraph">
+          <p>
             {tour.description ||
-              'Vive una experiencia cuidadosamente organizada para descubrir lo mejor de este destino.'}
+              'Sumérjase en una experiencia cuidadosamente diseñada para descubrir Perú con comodidad, autenticidad y acompañamiento experto.'}
           </p>
 
           {
             highlights.length > 0 && (
-              <div class="highlight-pills">
-                {highlights.slice(0, 6).map((highlight) => (
+              <div class="tour-mini-highlights">
+                {highlights.slice(0, 4).map((highlight) => (
                   <span>{highlight}</span>
                 ))}
               </div>
@@ -148,56 +132,34 @@ const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`
 
         {
           itinerary.length > 0 && (
-            <section class="detail-block">
-              <div class="detail-heading">
-                <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
-                  Ruta día por día
-                </span>
-                <h2>Itinerario detallado</h2>
-              </div>
+            <section class="tour-itinerary-block">
+              <h2>Itinerario Detallado</h2>
 
-              <div class="itinerary">
-                {itinerary.map((day) => {
-                  const dayIncludes = day.includes ?? [];
+              <div class="tour-timeline">
+                {itinerary.slice(0, 6).map((day) => {
                   const dayMeals = day.meals ?? [];
 
                   return (
-                    <article class="itinerary-day">
-                      <div class="day-marker">
+                    <article class="timeline-item">
+                      <div class="timeline-marker">
                         {String(day.day).padStart(2, '0')}
                       </div>
 
-                      <div class="day-content">
-                        <h3 class="day-title">{day.title}</h3>
+                      <div class="timeline-content">
+                        <h3>{day.title}</h3>
 
-                        <p class="day-desc">
-                          {day.description}
-                        </p>
+                        <p>{day.description}</p>
 
                         {
                           (day.accommodations || dayMeals.length > 0) && (
-                            <div class="day-meta">
+                            <div class="timeline-meta">
                               {day.accommodations && (
-                                <span>Alojamiento: {day.accommodations}</span>
+                                <span>⌂ {day.accommodations}</span>
                               )}
 
                               {dayMeals.length > 0 && (
-                                <span>Comidas: {dayMeals.join(', ')}</span>
+                                <span>☕ {dayMeals.join(', ')}</span>
                               )}
-                            </div>
-                          )
-                        }
-
-                        {
-                          dayIncludes.length > 0 && (
-                            <div class="day-list">
-                              <strong>Incluye este día</strong>
-
-                              <ul>
-                                {dayIncludes.slice(0, 6).map((item) => (
-                                  <li>{item}</li>
-                                ))}
-                              </ul>
                             </div>
                           )
                         }
@@ -212,22 +174,16 @@ const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`
 
         {
           includes.length > 0 || notIncludes.length > 0 ? (
-            <section class="detail-block">
-              <div class="detail-heading">
-                <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
-                  Información del servicio
-                </span>
-                <h2>Incluye y no incluye</h2>
-              </div>
+            <section class="tour-service-block">
+              <h2>Información del servicio</h2>
 
-              <div class="included-grid">
+              <div class="tour-service-grid">
                 {
                   includes.length > 0 && (
-                    <article class="included-card included-card--yes">
+                    <article>
                       <h3>Incluye</h3>
-
                       <ul>
-                        {includes.map((item) => (
+                        {includes.slice(0, 8).map((item) => (
                           <li>{item}</li>
                         ))}
                       </ul>
@@ -237,11 +193,10 @@ const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`
 
                 {
                   notIncludes.length > 0 && (
-                    <article class="included-card included-card--no">
+                    <article>
                       <h3>No incluye</h3>
-
                       <ul>
-                        {notIncludes.map((item) => (
+                        {notIncludes.slice(0, 8).map((item) => (
                           <li>{item}</li>
                         ))}
                       </ul>
@@ -255,16 +210,11 @@ const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`
 
         {
           whatToBring.length > 0 && (
-            <section class="detail-block">
-              <div class="detail-heading">
-                <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
-                  Antes de viajar
-                </span>
-                <h2>Qué llevar</h2>
-              </div>
+            <section class="tour-bring-block">
+              <h2>Qué llevar</h2>
 
-              <div class="bring-grid">
-                {whatToBring.map((item) => (
+              <div class="tour-bring-list">
+                {whatToBring.slice(0, 12).map((item) => (
                   <span>{item}</span>
                 ))}
               </div>
@@ -272,31 +222,19 @@ const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`
           )
         }
 
-        <section class="detail-block">
-          <div class="detail-heading">
-            <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
-              Galería
-            </span>
-            <h2>Momentos del recorrido</h2>
-          </div>
+        <section class="tour-gallery-block">
+          <h2>Highlights del Recorrido</h2>
 
-          <div class="highlights-grid">
+          <div class="tour-gallery">
             <img
-              src={gallery[0] || heroImage}
+              src={galleryImages[0] || heroImage}
               alt={tour.title}
-              class="hl-img-large"
+              class="tour-gallery__large"
             />
 
-            <div class="hl-side">
-              <img
-                src={gallery[1] || '/images/tour1.jpg'}
-                alt={tour.title}
-              />
-
-              <img
-                src={gallery[2] || '/images/tour2.jpg'}
-                alt={tour.title}
-              />
+            <div class="tour-gallery__side">
+              <img src={galleryImages[1] || '/images/hero.png'} alt={tour.title} />
+              <img src={galleryImages[2] || '/images/cusco.png'} alt={tour.title} />
             </div>
           </div>
         </section>
@@ -304,51 +242,49 @@ const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`
 
       <aside class="tour-sidebar">
         <div class="booking-widget">
-          <span class="widget-eyebrow">Diseña tu viaje</span>
+          <h3>Diseñe Su Viaje</h3>
+          <p>Consultoría Gratuita Experta</p>
 
-          <h3 class="widget-title">
-            Solicita una propuesta personalizada
-          </h3>
+          <form class="booking-form">
+            <div class="booking-field">
+              <label>N° DE VIAJEROS</label>
+              <input type="number" placeholder="2 adultos" />
+            </div>
 
-          <p class="widget-desc">
-            Cuéntanos tus fechas, número de viajeros y preferencias. Nuestro
-            equipo te ayudará a adaptar esta experiencia.
+            <div class="booking-field">
+              <label>FECHA DE VIAJE</label>
+              <input type="text" placeholder="dd/mm/yy" />
+            </div>
+
+            <a
+              href={`https://wa.me/51984544245?text=${encodeURIComponent(whatsappMessage)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="booking-btn"
+            >
+              Solicitar mi propuesta personalizada
+            </a>
+
+            <span>Sin cargos ocultos. Confirmación en 24h.</span>
+          </form>
+        </div>
+
+        <div class="help-card">
+          <div class="help-card__icon">□</div>
+
+          <h3>¿Necesita ayuda?</h3>
+
+          <p>
+            Nuestros expertos en Cusco están listos para personalizar su itinerario.
           </p>
-
-          <div class="widget-summary">
-            <div>
-              <span>Duración</span>
-              <strong>{durationText}</strong>
-            </div>
-
-            <div>
-              <span>Destino</span>
-              <strong>{destinationName}</strong>
-            </div>
-
-            <div>
-              <span>Tipo</span>
-              <strong>{features[0] || 'Tour guiado'}</strong>
-            </div>
-          </div>
 
           <a
             href={`https://wa.me/51984544245?text=${encodeURIComponent(whatsappMessage)}`}
             target="_blank"
             rel="noopener noreferrer"
-            class="btn-widget"
           >
-            Cotizar por WhatsApp
+            Contactar asesor
           </a>
-
-          <a href="/tours" class="btn-widget btn-widget--outline">
-            Ver otros tours
-          </a>
-
-          <p class="widget-note">
-            Atención personalizada. Te ayudamos a revisar disponibilidad,
-            horarios, ingresos y logística del recorrido.
-          </p>
         </div>
       </aside>
     </div>

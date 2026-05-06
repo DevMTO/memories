@@ -7,10 +7,13 @@ import './_package-detail.scss';
 
 const { id } = Astro.params;
 
+const packages = await getToursUseCase.executePackages();
+
 const pkg =
   id
     ? (await getToursUseCase.executePackageBySlug(id)) ||
-      (await getToursUseCase.executePackageById(id))
+      packages.find((item) => item.id === id) ||
+      null
     : null;
 
 if (!pkg) {
@@ -23,7 +26,6 @@ const highlights = pkg.highlights ?? [];
 const itinerary = pkg.itinerary ?? [];
 const includes = pkg.includes ?? [];
 const notIncludes = pkg.notIncludes ?? [];
-const whatToBring = pkg.whatToBring ?? [];
 const gallery = pkg.gallery ?? [];
 
 const heroImage =
@@ -31,13 +33,18 @@ const heroImage =
   pkg.imageUrl.trim() !== '' &&
   !pkg.imageUrl.includes('---')
     ? pkg.imageUrl
-    : '/images/hero.jpg';
+    : '/images/cusco.png';
 
 const durationDays = pkg.durationDays || 1;
+const durationNights = pkg.durationNights || 0;
 
-const durationText = pkg.durationNights
-  ? `${durationDays} días / ${pkg.durationNights} noches`
+const durationText = durationNights
+  ? `${durationDays} días / ${durationNights} noches`
   : `${durationDays} día${durationDays === 1 ? '' : 's'}`;
+
+const heroDuration = durationNights
+  ? `${durationDays} días / ${durationNights} noches`
+  : `${durationDays} días`;
 
 const destinationText =
   destinations.length > 0
@@ -45,104 +52,84 @@ const destinationText =
     : 'Perú';
 
 const whatsappMessage = `Hola, quiero información sobre el paquete: ${pkg.title}`;
+
+const galleryImages =
+  gallery.length > 0
+    ? gallery
+    : [
+        '/images/cusco.png',
+        '/images/hero.png',
+        '/images/lima.png',
+      ];
 ---
 
 <Layout title={`${pkg.title} | Memories Travel Perú`} mainClass="package-detail-main">
-  <section class="package-detail-hero" style={`background-image: url('${heroImage}');`}>
-    <div class="package-detail-hero__overlay"></div>
+  <!-- HERO -->
+  <section class="package-hero" style={`background-image: url('${heroImage}');`}>
+    <div class="package-hero__overlay"></div>
 
-    <div class="container package-detail-hero__content">
-      <span class="package-detail-eyebrow">
-        Paquete de viaje por Perú
+    <div class="container package-hero__content">
+      <span class="package-hero__eyebrow">
+        {heroDuration.toUpperCase()} {durationNights ? '(PRIVADO O GRUPO PEQUEÑO)' : '(EXPERIENCIA PERSONALIZADA)'}
       </span>
 
       <h1>{pkg.title}</h1>
 
       <p>
         {pkg.shortDescription ||
-          'Un programa completo diseñado para descubrir Perú con comodidad, organización y acompañamiento profesional.'}
+          'Experiencias curadas y exclusivas. Conectamos tu espíritu con la esencia viva y eterna del Perú.'}
       </p>
-
-      <div class="package-detail-hero__actions">
-        <a
-          href={`https://wa.me/51984544245?text=${encodeURIComponent(whatsappMessage)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="package-detail-btn package-detail-btn--primary"
-        >
-          Cotizar paquete
-        </a>
-
-        <a href="/packages" class="package-detail-btn package-detail-btn--ghost">
-          Ver más paquetes
-        </a>
-      </div>
     </div>
   </section>
 
+  <!-- INFO BAR -->
   <div class="container package-info-wrapper">
     <div class="package-info-bar">
       <div class="package-info-item">
-        <span class="package-info-icon">01</span>
+        <span class="package-info-icon">♧</span>
         <span class="package-info-label">Duración</span>
         <span class="package-info-value">{durationText}</span>
       </div>
 
       <div class="package-info-item">
-        <span class="package-info-icon">02</span>
+        <span class="package-info-icon">⌁</span>
         <span class="package-info-label">Destinos</span>
         <span class="package-info-value">{destinationText}</span>
       </div>
 
       <div class="package-info-item">
-        <span class="package-info-icon">03</span>
+        <span class="package-info-icon">□</span>
         <span class="package-info-label">Servicio</span>
         <span class="package-info-value">{features[0] || 'Programa turístico'}</span>
       </div>
 
       <div class="package-info-item">
-        <span class="package-info-icon">04</span>
+        <span class="package-info-icon">◇</span>
         <span class="package-info-label">Modalidad</span>
         <span class="package-info-value">
-          {pkg.price && pkg.price > 0 ? `Desde $ ${pkg.price.toLocaleString()}` : 'Precio a medida'}
+          {pkg.price && pkg.price > 0 ? `Desde $ ${pkg.price.toLocaleString()}` : 'A medida'}
         </span>
       </div>
     </div>
   </div>
 
+  <!-- CONTENT -->
   <section class="package-detail-section">
     <div class="container package-detail-layout">
-      <main class="package-detail-content">
-        <section class="package-block package-block--intro">
-          <span class="package-detail-eyebrow package-detail-eyebrow--dark">
-            Sobre este paquete
-          </span>
+      <main class="package-main-content">
+        <section class="package-copy-block">
+          <h2>Sobre esta experiencia</h2>
 
-          <h2>{pkg.title}</h2>
-
-          <p class="package-paragraph">
+          <p>
             {pkg.description ||
-              'Este programa reúne rutas, traslados, experiencias y servicios turísticos seleccionados para que disfrutes Perú con mayor comodidad y confianza.'}
+              'Sumérjase en una experiencia cuidadosamente diseñada para descubrir Perú con comodidad, autenticidad y acompañamiento experto.'}
           </p>
 
           {
-            destinations.length > 0 && (
-              <div class="package-destination-pills">
-                {destinations.map((destination) => (
-                  <span>{destination.name}</span>
-                ))}
-              </div>
-            )
-          }
-
-          {
             highlights.length > 0 && (
-              <div class="package-highlight-list">
-                {highlights.slice(0, 8).map((highlight) => (
-                  <article>
-                    <span>✓</span>
-                    <p>{highlight}</p>
-                  </article>
+              <div class="package-mini-highlights">
+                {highlights.slice(0, 4).map((highlight) => (
+                  <span>{highlight}</span>
                 ))}
               </div>
             )
@@ -151,69 +138,33 @@ const whatsappMessage = `Hola, quiero información sobre el paquete: ${pkg.title
 
         {
           itinerary.length > 0 && (
-            <section class="package-block">
-              <div class="package-heading">
-                <span class="package-detail-eyebrow package-detail-eyebrow--dark">
-                  Ruta día por día
-                </span>
-                <h2>Itinerario del paquete</h2>
-              </div>
+            <section class="package-itinerary-block">
+              <h2>Itinerario Detallado</h2>
 
-              <div class="package-itinerary">
-                {itinerary.map((day) => {
-                  const dayIncludes = day.includes ?? [];
-                  const dayNotIncludes = day.notIncludes ?? [];
+              <div class="package-timeline">
+                {itinerary.slice(0, 6).map((day) => {
                   const dayMeals = day.meals ?? [];
 
                   return (
-                    <article class="package-day">
-                      <div class="package-day__marker">
+                    <article class="timeline-item">
+                      <div class="timeline-marker">
                         {String(day.day).padStart(2, '0')}
                       </div>
 
-                      <div class="package-day__content">
+                      <div class="timeline-content">
                         <h3>{day.title}</h3>
-
                         <p>{day.description}</p>
 
                         {
                           (day.accommodations || dayMeals.length > 0) && (
-                            <div class="package-day__meta">
+                            <div class="timeline-meta">
                               {day.accommodations && (
-                                <span>Alojamiento: {day.accommodations}</span>
+                                <span>⌂ {day.accommodations}</span>
                               )}
 
                               {dayMeals.length > 0 && (
-                                <span>Comidas: {dayMeals.join(', ')}</span>
+                                <span>☕ {dayMeals.join(', ')}</span>
                               )}
-                            </div>
-                          )
-                        }
-
-                        {
-                          dayIncludes.length > 0 && (
-                            <div class="package-day__list">
-                              <strong>Incluye este día</strong>
-
-                              <ul>
-                                {dayIncludes.slice(0, 7).map((item) => (
-                                  <li>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )
-                        }
-
-                        {
-                          dayNotIncludes.length > 0 && (
-                            <div class="package-day__list package-day__list--muted">
-                              <strong>No incluye este día</strong>
-
-                              <ul>
-                                {dayNotIncludes.slice(0, 5).map((item) => (
-                                  <li>{item}</li>
-                                ))}
-                              </ul>
                             </div>
                           )
                         }
@@ -228,22 +179,16 @@ const whatsappMessage = `Hola, quiero información sobre el paquete: ${pkg.title
 
         {
           includes.length > 0 || notIncludes.length > 0 ? (
-            <section class="package-block">
-              <div class="package-heading">
-                <span class="package-detail-eyebrow package-detail-eyebrow--dark">
-                  Información del servicio
-                </span>
-                <h2>Incluye y no incluye</h2>
-              </div>
+            <section class="package-service-block">
+              <h2>Información del servicio</h2>
 
-              <div class="package-included-grid">
+              <div class="package-service-grid">
                 {
                   includes.length > 0 && (
-                    <article class="package-included-card package-included-card--yes">
+                    <article>
                       <h3>Incluye</h3>
-
                       <ul>
-                        {includes.map((item) => (
+                        {includes.slice(0, 8).map((item) => (
                           <li>{item}</li>
                         ))}
                       </ul>
@@ -253,11 +198,10 @@ const whatsappMessage = `Hola, quiero información sobre el paquete: ${pkg.title
 
                 {
                   notIncludes.length > 0 && (
-                    <article class="package-included-card package-included-card--no">
+                    <article>
                       <h3>No incluye</h3>
-
                       <ul>
-                        {notIncludes.map((item) => (
+                        {notIncludes.slice(0, 8).map((item) => (
                           <li>{item}</li>
                         ))}
                       </ul>
@@ -269,95 +213,72 @@ const whatsappMessage = `Hola, quiero información sobre el paquete: ${pkg.title
           ) : null
         }
 
-        {
-          whatToBring.length > 0 && (
-            <section class="package-block">
-              <div class="package-heading">
-                <span class="package-detail-eyebrow package-detail-eyebrow--dark">
-                  Antes de viajar
-                </span>
-                <h2>Qué llevar</h2>
-              </div>
-
-              <div class="package-bring-grid">
-                {whatToBring.map((item) => (
-                  <span>{item}</span>
-                ))}
-              </div>
-            </section>
-          )
-        }
-
-        <section class="package-block">
-          <div class="package-heading">
-            <span class="package-detail-eyebrow package-detail-eyebrow--dark">
-              Galería
-            </span>
-            <h2>Momentos del viaje</h2>
-          </div>
+        <section class="package-gallery-block">
+          <h2>Highlights del Recorrido</h2>
 
           <div class="package-gallery">
             <img
-              src={gallery[0] || heroImage}
+              src={galleryImages[0] || heroImage}
               alt={pkg.title}
               class="package-gallery__large"
             />
 
             <div class="package-gallery__side">
-              <img src={gallery[1] || '/images/tour1.jpg'} alt={pkg.title} />
-              <img src={gallery[2] || '/images/tour2.jpg'} alt={pkg.title} />
+              <img src={galleryImages[1] || '/images/hero.png'} alt={pkg.title} />
+              <img src={galleryImages[2] || '/images/cusco.png'} alt={pkg.title} />
             </div>
           </div>
         </section>
       </main>
 
       <aside class="package-sidebar">
-        <div class="package-widget">
-          <span class="package-widget__eyebrow">Solicita tu propuesta</span>
+        <div class="booking-widget">
+          <h3>Diseñe Su Viaje</h3>
+          <p>Consultoría Gratuita Experta</p>
 
-          <h3>Diseñemos este viaje para ti</h3>
+          <form class="booking-form">
+            <div class="booking-field">
+              <label>N° DE VIAJEROS</label>
+              <input type="number" placeholder="2 adultos" />
+            </div>
+
+            <div class="booking-field">
+              <label>FECHA DE VIAJE</label>
+              <input type="text" placeholder="dd/mm/yy" />
+            </div>
+
+            <a
+              href={`https://wa.me/51984544245?text=${encodeURIComponent(whatsappMessage)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="booking-btn"
+            >
+              Solicitar mi propuesta personalizada
+            </a>
+
+            <span>Sin cargos ocultos. Confirmación en 24h.</span>
+          </form>
+        </div>
+
+        <div class="help-card">
+          <div class="help-card__icon">□</div>
+
+          <h3>¿Necesita ayuda?</h3>
 
           <p>
-            Cuéntanos tus fechas, número de viajeros y preferencias. Nuestro
-            equipo puede adaptar este paquete según tu estilo de viaje.
+            Nuestros expertos en Cusco están listos para personalizar su itinerario.
           </p>
-
-          <div class="package-widget__summary">
-            <div>
-              <span>Duración</span>
-              <strong>{durationText}</strong>
-            </div>
-
-            <div>
-              <span>Destinos</span>
-              <strong>{destinationText}</strong>
-            </div>
-
-            <div>
-              <span>Tipo de viaje</span>
-              <strong>{features[0] || 'Paquete turístico'}</strong>
-            </div>
-          </div>
 
           <a
             href={`https://wa.me/51984544245?text=${encodeURIComponent(whatsappMessage)}`}
             target="_blank"
             rel="noopener noreferrer"
-            class="package-widget__btn"
           >
-            Cotizar por WhatsApp
+            Contactar asesor
           </a>
-
-          <a href="/packages" class="package-widget__btn package-widget__btn--outline">
-            Ver otros paquetes
-          </a>
-
-          <p class="package-widget__note">
-            Te ayudamos a revisar disponibilidad, hoteles, trenes, ingresos,
-            traslados y tiempos de ruta.
-          </p>
         </div>
       </aside>
     </div>
   </section>
+
 </Layout>

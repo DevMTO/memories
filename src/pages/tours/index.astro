@@ -6,196 +6,164 @@ import TourCard from '../../components/TourCard.astro';
 import { getToursUseCase } from '../../infrastructure/di';
 import '../_tours.scss';
 
-const allTours = await getToursUseCase.executeAll();
+const allToursRaw = await getToursUseCase.executeAll();
 
-const activeTours = allTours.filter((tour) => tour.isActive !== false);
+const activeTours = (allToursRaw || []).filter((tour) => tour?.isActive !== false);
+
+const destinations = Array.from(
+  new Set(
+    activeTours
+      .map((tour) => tour.destinationName || tour.location || 'Perú')
+      .filter(Boolean)
+  )
+);
+
+const styles = [
+  {
+    label: 'Vacaciones',
+    value: 'vacaciones viaje experiencia tour turistico turístico',
+  },
+  {
+    label: 'Honeymoon',
+    value: 'honeymoon pareja romantico romántico privado aguas calientes machu picchu',
+  },
+  {
+    label: 'Family',
+    value: 'familia family compartido cultural historia city tour',
+  },
+  {
+    label: 'Tours',
+    value: 'tour excursión excursion full day trekking aventura',
+  },
+];
+
+const fallbackImages = [
+  '/images/cusco.png',
+  '/images/vinicunca.png',
+  '/images/lima.png',
+  '/images/ica.png',
+  '/images/puno.png',
+  '/images/arequipa.png',
+];
 ---
 
-<Layout title="Nuestros Tours | Memories Travel Perú" mainClass="tours-main">
-  <section class="tours-hero" style={`background-image: url('/images/hero.jpg');`}>
+<Layout title="Nuestros Tours | Memories Travel Perú" mainClass="tours-page">
+  <!-- HERO -->
+  <section class="tours-hero">
     <div class="tours-hero__overlay"></div>
 
     <div class="container tours-hero__content">
-      <span class="tours-eyebrow">Memories Travel Perú</span>
-
-      <h1>
-        Tours diseñados para
-        <span>vivir Perú de cerca.</span>
-      </h1>
-
-      <p>
-        Explora experiencias seleccionadas por Cusco, Machu Picchu, Arequipa,
-        Puno, Lima y la costa peruana. Cada tour está pensado para conectar con
-        la historia, los paisajes y la esencia local del destino.
-      </p>
-
-      <div class="tours-hero__stats">
-        <div>
-          <strong>{activeTours.length}</strong>
-          <span>experiencias disponibles</span>
-        </div>
-
-        <div>
-          <strong>Perú</strong>
-          <span>Cultura, naturaleza y aventura</span>
-        </div>
-
-        <div>
-          <strong>Flexible</strong>
-          <span>Opciones full day y multidía</span>
-        </div>
-      </div>
+      <h1>NUESTROS TOURS</h1>
     </div>
   </section>
 
+  <!-- CONTENT -->
   <section class="tours-section">
     <div class="container tours-layout">
-      <aside class="sidebar">
-        <div class="sidebar-card sidebar-card--intro">
-          <span class="sidebar-eyebrow">Encuentra tu tour</span>
-          <h2>Filtra tu próxima experiencia</h2>
-          <p>
-            Elige por estilo, destino o duración para encontrar el tour ideal
-            según tu forma de viajar.
-          </p>
-        </div>
+      <!-- SIDEBAR -->
+      <aside class="tours-sidebar">
+        <div class="filters-box">
+          <div class="filter-group">
+            <h3>Travel Styles</h3>
 
-        <div class="filter-group">
-          <h4 class="filter-title">Estilo de viaje</h4>
+            <div class="filter-options">
+              {styles.map((style) => (
+                <label class="filter-check">
+                  <input
+                    type="checkbox"
+                    data-filter="style"
+                    value={style.value}
+                  />
+                  <span>{style.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
 
-          <label class="filter-label">
-            <input
-              type="checkbox"
-              data-filter="style"
-              value="historia cultura arqueológico arqueologico inca templo ciudad city tour walking tour"
-            />
-            <span>Cultura e historia</span>
-          </label>
+          <div class="filter-group">
+            <h3>Country</h3>
 
-          <label class="filter-label">
-            <input
-              type="checkbox"
-              data-filter="style"
-              value="aventura trekking montaña montana wayna picchu huacachina sandboard buggies caminata"
-            />
-            <span>Aventura</span>
-          </label>
+            <div class="filter-options">
+              {destinations.slice(0, 8).map((destination) => (
+                <label class="filter-check">
+                  <input
+                    type="checkbox"
+                    data-filter="destination"
+                    value={destination.toLowerCase()}
+                  />
+                  <span>{destination}</span>
+                </label>
+              ))}
+            </div>
+          </div>
 
-          <label class="filter-label">
-            <input
-              type="checkbox"
-              data-filter="style"
-              value="naturaleza lago cañón canon valle montaña montana laguna paisajes islas condor cóndor"
-            />
-            <span>Naturaleza</span>
-          </label>
+          <div class="filter-group">
+            <h3>Duration</h3>
 
-          <label class="filter-label">
-            <input
-              type="checkbox"
-              data-filter="style"
-              value="tren turístico turistico machu picchu aguas calientes valle sagrado"
-            />
-            <span>Experiencia clásica</span>
-          </label>
-        </div>
+            <div class="filter-options">
+              <label class="filter-check">
+                <input type="checkbox" data-filter="duration" value="1" />
+                <span>Full Day</span>
+              </label>
 
-        <div class="filter-group">
-          <h4 class="filter-title">Destino</h4>
+              <label class="filter-check">
+                <input type="checkbox" data-filter="duration" value="2" />
+                <span>2 días / 1 noche</span>
+              </label>
 
-          <label class="filter-label">
-            <input type="checkbox" data-filter="destination" value="cusco" />
-            <span>Cusco</span>
-          </label>
+              <label class="filter-check">
+                <input type="checkbox" data-filter="durationRange" value="3" />
+                <span>3 días a más</span>
+              </label>
+            </div>
+          </div>
 
-          <label class="filter-label">
-            <input
-              type="checkbox"
-              data-filter="style"
-              value="machu picchu machupicchu aguas calientes wayna huayna"
-            />
-            <span>Machu Picchu</span>
-          </label>
+          <div class="filter-group">
+            <h3>Price</h3>
 
-          <label class="filter-label">
-            <input type="checkbox" data-filter="destination" value="arequipa" />
-            <span>Arequipa</span>
-          </label>
+            <div class="filter-price">
+              <input
+                id="priceRange"
+                type="range"
+                min="0"
+                max="5000"
+                step="100"
+                value="5000"
+              />
+            </div>
 
-          <label class="filter-label">
-            <input type="checkbox" data-filter="destination" value="puno" />
-            <span>Puno</span>
-          </label>
+            <div class="filter-price-labels">
+              <span>$ 0</span>
+              <span>$ 5000</span>
+            </div>
+          </div>
 
-          <label class="filter-label">
-            <input type="checkbox" data-filter="destination" value="lima" />
-            <span>Lima</span>
-          </label>
-        </div>
+          <div class="filter-actions">
+            <button type="button" class="filter-btn" id="clearFilters">
+              Buscar
+            </button>
 
-        <div class="filter-group">
-          <h4 class="filter-title">Duración</h4>
-
-          <label class="filter-label">
-            <input
-              type="checkbox"
-              data-filter="style"
-              value="medio día medio dia city tour walking tour"
-            />
-            <span>Medio día</span>
-          </label>
-
-          <label class="filter-label">
-            <input type="checkbox" data-filter="duration" value="1" />
-            <span>Full day</span>
-          </label>
-
-          <label class="filter-label">
-            <input type="checkbox" data-filter="duration" value="2" />
-            <span>2 días / 1 noche</span>
-          </label>
-        </div>
-
-        <button type="button" class="filters-clear" id="clearFilters">
-          Limpiar filtros
-        </button>
-
-        <div class="filter-note">
-          <strong>¿Buscas algo a medida?</strong>
-          <p>
-            Podemos ayudarte a adaptar rutas, horarios y servicios según tu viaje.
-          </p>
-
-          <a
-            href="https://wa.me/51984544245"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Cotizar por WhatsApp
-          </a>
+            <button type="button" class="filter-reset" id="resetFilters">
+              Limpiar filtros
+            </button>
+          </div>
         </div>
       </aside>
 
-      <div class="tours-content">
-        <div class="tours-content__header">
-          <div>
-            <span class="tours-eyebrow tours-eyebrow--dark">
-              Colección de experiencias
-            </span>
-            <h2>Todos nuestros tours</h2>
-          </div>
-
-          <p>
-            <strong id="visibleToursCount">{activeTours.length}</strong> tours disponibles
-            para descubrir Perú con una operación organizada y acompañamiento profesional.
-          </p>
-        </div>
-
+      <!-- GRID -->
+      <div class="tours-main">
         {
           activeTours.length > 0 ? (
             <>
-              <div class="tours-grid-main" id="toursGrid">
-                {activeTours.map((tour) => {
+              <div class="tours-grid" id="toursGrid">
+                {activeTours.map((tour, index) => {
+                  const cleanImage =
+                    tour.imageUrl &&
+                    tour.imageUrl.trim() !== '' &&
+                    !tour.imageUrl.includes('---')
+                      ? tour.imageUrl
+                      : fallbackImages[index % fallbackImages.length];
+
                   const searchableText = [
                     tour.title,
                     tour.description,
@@ -215,10 +183,11 @@ const activeTours = allTours.filter((tour) => tour.isActive !== false);
                     <div
                       class="tour-filter-item"
                       data-search={searchableText}
+                      data-destination={(tour.destinationName || tour.location || '').toLowerCase()}
                       data-duration={String(tour.durationDays || '')}
-                      data-destination={(tour.destinationSlug || '').toLowerCase()}
+                      data-price={String(tour.price || 0)}
                     >
-                      <TourCard tour={tour} />
+                      <TourCard tour={{ ...tour, imageUrl: cleanImage }} />
                     </div>
                   );
                 })}
@@ -227,8 +196,7 @@ const activeTours = allTours.filter((tour) => tour.isActive !== false);
               <div class="tours-empty tours-empty--hidden" id="toursEmpty">
                 <h3>No encontramos tours con esos filtros</h3>
                 <p>
-                  Prueba quitando algún filtro o escríbenos para ayudarte a crear
-                  una ruta a medida.
+                  Prueba quitando algún filtro o solicita una propuesta personalizada.
                 </p>
               </div>
             </>
@@ -245,6 +213,7 @@ const activeTours = allTours.filter((tour) => tour.isActive !== false);
       </div>
     </div>
   </section>
+
 </Layout>
 
 <script>
@@ -252,10 +221,11 @@ const activeTours = allTours.filter((tour) => tour.isActive !== false);
     'input[data-filter]'
   );
 
+  const priceRange = document.querySelector<HTMLInputElement>('#priceRange');
   const tourItems = document.querySelectorAll<HTMLElement>('.tour-filter-item');
   const emptyState = document.querySelector<HTMLElement>('#toursEmpty');
-  const visibleCountEl = document.querySelector<HTMLElement>('#visibleToursCount');
   const clearButton = document.querySelector<HTMLButtonElement>('#clearFilters');
+  const resetButton = document.querySelector<HTMLButtonElement>('#resetFilters');
 
   function normalizeText(value: string) {
     return value
@@ -285,26 +255,40 @@ const activeTours = allTours.filter((tour) => tour.isActive !== false);
     const selectedStyles = getSelectedValues('style');
     const selectedDestinations = getSelectedValues('destination');
     const selectedDurations = getSelectedValues('duration');
+    const selectedDurationRange = getSelectedValues('durationRange');
+    const maxPrice = Number(priceRange?.value || 5000);
 
     let visibleCount = 0;
 
     tourItems.forEach((item) => {
       const searchText = item.dataset.search || '';
       const destination = normalizeText(item.dataset.destination || '');
-      const duration = item.dataset.duration || '';
+      const duration = Number(item.dataset.duration || 0);
+      const price = Number(item.dataset.price || 0);
 
       const matchesStyle = textIncludesAny(searchText, selectedStyles);
 
       const matchesDestination =
         selectedDestinations.length === 0 ||
-        selectedDestinations.includes(destination) ||
+        selectedDestinations.some((selected) => destination.includes(selected)) ||
         textIncludesAny(searchText, selectedDestinations);
 
       const matchesDuration =
         selectedDurations.length === 0 ||
-        selectedDurations.includes(duration);
+        selectedDurations.includes(String(duration));
 
-      const isVisible = matchesStyle && matchesDestination && matchesDuration;
+      const matchesDurationRange =
+        selectedDurationRange.length === 0 ||
+        duration >= Number(selectedDurationRange[0] || 3);
+
+      const matchesPrice = price === 0 || price <= maxPrice;
+
+      const isVisible =
+        matchesStyle &&
+        matchesDestination &&
+        matchesDuration &&
+        matchesDurationRange &&
+        matchesPrice;
 
       item.classList.toggle('is-hidden', !isVisible);
 
@@ -312,20 +296,24 @@ const activeTours = allTours.filter((tour) => tour.isActive !== false);
     });
 
     emptyState?.classList.toggle('tours-empty--hidden', visibleCount > 0);
-
-    if (visibleCountEl) {
-      visibleCountEl.textContent = String(visibleCount);
-    }
   }
 
   filterInputs.forEach((input) => {
     input.addEventListener('change', applyFilters);
   });
 
-  clearButton?.addEventListener('click', () => {
+  priceRange?.addEventListener('input', applyFilters);
+
+  clearButton?.addEventListener('click', applyFilters);
+
+  resetButton?.addEventListener('click', () => {
     filterInputs.forEach((input) => {
       input.checked = false;
     });
+
+    if (priceRange) {
+      priceRange.value = '5000';
+    }
 
     applyFilters();
   });

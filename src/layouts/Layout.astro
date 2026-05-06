@@ -5,29 +5,37 @@ import QuoteForm from '../components/ui/QuoteForm.astro';
 import '../styles/global.scss';
 
 interface Props {
-	title: string;
-	mainClass?: string;
+  title: string;
+  mainClass?: string;
+  showQuoteForm?: boolean;
 }
 
-const { title, mainClass } = Astro.props;
+const { title, mainClass, showQuoteForm = true } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Memories Travel Peru - Experiencias exclusivas de viaje" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title} | Memories Travel Peru</title>
-	</head>
-	<body>
-		<Header />
-		<main class={mainClass}>
-			<slot />
-		</main>
-		<QuoteForm />
-		<Footer />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="Memories Travel Peru - Experiencias exclusivas de viaje"
+    />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | Memories Travel Peru</title>
+  </head>
+
+  <body>
+    <Header />
+
+    <main class={mainClass}>
+      <slot />
+    </main>
+
+    {showQuoteForm && <QuoteForm />}
+
+    <Footer />
+  </body>
 </html>

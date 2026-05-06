@@ -1,196 +1,175 @@
 ---
 export const prerender = false;
 
-import Layout from "../layouts/Layout.astro";
-import { getToursUseCase } from "../infrastructure/di";
-import "./_packages.scss";
+import Layout from '../layouts/Layout.astro';
+import PackageCard from '../components/PackageCard.astro';
+import { getToursUseCase } from '../infrastructure/di';
+import './_packages.scss';
 
-const packages = await getToursUseCase.executePackages?.() 
-  ?? await getToursUseCase.executeAllPackages?.()
-  ?? [];
+const url = Astro.url;
 
-const activePackages = packages.filter((pkg) => pkg.isActive !== false);
-const featuredPackage = activePackages[0];
+const selectedStyle = url.searchParams.get('style') || '';
+const selectedDestination = url.searchParams.get('destination') || '';
+const maxPrice = Number(url.searchParams.get('price') || '10000');
+
+const allPackagesRaw = await getToursUseCase.executePackages();
+
+const allPackages = (allPackagesRaw || []).filter((pkg) => pkg?.isActive !== false);
+
+const destinations = Array.from(
+  new Set(
+    allPackages.flatMap((pkg) => {
+      const fromDestinations = pkg.destinations?.map((d) => d.name) ?? [];
+      const fromSingle = pkg.destinationName ? [pkg.destinationName] : [];
+      return [...fromDestinations, ...fromSingle];
+    })
+  )
+).filter(Boolean);
+
+const styles = Array.from(
+  new Set(
+    allPackages.flatMap((pkg) => pkg.features ?? [])
+  )
+).filter(Boolean);
+
+const filteredPackages = allPackages.filter((pkg) => {
+  const pkgDestinations = [
+    ...(pkg.destinations?.map((d) => d.name.toLowerCase()) ?? []),
+    ...(pkg.destinationName ? [pkg.destinationName.toLowerCase()] : []),
+  ];
+
+  const pkgFeatures = (pkg.features ?? []).map((item) => item.toLowerCase());
+
+  const matchesStyle = selectedStyle
+    ? pkgFeatures.includes(selectedStyle.toLowerCase())
+    : true;
+
+  const matchesDestination = selectedDestination
+    ? pkgDestinations.includes(selectedDestination.toLowerCase())
+    : true;
+
+  const matchesPrice = pkg.price ? pkg.price <= maxPrice : true;
+
+  return matchesStyle && matchesDestination && matchesPrice;
+});
+
+const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPackages;
 ---
 
-<Layout title="Travel Packages | Memories Travel Perú" mainClass="packages-main">
+<Layout title="Nuestros Paquetes | Memories Travel Perú" mainClass="packages-page">
+  <!-- HERO -->
   <section class="packages-hero">
     <div class="packages-hero__overlay"></div>
 
     <div class="container packages-hero__content">
-      <span class="packages-eyebrow">Memories Travel Perú</span>
+      <h1>NUESTROS PAQUETES</h1>
+    </div>
+  </section>
 
-      <h1>
-        Paquetes de viaje  
-        <span>diseñados para descubrir Perú.</span>
-      </h1>
+  <!-- CONTENT -->
+  <section class="packages-section">
+    <div class="container packages-layout">
+      <!-- SIDEBAR -->
+      <aside class="packages-sidebar">
+        <form method="GET" class="filters-box">
+          <div class="filter-group">
+            <h3>Travel Styles</h3>
 
-      <p>
-        Programas completos con rutas, traslados, hoteles, tours guiados y
-        experiencias cuidadosamente seleccionadas para vivir Perú con mayor
-        comodidad, estilo y confianza.
-      </p>
+            <div class="filter-options">
+              <label class="filter-check">
+                <input
+                  type="radio"
+                  name="style"
+                  value=""
+                  checked={selectedStyle === ''}
+                />
+                <span>Todos</span>
+              </label>
 
-      <div class="packages-hero__stats">
-        <div>
-          <strong>{activePackages.length}</strong>
-          <span>paquetes disponibles</span>
-        </div>
+              {styles.slice(0, 6).map((style) => (
+                <label class="filter-check">
+                  <input
+                    type="radio"
+                    name="style"
+                    value={style}
+                    checked={selectedStyle === style}
+                  />
+                  <span>{style}</span>
+                </label>
+              ))}
+            </div>
+          </div>
 
-        <div>
-          <strong>Perú</strong>
-          <span>Costa, Andes y cultura viva</span>
-        </div>
+          <div class="filter-group">
+            <h3>Country / Destination</h3>
 
-        <div>
-          <strong>A medida</strong>
-          <span>rutas adaptables al viajero</span>
+            <div class="filter-options">
+              <label class="filter-check">
+                <input
+                  type="radio"
+                  name="destination"
+                  value=""
+                  checked={selectedDestination === ''}
+                />
+                <span>Todos</span>
+              </label>
+
+              {destinations.slice(0, 8).map((destination) => (
+                <label class="filter-check">
+                  <input
+                    type="radio"
+                    name="destination"
+                    value={destination}
+                    checked={selectedDestination === destination}
+                  />
+                  <span>{destination}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h3>Price</h3>
+
+            <div class="filter-price">
+              <input
+                type="range"
+                name="price"
+                min="0"
+                max="10000"
+                step="100"
+                value={maxPrice}
+                onInput="this.nextElementSibling.value = this.value"
+              />
+              <output>${maxPrice}</output>
+            </div>
+
+            <div class="filter-price-labels">
+              <span>$ 0</span>
+              <span>$ 10000</span>
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button type="submit" class="filter-btn">
+              Buscar
+            </button>
+
+            <a href="/packages" class="filter-reset">
+              Limpiar filtros
+            </a>
+          </div>
+        </form>
+      </aside>
+
+      <!-- GRID -->
+      <div class="packages-main">
+        <div class="packages-grid">
+          {displayPackages.map((pkg) => (
+            <PackageCard pkg={pkg} />
+          ))}
         </div>
       </div>
     </div>
   </section>
-
-  {
-    activePackages.length > 0 ? (
-      <>
-        {featuredPackage && (
-          <section class="featured-package">
-            <div class="container featured-package__grid">
-              <div class="featured-package__media">
-                <img
-                  src={featuredPackage.imageUrl || "/images/hero.jpg"}
-                  alt={featuredPackage.title}
-                />
-                <div class="featured-package__badge">
-                  <strong>{featuredPackage.durationDays}</strong>
-                  <span>Días</span>
-                </div>
-              </div>
-
-              <div class="featured-package__content">
-                <span class="packages-eyebrow packages-eyebrow--dark">
-                  Paquete destacado
-                </span>
-
-                <h2>{featuredPackage.title}</h2>
-
-                <p>
-                  {featuredPackage.shortDescription || featuredPackage.description}
-                </p>
-
-                <div class="featured-package__destinations">
-                  {featuredPackage.destinations?.slice(0, 6).map((destination) => (
-                    <span>{destination.name}</span>
-                  ))}
-                </div>
-
-                <div class="featured-package__features">
-                  {featuredPackage.features?.slice(0, 4).map((feature) => (
-                    <div>
-                      <span>✓</span>
-                      <p>{feature}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <a href={`/packages/${featuredPackage.slug}`} class="packages-btn">
-                  Ver paquete
-                </a>
-              </div>
-            </div>
-          </section>
-        )}
-
-        <section class="packages-section">
-          <div class="container">
-            <div class="packages-header">
-              <div>
-                <span class="packages-eyebrow packages-eyebrow--dark">
-                  Colección de viajes
-                </span>
-                <h2>Todos nuestros paquetes</h2>
-              </div>
-
-              <p>
-                Elige una ruta completa por Perú y personalízala según tus fechas,
-                estilo de viaje y preferencias.
-              </p>
-            </div>
-
-            <div class="packages-grid">
-              {activePackages.map((pkg) => (
-                <article class="package-card">
-                  <a href={`/packages/${pkg.slug}`} class="package-card__image">
-                    <img
-                      src={pkg.imageUrl || "/images/hero.jpg"}
-                      alt={pkg.title}
-                    />
-
-                    <div class="package-card__duration">
-                      <strong>{pkg.durationDays}</strong>
-                      <span>
-                        días
-                        {pkg.durationNights ? ` / ${pkg.durationNights} noches` : ""}
-                      </span>
-                    </div>
-                  </a>
-
-                  <div class="package-card__body">
-                    <div class="package-card__destinations">
-                      {pkg.destinations?.slice(0, 3).map((destination) => (
-                        <span>{destination.name}</span>
-                      ))}
-                    </div>
-
-                    <h3>
-                      <a href={`/packages/${pkg.slug}`}>{pkg.title}</a>
-                    </h3>
-
-                    <p>{pkg.shortDescription || pkg.description}</p>
-
-                    <div class="package-card__features">
-                      {pkg.features?.slice(0, 3).map((feature) => (
-                        <span>{feature}</span>
-                      ))}
-                    </div>
-
-                    <div class="package-card__footer">
-                      <a href={`/packages/${pkg.slug}`} class="package-card__link">
-                        Ver detalles →
-                      </a>
-
-                      <a
-                        href={`https://wa.me/51984544245?text=Hola,%20quiero%20información%20sobre%20el%20paquete:%20${encodeURIComponent(pkg.title)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="package-card__whatsapp"
-                      >
-                        Cotizar
-                      </a>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      </>
-    ) : (
-      <section class="packages-empty">
-        <div class="container">
-          <div class="packages-empty__box">
-            <span class="packages-eyebrow packages-eyebrow--dark">
-              Próximamente
-            </span>
-            <h1>Estamos preparando nuevos paquetes de viaje.</h1>
-            <p>
-              Muy pronto encontrarás aquí programas completos para viajar por
-              Perú con Memories Travel Perú.
-            </p>
-            <a href="/" class="packages-btn">Volver al inicio</a>
-          </div>
-        </div>
-      </section>
-    )
-  }
 </Layout>
