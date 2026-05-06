@@ -1,0 +1,323 @@
+@use '../../styles/variables' as *;
+
+.destination-detail-main {
+  background: #f7f7f7;
+  color: $color-text;
+}
+
+/* ===============================
+   HERO
+================================ */
+.destination-hero {
+  position: relative;
+  min-height: 560px;
+  display: flex;
+  align-items: flex-end;
+  background-size: cover;
+  background-position: center;
+  color: $color-white;
+  isolation: isolate;
+}
+
+.destination-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba($color-primary-dark, 0.76), rgba($color-primary-dark, 0.24)),
+    linear-gradient(180deg, rgba($color-primary-dark, 0.1), rgba($color-primary-dark, 0.82));
+  z-index: -1;
+}
+
+.destination-hero__content {
+  padding-bottom: 82px;
+
+  span {
+    display: block;
+    margin-bottom: 14px;
+    color: $color-accent;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    max-width: 900px;
+    margin: 0 0 14px;
+    color: $color-white;
+    font-family: $font-serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    text-transform: uppercase;
+  }
+
+  p {
+    max-width: 780px;
+    margin: 0;
+    color: rgba($color-white, 0.9);
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.75;
+    text-transform: uppercase;
+  }
+}
+
+/* ===============================
+   INFO BAR
+================================ */
+.destination-info-wrapper {
+  position: relative;
+  z-index: 20;
+  margin-top: -58px;
+}
+
+.destination-info-bar {
+  max-width: 1060px;
+  min-height: 112px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  border-radius: 14px;
+  background: $color-white;
+  box-shadow: 0 10px 28px rgba($color-primary-dark, 0.16);
+
+  div {
+    text-align: center;
+    display: grid;
+    gap: 8px;
+  }
+
+  span {
+    color: rgba($color-text-light, 0.82);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: $color-primary-dark;
+    font-size: 0.88rem;
+    font-weight: 800;
+  }
+}
+
+/* ===============================
+   INTRO
+================================ */
+.destination-intro-section {
+  padding: 92px 0 34px;
+  background: #f7f7f7;
+}
+
+.destination-intro-grid {
+  max-width: 1060px;
+  display: grid;
+  grid-template-columns: 0.9fr 1fr;
+  gap: 70px;
+  align-items: start;
+
+  h2 {
+    margin: 12px 0 0;
+    color: $color-primary-dark;
+    font-family: $font-serif;
+    font-size: clamp(2.6rem, 5vw, 4.4rem);
+    line-height: 1;
+    letter-spacing: -0.055em;
+  }
+
+  p {
+    margin: 0;
+    color: $color-text-light;
+    font-size: 0.94rem;
+    line-height: 1.9;
+  }
+}
+
+.destination-eyebrow {
+  display: inline-block;
+  color: $color-primary;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ===============================
+   PRODUCTS
+================================ */
+.destination-products-section {
+  padding: 70px 0 50px;
+}
+
+.destination-products-section--tours {
+  padding-top: 40px;
+}
+
+.destination-section-header {
+  max-width: 760px;
+  margin: 0 auto 44px;
+  text-align: center;
+
+  h2 {
+    margin: 10px 0 12px;
+    color: $color-primary-dark;
+    font-family: $font-serif;
+    font-size: clamp(2.6rem, 5vw, 4.2rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  p {
+    max-width: 680px;
+    margin: 0 auto;
+    color: $color-text-light;
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+}
+
+.destination-grid {
+  max-width: 1030px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  gap: 34px;
+}
+
+.destination-empty {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 44px 28px;
+  border-radius: 16px;
+  background: $color-white;
+  text-align: center;
+  box-shadow: 0 10px 28px rgba($color-primary-dark, 0.08);
+
+  h3 {
+    margin: 0 0 10px;
+    color: $color-primary-dark;
+    font-family: $font-serif;
+    font-size: 2rem;
+  }
+
+  p {
+    margin: 0;
+    color: $color-text-light;
+  }
+}
+
+/* ===============================
+   TIPS
+================================ */
+.destination-tips-section {
+  padding: 56px 0 90px;
+  background: #f7f7f7;
+}
+
+.destination-tips-grid {
+  max-width: 1030px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+
+  article {
+    padding: 32px;
+    border-radius: 14px;
+    background: $color-primary;
+    color: $color-white;
+
+    span {
+      display: block;
+      margin-bottom: 12px;
+      color: $color-accent;
+      font-size: 0.64rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      margin: 0 0 14px;
+      color: $color-white;
+      font-family: $font-serif;
+      font-size: 1.6rem;
+      line-height: 1.1;
+    }
+
+    p {
+      margin: 0;
+      color: rgba($color-white, 0.84);
+      font-size: 0.84rem;
+      line-height: 1.7;
+    }
+  }
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@include respond-to(1080px) {
+  .destination-grid {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+  }
+
+  .destination-intro-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@include respond-to($bp-tablet) {
+  .destination-info-bar,
+  .destination-tips-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@include respond-to($bp-mobile) {
+  .destination-hero {
+    min-height: 500px;
+  }
+
+  .destination-hero__content {
+    padding-bottom: 70px;
+  }
+
+  .destination-info-wrapper {
+    margin-top: -42px;
+  }
+
+  .destination-info-bar {
+    grid-template-columns: 1fr;
+    padding: 24px;
+    gap: 22px;
+  }
+
+  .destination-intro-section {
+    padding: 72px 0 20px;
+  }
+
+  .destination-products-section {
+    padding: 56px 0 34px;
+  }
+
+  .destination-grid,
+  .destination-tips-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@include respond-to(520px) {
+  .destination-hero__content h1 {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+  }
+
+  .destination-hero__content p {
+    font-size: 0.7rem;
+  }
+}

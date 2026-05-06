@@ -6,21 +6,84 @@ import { getToursUseCase } from "../infrastructure/di";
 import "./_home.scss";
 
 const featuredTours = await getToursUseCase.executeFeatured();
-const destinations = await getToursUseCase.executeDestinations();
+const packages = await getToursUseCase.executePackages();
 
 const displayTours = (featuredTours || [])
   .filter((tour) => tour.isActive !== false)
   .slice(0, 3);
 
-const displayDestinations =
-  destinations?.length > 0
-    ? destinations.slice(0, 4)
-    : [
-        { name: "Cusco", slug: "cusco", imageUrl: "/public/images/cusco.png" },
-        { name: "Lima", slug: "lima", imageUrl: "/public/images/lima.png" },
-        { name: "Ica", slug: "ica", imageUrl: "/public/images/ica.png" },
-        { name: "Puno", slug: "puno", imageUrl: "/public/images/puno.png" },
-      ];
+const activePackages = (packages || []).filter((pkg) => pkg.isActive !== false);
+
+const normalizeSlug = (value = '') =>
+  value
+    .toString()
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ñ/g, 'n')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const getDestinationImage = (slug = '') => {
+  const cleanSlug = normalizeSlug(slug);
+
+  const imageMap = {
+    cusco: '/images/cusco/cusco.png',
+    lima: '/images/lima/lima.png',
+    ica: '/images/ica/ica.png',
+    puno: '/images/puno/puno.png',
+    arequipa: '/images/arequipa/arequipa.png',
+    paracas: '/images/ica/ica.png',
+    nazca: '/images/ica/ica.png',
+    huacachina: '/images/ica/ica.png',
+    'machu-picchu': '/images/cusco/cusco.png',
+    vinicunca: '/images/cusco/cusco.png',
+    palccoyo: '/images/cusco/cusco.png',
+    waqrapukara: '/images/cusco/cusco.png',
+  };
+
+  return imageMap[cleanSlug] || `/images/${cleanSlug}/${cleanSlug}.png`;
+};
+
+const destinationMap = new Map();
+
+activePackages.forEach((pkg) => {
+  const packageDestinations = pkg.destinations ?? [];
+
+  if (packageDestinations.length > 0) {
+    packageDestinations.forEach((destination) => {
+      const slug = normalizeSlug(destination.slug || destination.name);
+
+      if (!slug || destinationMap.has(slug)) return;
+
+      destinationMap.set(slug, {
+        id: destination.id || slug,
+        name: destination.name,
+        slug,
+        imageUrl: getDestinationImage(slug),
+      });
+    });
+  }
+
+  if (pkg.destinationName || pkg.destinationSlug) {
+    const slug = normalizeSlug(pkg.destinationSlug || pkg.destinationName);
+
+    if (slug && !destinationMap.has(slug)) {
+      destinationMap.set(slug, {
+        id: slug,
+        name: pkg.destinationName || slug,
+        slug,
+        imageUrl: getDestinationImage(slug),
+      });
+    }
+  }
+});
+const destinationPriority = ['cusco', 'lima', 'ica', 'puno', 'arequipa'];
+
+const displayDestinations = destinationPriority
+  .map((slug) => destinationMap.get(slug))
+  .filter(Boolean);
 ---
 
 <Layout title="Memories Travel Perú | Agencia de viajes en Perú" mainClass="home-main">
@@ -126,7 +189,7 @@ const displayDestinations =
             tour.imageUrl.trim() !== "" &&
             !tour.imageUrl.includes("---")
               ? tour.imageUrl
-              : fallbackImages[index] || "/public/images/cusco.png";
+              : fallbackImages[index] || "/public/images/cusco/cusco.png";
 
           const priceLabel =
             tour.price && tour.price > 0
@@ -184,71 +247,47 @@ const displayDestinations =
   </section>
 
   <!-- DESTINATIONS -->
-  <section class="home-destinations-section reveal-up">
-    <div class="home-destinations-bg"></div>
+<section class="home-destinations-section reveal-up">
+  <div class="home-destinations-bg"></div>
 
-    <div class="container">
-      <div class="home-section-header destinations-header">
-        <div>
-          <span class="home-eyebrow home-eyebrow--dark">Colección 2026</span>
-          <h2>
-            Destinos
-            <span>Icónicos</span>
-          </h2>
-        </div>
-
-        <a href="/destinations" class="destinations-link">
-          Ver más destinos
-        </a>
+  <div class="container">
+    <div class="home-section-header destinations-header">
+      <div>
+        <span class="home-eyebrow home-eyebrow--dark">Colección 2026</span>
+        <h2>
+          Destinos
+          <span>Icónicos</span>
+        </h2>
       </div>
 
-      <div class="home-destinations-grid">
-        <a
-          href={`/destinations/${displayDestinations[0]?.slug || "cusco"}`}
-          class="destination-card destination-card--large"
-        >
-          <img
-            src={"/images/cusco.png"}
-            alt={displayDestinations[0]?.name || "Cusco"}
-          />
-          <h3>{displayDestinations[0]?.name || "Cusco"}</h3>
-        </a>
-
-        <a
-          href={`/destinations/${displayDestinations[1]?.slug || "lima"}`}
-          class="destination-card destination-card--wide"
-        >
-          <img
-            src={"/images/lima.png"}
-            alt={displayDestinations[1]?.name || "Lima"}
-          />
-          <h3>{displayDestinations[1]?.name || "Lima"}</h3>
-        </a>
-
-        <a
-          href={`/destinations/${displayDestinations[2]?.slug || "ica"}`}
-          class="destination-card"
-        >
-          <img
-            src={"/images/ica.png"}
-            alt={displayDestinations[2]?.name || "Ica"}
-          />
-          <h3>{displayDestinations[2]?.name || "Ica"}</h3>
-        </a>
-
-        <a
-          href={`/destinations/${displayDestinations[3]?.slug || "puno"}`}
-          class="destination-card"
-        >
-          <img
-            src={"/images/puno.png"}
-            alt={displayDestinations[3]?.name || "Puno"}
-          />
-          <h3>{displayDestinations[3]?.name || "Puno"}</h3>
-        </a>
-      </div>
+      <a href="/destinations" class="destinations-link">
+        Ver más destinos
+      </a>
     </div>
-  </section>
+
+    {
+      displayDestinations.length > 0 ? (
+        <div class="home-destinations-grid">
+          {displayDestinations.map((destination, index) => (
+            <a
+              href={`/destinations/${destination.slug}`}
+              class={`destination-card ${
+                index === 0 ? 'destination-card--large' : index === 1 ? 'destination-card--wide' : ''
+              }`}
+            >
+              <img src={destination.imageUrl} alt={destination.name} />
+              <h3>{destination.name}</h3>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="home-destinations-empty">
+          <p>No hay destinos disponibles en los paquetes activos.</p>
+        </div>
+      )
+    }
+  </div>
+</section>
 
   
 </Layout>
@@ -275,15 +314,6 @@ const displayDestinations =
     revealObserver.observe(el);
   });
 
-  const header = document.querySelector(".site-header");
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 50) {
-      header?.classList.add("is-scrolled");
-    } else {
-      header?.classList.remove("is-scrolled");
-    }
-  });
 </script>
 
 <style is:global>
