@@ -1,117 +1,356 @@
 ---
+export const prerender = false;
+
 import Layout from '../../layouts/Layout.astro';
 import { getToursUseCase } from '../../infrastructure/di';
-import type { Tour } from '../../core/domain/models';
 import './_detail.scss';
 
-export async function getStaticPaths() {
-  const tours = await getToursUseCase.executeAll();
-  return tours.map((tour) => ({
-    params: { id: tour.id },
-    props: { tour },
-  }));
+const { id } = Astro.params;
+
+/*
+  IMPORTANTE:
+  Si tus enlaces son así:
+  /tours/1
+  usa executeById(id)
+
+  Si tus enlaces son así:
+  /tours/machu-picchu-full-day
+  usa executeBySlug(id)
+
+  Esta versión intenta primero por ID y luego por slug,
+  para evitar errores si tus cards usan slug.
+*/
+
+const tour =
+  id
+    ? (await getToursUseCase.executeById(id)) ||
+      (await getToursUseCase.executeBySlug(id))
+    : null;
+
+if (!tour) {
+  return Astro.redirect('/tours');
 }
 
-interface Props {
-  tour: Tour;
-}
+const features = tour.features ?? [];
+const highlights = tour.highlights ?? [];
+const itinerary = tour.itinerary ?? [];
+const includes = tour.includes ?? [];
+const notIncludes = tour.notIncludes ?? [];
+const whatToBring = tour.whatToBring ?? [];
+const gallery = tour.gallery ?? [];
 
-const { tour } = Astro.props;
+const heroImage =
+  tour.imageUrl &&
+  tour.imageUrl.trim() !== '' &&
+  !tour.imageUrl.includes('---')
+    ? tour.imageUrl
+    : '/images/hero.jpg';
+
+const durationDays = tour.durationDays || 1;
+
+const durationText = tour.durationNights
+  ? `${durationDays} días / ${tour.durationNights} noches`
+  : `${durationDays} día${durationDays === 1 ? '' : 's'}`;
+
+const destinationName = tour.destinationName || 'Perú';
+
+const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`;
 ---
 
-<Layout title={tour.title}>
-  <section class="hero-small" style={`background-image: url('${tour.imageUrl}');`}>
-    <div class="overlay"></div>
-    <div class="container hero-content text-center">
-      <span class="subtitle">{tour.durationDays || 1} DÍAS (PRIVADO O GRUPO PEQUEÑO)</span>
-      <h1 class="hero-title">{tour.title?.toUpperCase() || 'TOUR'}</h1>
-      <p class="hero-subdesc">EXPERIENCIAS CURADAS Y EXCLUSIVAS. CONECTAMOS TU ESPÍRITU CON LA ESENCIA VIVA Y ETERNA DEL PERÚ.</p>
+<Layout title={`${tour.title} | Memories Travel Perú`} mainClass="tour-detail-main">
+  <section class="tour-detail-hero" style={`background-image: url('${heroImage}');`}>
+    <div class="tour-detail-hero__overlay"></div>
+
+    <div class="container tour-detail-hero__content">
+      <span class="tour-detail-eyebrow">
+        {destinationName}
+      </span>
+
+      <h1>{tour.title}</h1>
+
+      <p>
+        {tour.shortDescription ||
+          'Una experiencia cuidadosamente diseñada para descubrir Perú con comodidad, cultura y acompañamiento profesional.'}
+      </p>
+
+      <div class="tour-detail-hero__actions">
+        <a
+          href={`https://wa.me/51984544245?text=${encodeURIComponent(whatsappMessage)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="detail-btn detail-btn--primary"
+        >
+          Cotizar experiencia
+        </a>
+
+        <a href="/tours" class="detail-btn detail-btn--ghost">
+          Ver más tours
+        </a>
+      </div>
     </div>
   </section>
 
-  <!-- Altitude Info Bar -->
   <div class="container info-bar-wrapper">
     <div class="info-bar">
       <div class="info-item">
-        <span class="info-icon">⛰️</span>
-        <span class="info-label">ALTITUD MÁXIMA</span>
-        <span class="info-val">3400 msnm</span>
+        <span class="info-icon">01</span>
+        <span class="info-label">Duración</span>
+        <span class="info-val">{durationText}</span>
       </div>
+
       <div class="info-item">
-        <span class="info-icon">🚶</span>
-        <span class="info-label">NIVEL DE DIFICULTAD</span>
-        <span class="info-val">Moderado</span>
+        <span class="info-icon">02</span>
+        <span class="info-label">Destino</span>
+        <span class="info-val">{destinationName}</span>
       </div>
+
       <div class="info-item">
-        <span class="info-icon">🛏️</span>
-        <span class="info-label">ALOJAMIENTO</span>
-        <span class="info-val">Hoteles de Lujo</span>
+        <span class="info-icon">03</span>
+        <span class="info-label">Modalidad</span>
+        <span class="info-val">
+          {features[0] || 'Servicio turístico'}
+        </span>
+      </div>
+
+      <div class="info-item">
+        <span class="info-icon">04</span>
+        <span class="info-label">Acompañamiento</span>
+        <span class="info-val">Guía profesional</span>
       </div>
     </div>
   </div>
 
-  <section class="section">
-    <div class="container">
-      <div class="tour-layout">
-        <div class="tour-details">
-          <h3 class="tour-section-title">Sobre esta experiencia</h3>
-          <p class="tour-paragraph">{tour.description}</p>
-          <p class="tour-paragraph tour-paragraph--spaced">Sumérjase en la historia viva de los Incas. Este viaje exclusivo comienza en las calles empedradas de Cusco, donde la arquitectura colonial se fusiona con muros incaicos. Explorará los tesoros del Valle Sagrado, disfrutará de experiencias gastronómicas de clase mundial y culminará su aventura con una visita privada a Machu Picchu al amanecer.</p>
+  <section class="tour-detail-section">
+    <div class="container tour-layout">
+      <main class="tour-details">
+        <section class="detail-block detail-block--intro">
+          <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
+            Sobre esta experiencia
+          </span>
 
-          <h3 class="tour-itinerary-title">Itinerario Detallado</h3>
-          
-          <div class="itinerary">
-            <div class="itinerary-day">
-              <div class="day-marker">01</div>
-              <div class="day-content">
-                <h4 class="day-title">LLEGADA A CUSCO & TRASLADO PRIVADO</h4>
-                <p class="day-desc">Recepción VIP en el aeropuerto. Traslado a su hotel boutique en el centro histórico. Tarde libre para aclimatación con mate de coca y masaje andino de bienvenida incluido.</p>
-                <div class="day-meta">
-                  <span>🏨 MONASTERIO HOTEL</span>
-                  <span>🍽️ CENA BIENVENIDA</span>
-                </div>
+          <h2>{tour.title}</h2>
+
+          <p class="tour-paragraph">
+            {tour.description ||
+              'Vive una experiencia cuidadosamente organizada para descubrir lo mejor de este destino.'}
+          </p>
+
+          {
+            highlights.length > 0 && (
+              <div class="highlight-pills">
+                {highlights.slice(0, 6).map((highlight) => (
+                  <span>{highlight}</span>
+                ))}
               </div>
-            </div>
-            <div class="itinerary-day">
-              <div class="day-marker">02</div>
-              <div class="day-content">
-                <h4 class="day-title">CITY TOUR EXCLUSIVO & SACSAYHUAMÁN</h4>
-                <p class="day-desc">Visita guiada por la Catedral y el Qorikancha. Almuerzo en restaurante reconocido. Por la tarde, visita a las impresionantes ruinas de Sacsayhuamán con brindis al atardecer.</p>
-                <div class="day-meta">
-                  <span>🏨 MONASTERIO HOTEL</span>
-                  <span>🍽️ DESAYUNO, ALMUERZO</span>
-                </div>
+            )
+          }
+        </section>
+
+        {
+          itinerary.length > 0 && (
+            <section class="detail-block">
+              <div class="detail-heading">
+                <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
+                  Ruta día por día
+                </span>
+                <h2>Itinerario detallado</h2>
               </div>
-            </div>
+
+              <div class="itinerary">
+                {itinerary.map((day) => {
+                  const dayIncludes = day.includes ?? [];
+                  const dayMeals = day.meals ?? [];
+
+                  return (
+                    <article class="itinerary-day">
+                      <div class="day-marker">
+                        {String(day.day).padStart(2, '0')}
+                      </div>
+
+                      <div class="day-content">
+                        <h3 class="day-title">{day.title}</h3>
+
+                        <p class="day-desc">
+                          {day.description}
+                        </p>
+
+                        {
+                          (day.accommodations || dayMeals.length > 0) && (
+                            <div class="day-meta">
+                              {day.accommodations && (
+                                <span>Alojamiento: {day.accommodations}</span>
+                              )}
+
+                              {dayMeals.length > 0 && (
+                                <span>Comidas: {dayMeals.join(', ')}</span>
+                              )}
+                            </div>
+                          )
+                        }
+
+                        {
+                          dayIncludes.length > 0 && (
+                            <div class="day-list">
+                              <strong>Incluye este día</strong>
+
+                              <ul>
+                                {dayIncludes.slice(0, 6).map((item) => (
+                                  <li>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )
+                        }
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          )
+        }
+
+        {
+          includes.length > 0 || notIncludes.length > 0 ? (
+            <section class="detail-block">
+              <div class="detail-heading">
+                <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
+                  Información del servicio
+                </span>
+                <h2>Incluye y no incluye</h2>
+              </div>
+
+              <div class="included-grid">
+                {
+                  includes.length > 0 && (
+                    <article class="included-card included-card--yes">
+                      <h3>Incluye</h3>
+
+                      <ul>
+                        {includes.map((item) => (
+                          <li>{item}</li>
+                        ))}
+                      </ul>
+                    </article>
+                  )
+                }
+
+                {
+                  notIncludes.length > 0 && (
+                    <article class="included-card included-card--no">
+                      <h3>No incluye</h3>
+
+                      <ul>
+                        {notIncludes.map((item) => (
+                          <li>{item}</li>
+                        ))}
+                      </ul>
+                    </article>
+                  )
+                }
+              </div>
+            </section>
+          ) : null
+        }
+
+        {
+          whatToBring.length > 0 && (
+            <section class="detail-block">
+              <div class="detail-heading">
+                <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
+                  Antes de viajar
+                </span>
+                <h2>Qué llevar</h2>
+              </div>
+
+              <div class="bring-grid">
+                {whatToBring.map((item) => (
+                  <span>{item}</span>
+                ))}
+              </div>
+            </section>
+          )
+        }
+
+        <section class="detail-block">
+          <div class="detail-heading">
+            <span class="tour-detail-eyebrow tour-detail-eyebrow--dark">
+              Galería
+            </span>
+            <h2>Momentos del recorrido</h2>
           </div>
 
-          <h3 class="highlights-title">Highlights del Recorrido</h3>
           <div class="highlights-grid">
-            <img src="/images/tour1.jpg" alt="Highlight 1" class="hl-img-large">
-            <div class="hl-side">
-              <img src="/images/tour2.jpg" alt="Highlight 2">
-              <img src="/images/tour3.jpg" alt="Highlight 3">
-            </div>
-          </div>
-        </div>
+            <img
+              src={gallery[0] || heroImage}
+              alt={tour.title}
+              class="hl-img-large"
+            />
 
-        <div class="tour-sidebar">
-          <div class="booking-widget">
-            <h3 class="widget-title">Diseñe Su Viaje</h3>
-            <p class="widget-desc">Consultoría Gratuita Experta</p>
-            <div class="form-group">
-              <label class="form-label form-label--dark">N° DE VIAJEROS</label>
-              <input type="number" class="form-control form-control--dark" placeholder="2 Adultos">
+            <div class="hl-side">
+              <img
+                src={gallery[1] || '/images/tour1.jpg'}
+                alt={tour.title}
+              />
+
+              <img
+                src={gallery[2] || '/images/tour2.jpg'}
+                alt={tour.title}
+              />
             </div>
-            <div class="form-group">
-              <label class="form-label form-label--dark">FECHA DE VIAJE</label>
-              <input type="date" class="form-control form-control--dark">
-            </div>
-            <button class="btn btn-primary btn-widget">SOLICITAR MI PROPUESTA PERSONALIZADA</button>
-            <p class="text-center widget-note">Sin Cargos Ocultos. Confirmación En 24h.</p>
           </div>
+        </section>
+      </main>
+
+      <aside class="tour-sidebar">
+        <div class="booking-widget">
+          <span class="widget-eyebrow">Diseña tu viaje</span>
+
+          <h3 class="widget-title">
+            Solicita una propuesta personalizada
+          </h3>
+
+          <p class="widget-desc">
+            Cuéntanos tus fechas, número de viajeros y preferencias. Nuestro
+            equipo te ayudará a adaptar esta experiencia.
+          </p>
+
+          <div class="widget-summary">
+            <div>
+              <span>Duración</span>
+              <strong>{durationText}</strong>
+            </div>
+
+            <div>
+              <span>Destino</span>
+              <strong>{destinationName}</strong>
+            </div>
+
+            <div>
+              <span>Tipo</span>
+              <strong>{features[0] || 'Tour guiado'}</strong>
+            </div>
+          </div>
+
+          <a
+            href={`https://wa.me/51984544245?text=${encodeURIComponent(whatsappMessage)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-widget"
+          >
+            Cotizar por WhatsApp
+          </a>
+
+          <a href="/tours" class="btn-widget btn-widget--outline">
+            Ver otros tours
+          </a>
+
+          <p class="widget-note">
+            Atención personalizada. Te ayudamos a revisar disponibilidad,
+            horarios, ingresos y logística del recorrido.
+          </p>
         </div>
-      </div>
+      </aside>
     </div>
   </section>
 </Layout>

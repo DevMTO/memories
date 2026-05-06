@@ -1,13 +1,196 @@
 ---
+export const prerender = false;
+
 import Layout from "../layouts/Layout.astro";
+import { getToursUseCase } from "../infrastructure/di";
+import "./_packages.scss";
+
+const packages = await getToursUseCase.executePackages?.() 
+  ?? await getToursUseCase.executeAllPackages?.()
+  ?? [];
+
+const activePackages = packages.filter((pkg) => pkg.isActive !== false);
+const featuredPackage = activePackages[0];
 ---
 
-<Layout title="Travel Packages">
-  <section class="section">
-    <div class="container text-center">
-      <h1>Travel Packages</h1>
-      <p>Exclusive travel packages curated just for you. Coming soon.</p>
-      <a href="/" class="btn btn-primary">Back to Home</a>
+<Layout title="Travel Packages | Memories Travel Perú" mainClass="packages-main">
+  <section class="packages-hero">
+    <div class="packages-hero__overlay"></div>
+
+    <div class="container packages-hero__content">
+      <span class="packages-eyebrow">Memories Travel Perú</span>
+
+      <h1>
+        Paquetes de viaje  
+        <span>diseñados para descubrir Perú.</span>
+      </h1>
+
+      <p>
+        Programas completos con rutas, traslados, hoteles, tours guiados y
+        experiencias cuidadosamente seleccionadas para vivir Perú con mayor
+        comodidad, estilo y confianza.
+      </p>
+
+      <div class="packages-hero__stats">
+        <div>
+          <strong>{activePackages.length}</strong>
+          <span>paquetes disponibles</span>
+        </div>
+
+        <div>
+          <strong>Perú</strong>
+          <span>Costa, Andes y cultura viva</span>
+        </div>
+
+        <div>
+          <strong>A medida</strong>
+          <span>rutas adaptables al viajero</span>
+        </div>
+      </div>
     </div>
   </section>
+
+  {
+    activePackages.length > 0 ? (
+      <>
+        {featuredPackage && (
+          <section class="featured-package">
+            <div class="container featured-package__grid">
+              <div class="featured-package__media">
+                <img
+                  src={featuredPackage.imageUrl || "/images/hero.jpg"}
+                  alt={featuredPackage.title}
+                />
+                <div class="featured-package__badge">
+                  <strong>{featuredPackage.durationDays}</strong>
+                  <span>Días</span>
+                </div>
+              </div>
+
+              <div class="featured-package__content">
+                <span class="packages-eyebrow packages-eyebrow--dark">
+                  Paquete destacado
+                </span>
+
+                <h2>{featuredPackage.title}</h2>
+
+                <p>
+                  {featuredPackage.shortDescription || featuredPackage.description}
+                </p>
+
+                <div class="featured-package__destinations">
+                  {featuredPackage.destinations?.slice(0, 6).map((destination) => (
+                    <span>{destination.name}</span>
+                  ))}
+                </div>
+
+                <div class="featured-package__features">
+                  {featuredPackage.features?.slice(0, 4).map((feature) => (
+                    <div>
+                      <span>✓</span>
+                      <p>{feature}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <a href={`/packages/${featuredPackage.slug}`} class="packages-btn">
+                  Ver paquete
+                </a>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <section class="packages-section">
+          <div class="container">
+            <div class="packages-header">
+              <div>
+                <span class="packages-eyebrow packages-eyebrow--dark">
+                  Colección de viajes
+                </span>
+                <h2>Todos nuestros paquetes</h2>
+              </div>
+
+              <p>
+                Elige una ruta completa por Perú y personalízala según tus fechas,
+                estilo de viaje y preferencias.
+              </p>
+            </div>
+
+            <div class="packages-grid">
+              {activePackages.map((pkg) => (
+                <article class="package-card">
+                  <a href={`/packages/${pkg.slug}`} class="package-card__image">
+                    <img
+                      src={pkg.imageUrl || "/images/hero.jpg"}
+                      alt={pkg.title}
+                    />
+
+                    <div class="package-card__duration">
+                      <strong>{pkg.durationDays}</strong>
+                      <span>
+                        días
+                        {pkg.durationNights ? ` / ${pkg.durationNights} noches` : ""}
+                      </span>
+                    </div>
+                  </a>
+
+                  <div class="package-card__body">
+                    <div class="package-card__destinations">
+                      {pkg.destinations?.slice(0, 3).map((destination) => (
+                        <span>{destination.name}</span>
+                      ))}
+                    </div>
+
+                    <h3>
+                      <a href={`/packages/${pkg.slug}`}>{pkg.title}</a>
+                    </h3>
+
+                    <p>{pkg.shortDescription || pkg.description}</p>
+
+                    <div class="package-card__features">
+                      {pkg.features?.slice(0, 3).map((feature) => (
+                        <span>{feature}</span>
+                      ))}
+                    </div>
+
+                    <div class="package-card__footer">
+                      <a href={`/packages/${pkg.slug}`} class="package-card__link">
+                        Ver detalles →
+                      </a>
+
+                      <a
+                        href={`https://wa.me/51984544245?text=Hola,%20quiero%20información%20sobre%20el%20paquete:%20${encodeURIComponent(pkg.title)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="package-card__whatsapp"
+                      >
+                        Cotizar
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </>
+    ) : (
+      <section class="packages-empty">
+        <div class="container">
+          <div class="packages-empty__box">
+            <span class="packages-eyebrow packages-eyebrow--dark">
+              Próximamente
+            </span>
+            <h1>Estamos preparando nuevos paquetes de viaje.</h1>
+            <p>
+              Muy pronto encontrarás aquí programas completos para viajar por
+              Perú con Memories Travel Perú.
+            </p>
+            <a href="/" class="packages-btn">Volver al inicio</a>
+          </div>
+        </div>
+      </section>
+    )
+  }
 </Layout>

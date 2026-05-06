@@ -1,18 +1,33 @@
-import type { ITourRepository } from '../domain/ports/ITourRepository';
-import type { Tour, Destination } from '../domain/models';
+import type { ITourRepository } from "../domain/ports/ITourRepository";
 
 export class GetToursUseCase {
-  constructor(private tourRepository: ITourRepository) {}
+  constructor(private readonly tourRepository: ITourRepository) {}
 
-  async executeAll(): Promise<Tour[]> {
+  async executeAll() {
     return this.tourRepository.getAllTours();
   }
 
-  async executeFeatured(): Promise<Tour[]> {
+  async executeFeatured() {
     return this.tourRepository.getFeaturedTours();
   }
 
-  async executeDestinations(): Promise<Destination[]> {
+  async executeBySlug(slug: string) {
+    return this.tourRepository.getTourBySlug(slug);
+  }
+
+  async executeDestinations() {
     return this.tourRepository.getDestinations();
   }
+
+  async executePackages() {
+    return this.tourRepository.getAllPackages();
+  }
+
+  async executePackageBySlug(slug: string) {
+    return this.tourRepository.getPackageBySlug(slug);
+  }
+
+  async executeById(id: string) {
+  return this.tourRepository.getTourById(id);
+}
 }

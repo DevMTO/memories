@@ -7,22 +7,79 @@ interface Props {
 }
 
 const { tour } = Astro.props;
+
+const imageUrl =
+  tour.imageUrl &&
+  tour.imageUrl.trim() !== '' &&
+  !tour.imageUrl.includes('---')
+    ? tour.imageUrl
+    : '/images/hero.jpg';
+
+const durationDays = tour.durationDays || 1;
+
+const durationText = tour.durationNights
+  ? `${durationDays}D / ${tour.durationNights}N`
+  : `${durationDays} ${durationDays === 1 ? 'DÍA' : 'DÍAS'}`;
+
+const location = tour.location || tour.destinationName || 'Perú';
+
+const description =
+  tour.shortDescription || tour.description || 'Experiencia turística cuidadosamente diseñada para descubrir Perú.';
+
+const detailUrl = `/tours/${tour.slug || tour.id}`;
 ---
-<div class="tour-card">
-  <div class="tour-img-wrapper">
-    <div class="duration-badge">{tour.durationDays} DÍAS</div>
-    <img src={tour.imageUrl} alt={tour.title} class="tour-img" />
-  </div>
+
+<article class="tour-card">
+  <a href={detailUrl} class="tour-img-wrapper" aria-label={`Ver detalles de ${tour.title}`}>
+    <img src={imageUrl} alt={tour.title || 'Tour en Perú'} class="tour-img" loading="lazy" />
+
+    <div class="tour-img-overlay"></div>
+
+    <div class="duration-badge">
+      <span>{durationText}</span>
+    </div>
+
+    <div class="tour-destination-badge">
+      {tour.destinationName || 'Perú'}
+    </div>
+  </a>
+
   <div class="tour-content">
-    <span class="tour-location">{tour.location?.toUpperCase() || 'PERÚ'}</span>
-    <h3 class="tour-title">{tour.title || 'Tour'}</h3>
-    <p class="tour-desc">{tour.description}</p>
+    <span class="tour-location">{location.toUpperCase()}</span>
+
+    <h3 class="tour-title">
+      <a href={detailUrl}>{tour.title || 'Tour'}</a>
+    </h3>
+
+    <p class="tour-desc">{description}</p>
+
+    {
+      tour.highlights && tour.highlights.length > 0 && (
+        <div class="tour-tags">
+          {tour.highlights.slice(0, 3).map((highlight) => (
+            <span>{highlight}</span>
+          ))}
+        </div>
+      )
+    }
+
     <div class="tour-footer">
       <div class="price">
-        <span class="price-label">DESDE</span>
-        <span class="price-amount">$ {(tour.price || 0).toLocaleString()}</span>
+        <span class="price-label">
+          {tour.price && tour.price > 0 ? 'DESDE' : 'CONSULTAR'}
+        </span>
+
+        <span class="price-amount">
+          {tour.price && tour.price > 0
+            ? `$ ${tour.price.toLocaleString()}`
+            : 'Precio a medida'}
+        </span>
       </div>
-      <a href={`/tours/${tour.id}`} class="btn-arrow">→</a>
+
+      <a href={detailUrl} class="btn-arrow" aria-label={`Ver ${tour.title}`}>
+        <span>Ver tour</span>
+        <strong>→</strong>
+      </a>
     </div>
   </div>
-</div>
+</article>

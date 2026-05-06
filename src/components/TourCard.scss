@@ -1,97 +1,308 @@
 // =============================================
-// TourCard Component Styles
+// TourCard Component Styles - Memories Travel Peru
 // =============================================
 @use '../styles/variables' as *;
 
 .tour-card {
-  background: $color-white;
-  border-radius: 12px;
+  position: relative;
   overflow: hidden;
-  @include card-shadow;
-  transition: $transition-default;
+  border-radius: 30px;
+  background: $color-white;
+  border: 1px solid rgba($color-primary, 0.08);
+  box-shadow: 0 24px 60px rgba($color-primary-dark, 0.08);
+  transition:
+    transform 0.32s ease,
+    box-shadow 0.32s ease,
+    border-color 0.32s ease;
 
   &:hover {
-    transform: translateY(-5px);
-    @include card-shadow-hover;
+    transform: translateY(-8px);
+    border-color: rgba($color-accent, 0.36);
+    box-shadow: 0 34px 78px rgba($color-primary-dark, 0.15);
+
+    .tour-img {
+      transform: scale(1.08);
+    }
+
+    .tour-img-overlay {
+      opacity: 0.95;
+    }
+
+    .btn-arrow {
+      background: $color-accent;
+      color: $color-primary-dark;
+
+      strong {
+        transform: translateX(3px);
+      }
+    }
   }
 }
 
+/* ===============================
+   IMAGE
+================================ */
 .tour-img-wrapper {
   position: relative;
-  height: 220px;
+  display: block;
+  height: 278px;
+  overflow: hidden;
+  background: $color-primary-dark;
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto 22px 0;
+    height: 3px;
+    border-radius: 999px 999px 0 0;
+    background: $color-accent;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+    z-index: 3;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
 }
 
 .tour-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0.94;
+  transition:
+    transform 0.75s ease,
+    opacity 0.35s ease;
 }
 
+.tour-img-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba($color-primary-dark, 0.05) 20%, rgba($color-primary-dark, 0.82) 100%),
+    linear-gradient(45deg, rgba($color-primary-dark, 0.35), transparent 56%);
+  opacity: 0.86;
+  transition: opacity 0.35s ease;
+  z-index: 1;
+}
+
+/* ===============================
+   BADGES
+================================ */
 .duration-badge {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background-color: $color-accent;
-  color: $color-white;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  top: 18px;
+  right: 18px;
   z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: $color-accent;
+  color: $color-primary-dark;
+  box-shadow: 0 12px 28px rgba($color-accent, 0.3);
+
+  span {
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 }
 
+.tour-destination-badge {
+  position: absolute;
+  left: 20px;
+  bottom: 18px;
+  z-index: 2;
+  max-width: calc(100% - 40px);
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba($color-white, 0.14);
+  border: 1px solid rgba($color-white, 0.2);
+  backdrop-filter: blur(12px);
+  color: $color-white;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ===============================
+   CONTENT
+================================ */
 .tour-content {
-  padding: 25px;
+  padding: 26px;
 }
 
 .tour-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
   color: $color-primary;
   font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  display: block;
-  margin-bottom: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+
+  &::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: $color-accent;
+  }
 }
 
 .tour-title {
-  font-size: 1.25rem;
-  margin-bottom: 15px;
-  color: $color-text;
+  margin: 0 0 14px;
+
+  a {
+    color: $color-primary-dark;
+    font-family: $font-serif;
+    font-size: 1.48rem;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    text-decoration: none;
+    transition: color 0.25s ease;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
 }
 
 .tour-desc {
+  min-height: 76px;
+  margin: 0;
   color: $color-text-light;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  margin-bottom: 25px;
+  font-size: 0.9rem;
+  line-height: 1.7;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+/* ===============================
+   TAGS
+================================ */
+.tour-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+
+  span {
+    max-width: 100%;
+    padding: 8px 11px;
+    border-radius: 999px;
+    background: rgba($color-primary, 0.08);
+    color: $color-primary-dark;
+    font-size: 0.7rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+}
+
+/* ===============================
+   FOOTER
+================================ */
 .tour-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid $color-border;
-  padding-top: 15px;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba($color-primary, 0.1);
+}
+
+.price {
+  min-width: 0;
 }
 
 .price-label {
   display: block;
-  font-size: 0.65rem;
+  margin-bottom: 2px;
   color: $color-text-light;
-  font-weight: 600;
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .price-amount {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: $color-text;
+  display: block;
+  color: $color-primary-dark;
+  font-family: $font-serif;
+  font-size: 1.16rem;
+  font-weight: 700;
+  line-height: 1.1;
 }
 
 .btn-arrow {
-  color: $color-primary;
-  font-size: 1.2rem;
+  flex-shrink: 0;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: $color-primary-dark;
+  color: $color-white;
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
+
+  span {
+    white-space: nowrap;
+  }
+
+  strong {
+    font-size: 1rem;
+    transition: transform 0.25s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    background: $color-accent;
+    color: $color-primary-dark;
+
+    strong {
+      transform: translateX(3px);
+    }
+  }
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@include respond-to(520px) {
+  .tour-img-wrapper {
+    height: 245px;
+  }
+
+  .tour-content {
+    padding: 22px;
+  }
+
+  .tour-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .btn-arrow {
+    width: 100%;
+    justify-content: center;
+  }
 }

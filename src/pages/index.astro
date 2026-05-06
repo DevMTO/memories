@@ -1,6 +1,5 @@
 ---
 // ✅ This page fetches from Firebase, so it needs to run at request time
-// not at build time. Set prerender = false for hybrid rendering.
 export const prerender = false;
 
 import Layout from "../layouts/Layout.astro";
@@ -8,181 +7,270 @@ import TourCard from "../components/TourCard.astro";
 import { getToursUseCase } from "../infrastructure/di";
 import "./_home.scss";
 
-// This will run at request time when output = 'hybrid'
 const featuredTours = await getToursUseCase.executeFeatured();
 const destinations = await getToursUseCase.executeDestinations();
+
+const safeDestinations = destinations?.slice(0, 4) || [];
+const safeFeaturedTours = featuredTours?.slice(0, 6) || [];
 ---
 
-<Layout title="Home" mainClass="home-main">
-  <!-- Hero Section -->
+<Layout title="Memories Travel Perú | Agencia de viajes en Perú" mainClass="home-main">
+  <!-- HERO -->
   <section class="hero" style={`background-image: url('/images/hero.jpg');`}>
-    <div class="overlay"></div>
-    <div class="container hero-content text-center reveal-up">
-      <span class="subtitle">AGENCIA DE VIAJES / TOUR OPERADOR</span>
-      <h1 class="hero-title">MEMORIES</h1>
-      <p class="hero-desc">Travel Perú</p>
-      <p class="hero-subdesc">
-        EXPERIENCIAS CURADAS Y EXCLUSIVAS. CONECTAMOS TU ESPÍRITU CON LA ESENCIA
-        VIVA Y ETERNA DEL PERÚ.
-      </p>
-      <a href="/login" class="btn btn-primary btn-rounded hero-cta"
-        >DESIGN TRIP</a
-      >
-    </div>
-  </section>
+    <div class="hero__overlay"></div>
+    <div class="hero__noise"></div>
 
-  <!-- Transformative Journeys Section -->
-  <section class="transformative-section reveal-up">
-    <div class="container transformative-grid">
-      <div class="text-content">
-        <span class="subtitle">EXPERIENCIAS EXCLUSIVAS</span>
-        <h2>Viajes Que <br /><span class="italic-title">Transforman</span></h2>
-        <p class="description">
-          Somos Arquitectos De Experiencias. No Solo Vendemos Tours, Diseñamos
-          Momentos Que Se Convierten En Recuerdos Imborrables.
+    <div class="container hero__content reveal-up">
+      <div class="hero__copy">
+        <span class="eyebrow">Agencia de viajes / Tour operador en Perú</span>
+
+        <h1>
+          Viajes que se sienten,  
+          <span>recuerdos que permanecen.</span>
+        </h1>
+
+        <p class="hero__description">
+          Diseñamos experiencias auténticas por Perú, conectando cultura,
+          naturaleza y aventura en itinerarios creados para viajeros que buscan
+          algo más que un tour.
         </p>
-        <div class="stats-grid">
+
+        <div class="hero__actions">
+          <a href="/tours" class="btn btn--primary">Explorar experiencias</a>
+          <a href="/destinations" class="btn btn--ghost">Ver destinos</a>
+        </div>
+
+        <div class="hero__trust">
           <div>
-            <h4 class="text-accent">Nuestros Tours</h4>
-            <p class="stat-desc">Guías Nativos Certificados</p>
+            <strong>+10</strong>
+            <span>experiencias destacadas</span>
           </div>
           <div>
-            <h4 class="text-accent">Sin Límites</h4>
-            <p class="stat-desc">Personalización Total</p>
+            <strong>Perú</strong>
+            <span>Costa, Andes y cultura viva</span>
+          </div>
+          <div>
+            <strong>24/7</strong>
+            <span>acompañamiento en ruta</span>
           </div>
         </div>
-        <a href="/tours" class="text-accent cta-link">VER MÁS DESTINOS →</a>
       </div>
-      <div class="img-content">
-        <img src="/images/tour1.jpg" alt="Viajes Que Transforman" class="img-reveal" />
+
+      <div class="hero__card">
+        <span class="hero__card-label">Experiencia recomendada</span>
+        <h3>Machu Picchu & Valle Sagrado</h3>
+        <p>
+          Historia, paisajes andinos, tren turístico y una visita guiada a una
+          de las maravillas del mundo.
+        </p>
+        <a href="/tours" class="hero__card-link">Diseñar mi viaje →</a>
+      </div>
+    </div>
+
+    <div class="hero__scroll">
+      <span>Descubre Perú</span>
+    </div>
+  </section>
+
+  <!-- BRAND INTRO -->
+  <section class="intro-section reveal-up">
+    <div class="container intro-grid">
+      <div class="intro-media">
+        <img src="/images/tour1.jpg" alt="Experiencias de viaje en Perú" />
+        <div class="intro-badge">
+          <strong>Memories</strong>
+          <span>Travel Perú</span>
+        </div>
+      </div>
+
+      <div class="intro-content">
+        <span class="eyebrow dark">Experiencias diseñadas con intención</span>
+        <h2>
+          No organizamos simples viajes,  
+          <span>creamos memorias con sentido.</span>
+        </h2>
+        <p>
+          En Memories Travel Perú combinamos planificación, atención cercana y
+          conocimiento local para crear recorridos auténticos por los destinos
+          más icónicos del país.
+        </p>
+
+        <div class="benefits-grid">
+          <article>
+            <span>01</span>
+            <h3>Itinerarios a medida</h3>
+            <p>Programas flexibles según ritmo, estilo de viaje y destino.</p>
+          </article>
+
+          <article>
+            <span>02</span>
+            <h3>Operación confiable</h3>
+            <p>Coordinación antes, durante y después de cada experiencia.</p>
+          </article>
+
+          <article>
+            <span>03</span>
+            <h3>Guías profesionales</h3>
+            <p>Acompañamiento experto para conectar con la historia y cultura.</p>
+          </article>
+
+          <article>
+            <span>04</span>
+            <h3>Destinos icónicos</h3>
+            <p>Cusco, Machu Picchu, Lima, Puno, Arequipa, Nazca y más.</p>
+          </article>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Featured Tours -->
-  <section class="section section--alt reveal-up">
+  <!-- FEATURED TOURS -->
+  <section class="section section--soft reveal-up">
     <div class="container">
-      <div class="section-header text-center">
-        <span class="subtitle text-primary">EXPERIENCIAS EXCLUSIVAS</span>
-        <h2>Nuestros Tours</h2>
+      <div class="section-header">
+        <div>
+          <span class="eyebrow dark">Experiencias destacadas</span>
+          <h2>Tours para empezar tu historia en Perú</h2>
+        </div>
         <p>
-          Itinerarios Diseñados Meticulosamente Para Viajeros Que Buscan
-          Autenticidad.
+          Seleccionamos recorridos que combinan paisajes, cultura, aventura y
+          logística bien organizada para que el viaje fluya desde el primer día.
         </p>
       </div>
+
       <div class="tours-grid">
-        {featuredTours.map((tour) => <TourCard tour={tour} />)}
+        {safeFeaturedTours.map((tour) => <TourCard tour={tour} />)}
+      </div>
+
+      <div class="section-action">
+        <a href="/tours" class="btn btn--dark">Ver todos los tours</a>
       </div>
     </div>
   </section>
 
-  <!-- Destinations -->
-  <section class="section reveal-up">
+  <!-- DESTINATIONS -->
+  <section class="destinations-section reveal-up">
     <div class="container">
       <div class="dest-header">
         <div>
-          <span class="subtitle text-primary">COLECCIÓN 2026</span>
-          <h2>Destinos <span class="dest-title-italic">Icónicos</span></h2>
+          <span class="eyebrow dark">Colección Perú</span>
+          <h2>Destinos que despiertan recuerdos</h2>
         </div>
-        <a href="/destinations" class="dest-link">VER MÁS DESTINOS</a>
+        <a href="/destinations" class="link-arrow">Ver más destinos →</a>
       </div>
+
       <div class="dest-grid">
-        <div class="dest-item main-dest">
-          <img
-            src={destinations[0]?.imageUrl || "/images/hero.jpg"}
-            alt={destinations[0]?.name}
-          />
-          <h3>{destinations[0]?.name}</h3>
-        </div>
-        <div class="dest-side">
-          <div class="dest-item top-dest">
-            <img
-              src={destinations[1]?.imageUrl || "/images/hero.jpg"}
-              alt={destinations[1]?.name}
-            />
-            <h3>{destinations[1]?.name}</h3>
-          </div>
-          <div class="dest-bottom-row">
-            <div class="dest-item">
+        {
+          safeDestinations.map((destination, index) => (
+            <a
+              href={`/destinations/${destination.slug}`}
+              class={`dest-card ${index === 0 ? "dest-card--large" : ""}`}
+            >
               <img
-                src={destinations[2]?.imageUrl || "/images/hero.jpg"}
-                alt={destinations[2]?.name}
+                src={destination.imageUrl || "/images/hero.jpg"}
+                alt={destination.name}
               />
-              <h3>{destinations[2]?.name}</h3>
-            </div>
-            <div class="dest-item">
-              <img
-                src={destinations[3]?.imageUrl || "/images/hero.jpg"}
-                alt={destinations[3]?.name}
-              />
-              <h3>{destinations[3]?.name}</h3>
-            </div>
-          </div>
-        </div>
+              <div class="dest-card__content">
+                <span>Explorar destino</span>
+                <h3>{destination.name}</h3>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE STRIP -->
+  <section class="experience-strip reveal-up">
+    <div class="container experience-strip__inner">
+      <div>
+        <span class="eyebrow">Viajes con esencia local</span>
+        <h2>Perú se vive mejor cuando cada detalle está pensado.</h2>
+      </div>
+
+      <div class="experience-steps">
+        <article>
+          <span>Planifica</span>
+          <p>Cuéntanos qué tipo de viaje imaginas.</p>
+        </article>
+        <article>
+          <span>Personaliza</span>
+          <p>Ajustamos rutas, tiempos, hoteles y experiencias.</p>
+        </article>
+        <article>
+          <span>Viaja</span>
+          <p>Disfruta con soporte y coordinación en destino.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="final-cta reveal-up">
+    <div class="container final-cta__box">
+      <span class="eyebrow dark">Tu próxima memoria empieza aquí</span>
+      <h2>Diseñemos juntos tu viaje por Perú.</h2>
+      <p>
+        Desde una escapada a Machu Picchu hasta un recorrido completo por costa,
+        sierra y lago Titicaca. Creamos una experiencia pensada para ti.
+      </p>
+      <div class="final-cta__actions">
+        <a href="/login" class="btn btn--primary">Diseñar mi viaje</a>
+        <a href="/tours" class="btn btn--outline">Ver experiencias</a>
       </div>
     </div>
   </section>
 </Layout>
 
 <script>
-  // Simple Reveal Animation on Scroll
-  const revealCallback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-    entries.forEach(entry => {
+  const revealCallback = (
+    entries: IntersectionObserverEntry[],
+    observer: IntersectionObserver
+  ) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('is-revealed');
+        entry.target.classList.add("is-revealed");
         observer.unobserve(entry.target);
       }
     });
   };
 
-  const observerOptions = {
+  const revealObserver = new IntersectionObserver(revealCallback, {
     threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  };
+    rootMargin: "0px 0px -50px 0px",
+  });
 
-  const revealObserver = new IntersectionObserver(revealCallback, observerOptions);
-  
-  document.querySelectorAll('.reveal-up, .img-reveal').forEach(el => {
+  document.querySelectorAll(".reveal-up").forEach((el) => {
     revealObserver.observe(el);
   });
 
-  // Sticky Header logic
-  const header = document.querySelector('.header');
-  window.addEventListener('scroll', () => {
+  const header = document.querySelector(".header");
+
+  window.addEventListener("scroll", () => {
     if (window.scrollY > 50) {
-      header?.classList.add('is-scrolled');
+      header?.classList.add("is-scrolled");
     } else {
-      header?.classList.remove('is-scrolled');
+      header?.classList.remove("is-scrolled");
     }
   });
 </script>
 
 <style is:global>
-  /* Reveal Animations base styles */
+  html {
+    scroll-behavior: smooth;
+  }
+
   .reveal-up {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    transform: translateY(34px);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
   }
 
   .reveal-up.is-revealed {
     opacity: 1;
     transform: translateY(0);
-  }
-
-  .img-reveal {
-    opacity: 0;
-    transform: scale(0.95);
-    transition: opacity 1s ease-out, transform 1s ease-out;
-  }
-
-  .img-reveal.is-revealed {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  /* Smooth scroll behavior */
-  html {
-    scroll-behavior: smooth;
   }
 </style>

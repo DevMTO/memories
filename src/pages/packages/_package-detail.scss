@@ -1,9 +1,9 @@
 // =============================================
-// Tour Detail Page Styles - Memories Travel Peru
+// Package Detail Page Styles - Memories Travel Peru
 // =============================================
 @use '../../styles/variables' as *;
 
-.tour-detail-main {
+.package-detail-main {
   background:
     radial-gradient(circle at 12% 0%, rgba($color-accent, 0.12), transparent 30%),
     $color-background;
@@ -14,9 +14,9 @@
 /* ===============================
    HERO
 ================================ */
-.tour-detail-hero {
+.package-detail-hero {
   position: relative;
-  min-height: 74vh;
+  min-height: 76vh;
   display: flex;
   align-items: center;
   background-size: cover;
@@ -25,7 +25,7 @@
   isolation: isolate;
 }
 
-.tour-detail-hero__overlay {
+.package-detail-hero__overlay {
   position: absolute;
   inset: 0;
   background:
@@ -33,7 +33,7 @@
     linear-gradient(
       90deg,
       rgba($color-primary-dark, 0.96),
-      rgba($color-primary-dark, 0.78) 48%,
+      rgba($color-primary-dark, 0.8) 48%,
       rgba($color-primary-dark, 0.34)
     ),
     linear-gradient(
@@ -44,7 +44,7 @@
   z-index: -1;
 }
 
-.tour-detail-hero__content {
+.package-detail-hero__content {
   padding: 150px 0 100px;
 
   h1 {
@@ -58,14 +58,14 @@
   }
 
   > p {
-    max-width: 720px;
+    max-width: 740px;
     color: rgba($color-white, 0.84);
     font-size: 1.05rem;
     line-height: 1.8;
   }
 }
 
-.tour-detail-eyebrow {
+.package-detail-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -83,18 +83,18 @@
   }
 }
 
-.tour-detail-eyebrow--dark {
+.package-detail-eyebrow--dark {
   color: $color-primary;
 }
 
-.tour-detail-hero__actions {
+.package-detail-hero__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
   margin-top: 34px;
 }
 
-.detail-btn {
+.package-detail-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -119,7 +119,7 @@
   }
 }
 
-.detail-btn--primary {
+.package-detail-btn--primary {
   background: $color-accent;
   color: $color-primary-dark;
   box-shadow: 0 18px 42px rgba($color-accent, 0.32);
@@ -130,7 +130,7 @@
   }
 }
 
-.detail-btn--ghost {
+.package-detail-btn--ghost {
   color: $color-white;
   border: 1px solid rgba($color-white, 0.42);
   background: rgba($color-white, 0.08);
@@ -145,13 +145,13 @@
 /* ===============================
    INFO BAR
 ================================ */
-.info-bar-wrapper {
+.package-info-wrapper {
   position: relative;
   z-index: 20;
   margin-top: -48px;
 }
 
-.info-bar {
+.package-info-bar {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   overflow: hidden;
@@ -161,7 +161,7 @@
   box-shadow: 0 26px 70px rgba($color-primary-dark, 0.16);
 }
 
-.info-item {
+.package-info-item {
   position: relative;
   padding: 28px 24px;
   display: grid;
@@ -173,7 +173,7 @@
   }
 }
 
-.info-icon {
+.package-info-icon {
   width: 38px;
   height: 38px;
   display: grid;
@@ -185,7 +185,7 @@
   font-weight: 700;
 }
 
-.info-label {
+.package-info-label {
   color: $color-text-light;
   font-size: 0.68rem;
   font-weight: 900;
@@ -193,7 +193,7 @@
   text-transform: uppercase;
 }
 
-.info-val {
+.package-info-value {
   color: $color-primary-dark;
   font-size: 1rem;
   font-weight: 800;
@@ -203,24 +203,24 @@
 /* ===============================
    LAYOUT
 ================================ */
-.tour-detail-section {
+.package-detail-section {
   padding: 100px 0 110px;
 }
 
-.tour-layout {
+.package-detail-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 370px;
   gap: 46px;
   align-items: start;
 }
 
-.tour-details {
+.package-detail-content {
   min-width: 0;
   display: grid;
   gap: 34px;
 }
 
-.detail-block {
+.package-block {
   padding: 36px;
   border-radius: 32px;
   background: $color-white;
@@ -228,7 +228,7 @@
   box-shadow: 0 24px 60px rgba($color-primary-dark, 0.07);
 }
 
-.detail-block--intro {
+.package-block--intro {
   background:
     radial-gradient(circle at top right, rgba($color-accent, 0.14), transparent 32%),
     $color-white;
@@ -244,7 +244,7 @@
   }
 }
 
-.detail-heading {
+.package-heading {
   margin-bottom: 28px;
 
   h2 {
@@ -257,14 +257,17 @@
   }
 }
 
-.tour-paragraph {
+.package-paragraph {
   margin: 0;
   color: $color-text-light;
   line-height: 1.9;
   font-size: 1rem;
 }
 
-.highlight-pills {
+/* ===============================
+   DESTINATIONS / HIGHLIGHTS
+================================ */
+.package-destination-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 9px;
@@ -280,22 +283,49 @@
   }
 }
 
+.package-highlight-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 30px;
+
+  article {
+    display: flex;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 18px;
+    background: $color-background;
+    border: 1px solid rgba($color-primary, 0.08);
+  }
+
+  span {
+    color: $color-accent;
+    font-weight: 900;
+  }
+
+  p {
+    margin: 0;
+    color: $color-text;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
 /* ===============================
    ITINERARY
 ================================ */
-.itinerary {
+.package-itinerary {
   display: grid;
   gap: 22px;
 }
 
-.itinerary-day {
+.package-day {
   display: grid;
   grid-template-columns: 58px minmax(0, 1fr);
   gap: 22px;
-  position: relative;
 }
 
-.day-marker {
+.package-day__marker {
   width: 58px;
   height: 58px;
   display: grid;
@@ -309,29 +339,29 @@
   box-shadow: 0 14px 34px rgba($color-primary-dark, 0.2);
 }
 
-.day-content {
+.package-day__content {
   padding: 26px;
   border-radius: 26px;
   background: $color-background;
   border: 1px solid rgba($color-primary, 0.08);
+
+  h3 {
+    margin: 0 0 12px;
+    font-family: $font-serif;
+    font-size: 1.35rem;
+    line-height: 1.18;
+    color: $color-primary-dark;
+  }
+
+  p {
+    margin: 0;
+    color: $color-text-light;
+    font-size: 0.94rem;
+    line-height: 1.75;
+  }
 }
 
-.day-title {
-  margin: 0 0 12px;
-  font-family: $font-serif;
-  font-size: 1.35rem;
-  line-height: 1.18;
-  color: $color-primary-dark;
-}
-
-.day-desc {
-  margin: 0;
-  color: $color-text-light;
-  font-size: 0.94rem;
-  line-height: 1.75;
-}
-
-.day-meta {
+.package-day__meta {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -347,7 +377,7 @@
   }
 }
 
-.day-list {
+.package-day__list {
   margin-top: 20px;
 
   strong {
@@ -387,16 +417,22 @@
   }
 }
 
+.package-day__list--muted {
+  li::before {
+    background: $color-text-light;
+  }
+}
+
 /* ===============================
    INCLUDES
 ================================ */
-.included-grid {
+.package-included-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
 
-.included-card {
+.package-included-card {
   padding: 28px;
   border-radius: 26px;
   background: $color-background;
@@ -433,12 +469,12 @@
   }
 }
 
-.included-card--yes li::before {
+.package-included-card--yes li::before {
   content: "✓";
   color: $color-primary;
 }
 
-.included-card--no li::before {
+.package-included-card--no li::before {
   content: "×";
   color: $color-accent-hover;
 }
@@ -446,7 +482,7 @@
 /* ===============================
    WHAT TO BRING
 ================================ */
-.bring-grid {
+.package-bring-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -464,15 +500,15 @@
 /* ===============================
    GALLERY
 ================================ */
-.highlights-grid {
+.package-gallery {
   display: grid;
   grid-template-columns: 1.25fr 0.75fr;
   gap: 18px;
   min-height: 520px;
 }
 
-.hl-img-large,
-.hl-side img {
+.package-gallery__large,
+.package-gallery__side img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -480,19 +516,19 @@
   box-shadow: 0 18px 42px rgba($color-primary-dark, 0.12);
 }
 
-.hl-side {
+.package-gallery__side {
   display: grid;
   gap: 18px;
 }
 
 /* ===============================
-   BOOKING WIDGET
+   SIDEBAR WIDGET
 ================================ */
-.tour-sidebar {
+.package-sidebar {
   position: relative;
 }
 
-.booking-widget {
+.package-widget {
   position: sticky;
   top: 110px;
   padding: 30px;
@@ -504,7 +540,7 @@
   box-shadow: 0 28px 70px rgba($color-primary-dark, 0.14);
 }
 
-.widget-eyebrow {
+.package-widget__eyebrow {
   display: inline-block;
   color: $color-accent;
   font-size: 0.68rem;
@@ -513,22 +549,24 @@
   text-transform: uppercase;
 }
 
-.widget-title {
-  margin: 12px 0 10px;
-  font-family: $font-serif;
-  font-size: 2rem;
-  line-height: 1.05;
-  color: $color-primary-dark;
+.package-widget {
+  h3 {
+    margin: 12px 0 10px;
+    font-family: $font-serif;
+    font-size: 2rem;
+    line-height: 1.05;
+    color: $color-primary-dark;
+  }
+
+  > p {
+    margin: 0 0 22px;
+    color: $color-text-light;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
 }
 
-.widget-desc {
-  margin: 0 0 22px;
-  color: $color-text-light;
-  font-size: 0.9rem;
-  line-height: 1.7;
-}
-
-.widget-summary {
+.package-widget__summary {
   display: grid;
   gap: 10px;
   margin-bottom: 24px;
@@ -557,7 +595,7 @@
   }
 }
 
-.btn-widget {
+.package-widget__btn {
   width: 100%;
   min-height: 48px;
   margin-top: 10px;
@@ -586,7 +624,7 @@
   }
 }
 
-.btn-widget--outline {
+.package-widget__btn--outline {
   background: transparent;
   color: $color-primary-dark;
   border: 1px solid rgba($color-primary-dark, 0.2);
@@ -598,7 +636,7 @@
   }
 }
 
-.widget-note {
+.package-widget__note {
   margin: 18px 0 0;
   color: $color-text-light;
   font-size: 0.78rem;
@@ -610,63 +648,64 @@
    RESPONSIVE
 ================================ */
 @include respond-to(1080px) {
-  .tour-layout {
+  .package-detail-layout {
     grid-template-columns: 1fr;
   }
 
-  .booking-widget {
+  .package-widget {
     position: static;
   }
 }
 
 @include respond-to($bp-tablet) {
-  .info-bar {
+  .package-info-bar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .info-item:nth-child(2) {
+  .package-info-item:nth-child(2) {
     border-right: none;
   }
 
-  .info-item:nth-child(1),
-  .info-item:nth-child(2) {
+  .package-info-item:nth-child(1),
+  .package-info-item:nth-child(2) {
     border-bottom: 1px solid rgba($color-primary, 0.1);
   }
 
-  .included-grid,
-  .highlights-grid {
+  .package-included-grid,
+  .package-gallery,
+  .package-highlight-list {
     grid-template-columns: 1fr;
   }
 
-  .highlights-grid {
+  .package-gallery {
     min-height: auto;
   }
 
-  .hl-img-large,
-  .hl-side img {
+  .package-gallery__large,
+  .package-gallery__side img {
     height: 320px;
   }
 }
 
 @include respond-to($bp-mobile) {
-  .tour-detail-hero {
+  .package-detail-hero {
     min-height: auto;
   }
 
-  .tour-detail-hero__content {
+  .package-detail-hero__content {
     padding: 130px 0 86px;
   }
 
-  .info-bar-wrapper {
+  .package-info-wrapper {
     margin-top: -36px;
   }
 
-  .info-bar {
+  .package-info-bar {
     grid-template-columns: 1fr;
     border-radius: 24px;
   }
 
-  .info-item {
+  .package-info-item {
     border-right: none !important;
     border-bottom: 1px solid rgba($color-primary, 0.1);
 
@@ -675,40 +714,40 @@
     }
   }
 
-  .tour-detail-section {
+  .package-detail-section {
     padding: 74px 0;
   }
 
-  .detail-block {
+  .package-block {
     padding: 26px;
     border-radius: 26px;
   }
 
-  .itinerary-day {
+  .package-day {
     grid-template-columns: 1fr;
     gap: 14px;
   }
 
-  .day-marker {
+  .package-day__marker {
     width: 50px;
     height: 50px;
   }
 
-  .day-content {
+  .package-day__content {
     padding: 22px;
   }
 }
 
 @include respond-to(520px) {
-  .tour-detail-hero__content h1 {
+  .package-detail-hero__content h1 {
     font-size: clamp(2.7rem, 14vw, 4.2rem);
   }
 
-  .tour-detail-hero__actions {
+  .package-detail-hero__actions {
     flex-direction: column;
   }
 
-  .detail-btn {
+  .package-detail-btn {
     width: 100%;
   }
 }

@@ -1,74 +1,397 @@
-// =============================================
-// Header Component Styles
-// =============================================
 @use '../../styles/variables' as *;
 
 .header {
   position: fixed;
-  top: 0;
+  top: 18px;
   left: 0;
-  width: 100%;
+  right: 0;
   z-index: 1000;
-  color: $color-white;
-  background-color: $color-primary;
-  padding: 15px 0;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  transition: $transition-default;
 
-  &.is-scrolled {
-    background-color: rgba($color-primary-dark, 0.98);
-    padding: 10px 0;
-    backdrop-filter: blur(10px);
+  .navbar {
+    pointer-events: auto;
   }
 }
 
 .navbar {
+  max-width: $container-max;
+  width: calc(100% - 40px);
+  min-height: 76px;
+  margin: 0 auto;
+  padding: 0 18px 0 22px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  border-radius: 999px;
+
+  background: rgba($color-primary-dark, 0.82);
+  border: 1px solid rgba($color-accent, 0.22);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 24px 70px rgba($color-primary-dark, 0.28);
+
+  transition:
+    min-height 0.35s ease,
+    background 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
 }
 
+.header.is-scrolled {
+  top: 10px;
+
+  .navbar {
+    min-height: 66px;
+    background: rgba($color-primary-dark, 0.94);
+    border-color: rgba($color-accent, 0.36);
+    box-shadow: 0 20px 60px rgba($color-primary-dark, 0.36);
+  }
+}
+
+/* ===============================
+   LOGO
+================================ */
 .logo {
-  font-family: $font-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: $color-white;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: transform 0.28s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    .logo__mark {
+      background: $color-accent;
+      color: $color-primary-dark;
+      transform: rotate(-6deg) scale(1.06);
+      box-shadow: 0 14px 35px rgba($color-accent, 0.36);
+    }
+
+    .logo__text {
+      color: $color-accent;
+    }
+  }
 }
 
+.logo__mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+
+  background: rgba($color-accent, 0.95);
+  color: $color-primary-dark;
+  font-family: $font-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+
+  transition:
+    transform 0.35s ease,
+    background 0.35s ease,
+    color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  font-family: $font-sans;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  color: $color-white;
+
+  transition: color 0.28s ease;
+
+  small {
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba($color-white, 0.72);
+  }
+}
+
+/* ===============================
+   NAV LINKS
+================================ */
 .nav-links {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 1px;
-  flex: 2;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-  a:hover {
-    color: $color-accent;
+  li {
+    display: flex;
+  }
+
+  a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0 14px;
+    border-radius: 999px;
+    overflow: hidden;
+
+    color: rgba($color-white, 0.82);
+    text-decoration: none;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    transition:
+      color 0.28s ease,
+      background 0.28s ease,
+      transform 0.28s ease;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: inherit;
+      background: rgba($color-white, 0.08);
+      opacity: 0;
+      transform: scale(0.85);
+      transition:
+        opacity 0.28s ease,
+        transform 0.28s ease;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 8px;
+      height: 1px;
+      background: $color-accent;
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.28s ease;
+    }
+
+    &:hover {
+      color: $color-white;
+      transform: translateY(-2px);
+
+      &::before {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
   }
 }
 
-.header-contact {
+/* ===============================
+   HEADER ACTIONS
+================================ */
+.header-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  flex: 1;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+
+  color: rgba($color-white, 0.9);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+
+  background: rgba($color-white, 0.1);
+  border: 1px solid rgba($color-white, 0.12);
+
+  transition:
+    color 0.28s ease,
+    background 0.28s ease,
+    border-color 0.28s ease,
+    transform 0.28s ease;
+
+  &:hover {
+    color: $color-white;
+    background: rgba($color-accent, 0.18);
+    border-color: rgba($color-accent, 0.34);
+    transform: translateY(-2px);
+  }
+}
+
+.phone__icon {
+  color: $color-accent;
+  font-size: 0.88rem;
 }
 
 .social-links {
   display: flex;
-  gap: 15px;
+  align-items: center;
+  gap: 6px;
 
   a {
-    font-weight: 600;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+
+    color: rgba($color-white, 0.78);
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+
+    background: rgba($color-white, 0.06);
+    border: 1px solid rgba($color-white, 0.16);
+
+    transition:
+      color 0.28s ease,
+      background 0.28s ease,
+      border-color 0.28s ease,
+      transform 0.28s ease,
+      box-shadow 0.28s ease;
+
     &:hover {
-      color: $color-accent;
+      color: $color-primary-dark;
+      background: $color-accent;
+      border-color: $color-accent;
+      transform: translateY(-3px) rotate(-4deg);
+      box-shadow: 0 12px 28px rgba($color-accent, 0.28);
     }
+  }
+}
+
+.whatsapp-btn {
+  position: relative;
+  min-width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+
+  background: $color-accent;
+  color: $color-primary-dark;
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+
+  box-shadow: 0 16px 34px rgba($color-accent, 0.32);
+
+  transition:
+    transform 0.28s ease,
+    background 0.28s ease,
+    color 0.28s ease,
+    box-shadow 0.28s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: inherit;
+    border: 1px solid rgba($color-accent, 0.38);
+    opacity: 0;
+    transform: scale(0.8);
+    transition:
+      opacity 0.28s ease,
+      transform 0.28s ease;
+  }
+
+  &:hover {
+    background: $color-accent-hover;
+    color: $color-white;
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 20px 42px rgba($color-accent, 0.42);
+
+    &::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@include respond-to(1060px) {
+  .nav-links {
+    gap: 2px;
+
+    a {
+      padding: 0 10px;
+      font-size: 0.7rem;
+    }
+  }
+
+  .phone span:last-child {
+    display: none;
+  }
+}
+
+@include respond-to($bp-tablet) {
+  .header {
+    top: 12px;
+  }
+
+  .navbar {
+    width: calc(100% - 24px);
+    min-height: 66px;
+    padding: 0 12px 0 16px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .logo__text {
+    font-size: 0.82rem;
+
+    small {
+      font-size: 0.54rem;
+    }
+  }
+
+  .phone {
+    display: none;
+  }
+}
+
+@include respond-to(520px) {
+  .social-links {
+    display: none;
+  }
+
+  .logo__mark {
+    width: 38px;
+    height: 38px;
+  }
+
+  .whatsapp-btn {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
   }
 }

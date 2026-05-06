@@ -1,25 +1,45 @@
 ---
 import './Header.scss';
 ---
+
 <header class="header">
   <nav class="navbar container">
-    <a href="/" class="logo">MEMORIES</a>
-    
+    <a href="/" class="logo" aria-label="Memories Travel Perú">
+      <span class="logo__mark">M</span>
+      <span class="logo__text">
+        MEMORIES
+        <small>Travel Perú</small>
+      </span>
+    </a>
+
     <ul class="nav-links">
-      <li><a href="/packages">PACKAGES</a></li>
-      <li><a href="/tours">TOURS</a></li>
-      <li><a href="/flights">FLIGHTS</a></li>
-      <li><a href="/about">ABOUT US</a></li>
-      <li><a href="/blogs">BLOGS</a></li>
+      <li><a href="/packages">Packages</a></li>
+      <li><a href="/tours">Tours</a></li>
+      <li><a href="/flights">Flights</a></li>
+      <li><a href="/about">About us</a></li>
+      <li><a href="/blogs">Blogs</a></li>
     </ul>
 
-    <div class="header-contact">
-      <span class="phone">+51 984 544 245</span>
+    <div class="header-actions">
+      <a href="tel:+51984544245" class="phone">
+        <span class="phone__icon">☎</span>
+        <span>+51 984 544 245</span>
+      </a>
+
       <div class="social-links">
-        <a href="#">IG</a>
-        <a href="#">FB</a>
-        <a href="#">WA</a>
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Facebook">FB</a>
       </div>
+
+      <a
+        href="https://wa.me/51984544245"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="whatsapp-btn"
+        aria-label="Contactar por WhatsApp"
+      >
+        WA
+      </a>
     </div>
   </nav>
 </header>
