@@ -12,6 +12,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^7.0.4",
     "@astrojs/react": "^4.4.2",
     "@tanstack/react-query": "^5.99.2",
     "@types/react": "^19.2.14",
