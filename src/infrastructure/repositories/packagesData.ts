@@ -26,8 +26,16 @@ export const packagesData: Package[] = [
             { name: 'Laguna Humantay', slug: 'laguna-humantay' }
         ],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/machu-picchu1.webp',
+
+        gallery: [
+            '/images/lima/catedral-de-lima.webp',
+            '/images/ica/PARACAS.webp',
+            '/images/ica/laguna-huacachina.webp',
+            '/images/cusco/machu-picchu3.webp',
+            '/images/cusco/laguna-humantay.webp',
+            '/images/cusco/valle-sagrada.webp',
+        ],
 
         features: [
             "City tour en Lima",
@@ -385,8 +393,16 @@ export const packagesData: Package[] = [
             { name: "Machu Picchu", slug: "machu-picchu" }
         ],
 
-        imageUrl: ' ',
-        gallery: [],
+        imageUrl: '/images/cusco/cuscoPort.webp',
+
+        gallery: [
+            '/images/cusco/moray.webp',
+            '/images/cusco/valle-sagrado_.webp',
+            '/images/cusco/MACHU_PICCHU.webp',
+            '/images/cusco/Ollantaytambo-Cusco.webp',
+            '/images/cusco/Moray-Salineras.webp',
+            '/images/cusco/Tren.webp'
+        ],
 
         features: [
             "City Tour en Cusco",
@@ -621,8 +637,24 @@ export const packagesData: Package[] = [
             { name: "Machu Picchu", slug: "machu-picchu" }
         ],
 
-        imageUrl: ' ',
-        gallery: [],
+        imageUrl: '/images/lima/paquetes-cusco-arequipa-lima01.webp',
+
+        gallery: [
+            '/images/lima/lima2.webp',
+            '/images/ica/nazca1.webp',
+            '/images/ica/laguna-huacachina.webp',
+            '/images/ica/vehiculos-huacachina.webp',
+            '/images/ica/Sandboard.webp',
+            '/images/puno/Lake-Titicaca-.webp',
+            '/images/puno/puno2.webp',
+            '/images/puno/Puno6.webp',
+            '/images/puno/puno1.webp',
+            '/images/arequipa/plaza-arequipa.webp',
+            '/images/arequipa/mirador-arequipa.webp',
+            '/images/cusco/huayna-picchu.webp',
+            '/images/cusco/cusco1.webp',
+            '/images/cusco/machu-picchu3.webp',
+        ],
 
         features: [
             "13 días / 12 noches de aventura completa",
@@ -992,8 +1024,19 @@ export const packagesData: Package[] = [
             { name: "Puno", slug: "puno" }
         ],
 
-        imageUrl: ' ',
-        gallery: [],
+        imageUrl: '/images/puno/puno_Cuscoviajes.webp',
+
+        gallery: [
+            '/images/cusco/callesCusco.webp',
+            '/images/cusco/valle-sagrado2.webp',
+            '/images/cusco/Koricancha.webp',
+            '/images/cusco/mapi2.webp',
+            '/images/cusco/aguas-termales.webp',
+            '/images/puno/puno4.webp',
+            '/images/puno/punoUros.webp',
+            '/images/puno/isla-uros.webp',
+            '/images/puno/isla-taquile-1.webp',
+        ],
 
         features: [
             'Hoteles incluidos',
@@ -1290,8 +1333,21 @@ export const packagesData: Package[] = [
             { name: 'Laguna Humantay', slug: 'laguna-humantay' }
         ],
 
-        imageUrl: ' ',
-        gallery: [],
+        imageUrl: '/images/lima/LimaIcaCusco.webp',
+
+        gallery: [
+            '/images/lima/plaza-mayorLima.webp',
+            '/images/lima/lima3.webp',
+            '/images/ica/paracas-.webp',
+            '/images/ica/playa-de-paracas.webp',
+            '/images/ica/ica.png',
+            '/images/ica/ica1.webp',
+            '/images/cusco/cusco-plaza.webp',
+            '/images/cusco/portada-valle-sagrado.webp',
+            '/images/cusco/Machhu-Picchu.webp',
+            '/images/cusco/Montana-de-7-Colores.webp',
+            '/images/cusco/humantay.webp',
+        ],
 
         features: [
             'Hoteles incluidos',
@@ -1714,8 +1770,14 @@ export const packagesData: Package[] = [
             { name: 'Machu Picchu', slug: 'machu-picchu' }
         ],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/senderismo-cortas.webp',
+
+        gallery: [
+            '/images/cusco/caminosInka.webp',
+            '/images/cusco/Ollantaytambo-Cusco.webp',
+            '/images/cusco/MACHU_PICCHU.webp',
+            '/images/cusco/huayna-picchu.webp',
+        ],
 
         features: [
             'Equipo de camping',
@@ -1863,8 +1925,26 @@ export const packagesData: Package[] = [
             { name: 'Machu Picchu', slug: 'machu-picchu' }
         ],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/inkaJungle.webp',
+
+        gallery: [
+            '/images/cusco/Ollantaytambo-Cusco.webp',
+            '/images/cusco/Ollantaytambo-Cusco.webp',
+            '/images/cusco/portada-santa-teresa.webp',
+            '/images/cusco/hidroelectrica-machu-picchu.webp',
+            '/images/cusco/Machupichu2.webp',
+            '/images/cusco/aguas-calientes-portada.webp',
+        ],
+
+        features: [
+            'Biking de montaña',
+            'Caminata por selva tropical',
+            'Guía profesional de aventura',
+            'Alimentación incluida',
+            'Alojamientos incluidos',
+            'Aguas termales de Cocalmayo',
+            'Tour guiado en Machu Picchu'
+        ],
 
         highlights: [
             'Biking desde Abra Málaga',
@@ -2051,8 +2131,27 @@ export const packagesData: Package[] = [
             { name: 'Machu Picchu', slug: 'machu-picchu' }
         ],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/Machupicchu-y-Laguna-Humantay.webp',
+
+        gallery: [
+            '/images/cusco/Machupichu3.webp',
+            '/images/cusco/hidroelectrica-machupicchu-3.webp',
+            '/images/cusco/laguna-humantay1.webp',
+            '/images/cusco/aguas-termales.webp',
+            '/images/cusco/salkantay-mountain.webp',
+            '/images/cusco/Machupichu2.webp'
+        ],
+
+        features: [
+            'Equipo de camping',
+            'Guía profesional de trekking',
+            'Alimentación completa incluida',
+            'Cocinero y arrieros',
+            'Caballos de carga',
+            'Ingreso a Laguna Humantay',
+            'Tour en Machu Picchu',
+            'Botiquín y oxígeno'
+        ],
 
         highlights: [
             'Laguna de Humantay',
@@ -2231,218 +2330,11 @@ export const packagesData: Package[] = [
         ],
 
         seoTitle: 'Trekking Salkantay 5 Días a Machu Picchu',
-        seoDescription: 'Trekking Salkantay 5 Días a Machu Picchu'
+        seoDescription: 'Trekking Salkantay 5 Días a Machu Picchu',
+        isActive: true,
+        isFeatured: true
+
         },
 
-        {
-        id: '9',
-        title: 'Trekking a Salkantay & Laguna de Humantay y Machu Picchu 5 Días / 4 Noches',
-        slug: 'trekking-a-salkantay-laguna-de-humantay-y-machu-picchu-5-dias-4-noches-duplicate',
-
-        description:
-            'El Salkantay Trek es una alternativa al Camino Inca que combina alta montaña, lagunas turquesas, selva y cultura hasta llegar a Machu Picchu. Incluye la visita a la Laguna de Humantay, el paso Salkantay a más de 4600 msnm, bosque nublado, café tropical y final en la ciudadela inca.',
-
-        shortDescription:
-            'Trekking de 5 días por Salkantay con Laguna Humantay y final en Machu Picchu.',
-
-        price: 0,
-        durationDays: 5,
-        durationNights: 4,
-
-        destinations: [
-            { name: 'Cusco', slug: 'cusco' },
-            { name: 'Mollepata', slug: 'mollepata' },
-            { name: 'Challacancha', slug: 'challacancha' },
-            { name: 'Laguna Humantay', slug: 'laguna-humantay' },
-            { name: 'Soraypampa', slug: 'soraypampa' },
-            { name: 'Paso Salkantay', slug: 'paso-salkantay' },
-            { name: 'Chaullay', slug: 'chaullay' },
-            { name: 'Lucmabamba', slug: 'lucmabamba' },
-            { name: 'Hidroeléctrica', slug: 'hidroelectrica' },
-            { name: 'Aguas Calientes', slug: 'aguas-calientes' },
-            { name: 'Machu Picchu', slug: 'machu-picchu' }
-        ],
-
-        imageUrl: '',
-        gallery: [],
-
-        highlights: [
-            'Laguna de Humantay',
-            'Paso Salkantay 4600 msnm',
-            'Caminata por selva y bosque nublado',
-            'Plantaciones de café tropical',
-            'Ruta Hidroeléctrica',
-            'Tour en Machu Picchu'
-        ],
-
-        itinerary: [
-            {
-            day: 1,
-            title: 'Cusco – Challacancha – Laguna Humantay – Soraypampa',
-            description:
-                'Inicio del trekking con visita a la Laguna de Humantay y campamento en Soraypampa rodeado de nevados.',
-            accommodations: 'Campamento en Soraypampa',
-            meals: ['Almuerzo', 'Cena'],
-            includes: [
-                'Transporte turístico de Cusco hacia Challacancha punto de inicio de caminata hacia la ruta Salkantay.',
-                'Equipo para campamento',
-                'Guía profesional con experiencia en Trekking español - inglés.',
-                'Cocinero de aventuras.',
-                'Arriero (encargado de transportar los caballos)',
-                'Caballos de carga (peso máximo de 4 a 5 kilos)',
-                'Almuerzo en Soraypampa',
-                'Cena en campamento de Soraypampa',
-                'Tickets de ingreso a la laguna de Humantay',
-                'Oxígeno y botiquín de primeros auxilios',
-                'Noche de Campamento'
-            ],
-            notIncludes: [
-                'Bastones de trekking (costo extra: 20.00 USD por los 4 días)',
-                'Matra inﬂable (costo extra: 20.00 USD por los 3 noches)',
-                'Seguro de viaje',
-                'Costes adicionales o retrasos fuera de nuestro control',
-                'Propinas para el staff en ruta'
-            ]
-            },
-            {
-            day: 2,
-            title: 'Soraypampa – Paso Salkantay – Chaullay',
-            description:
-                'Ascenso al punto más alto del trekking (Salkantay) y descenso hacia Chaullay.',
-            accommodations: 'Campamento en Chaullay',
-            meals: ['Desayuno', 'Almuerzo', 'Cena'],
-            includes: [
-                'Desayuno en el campamento de Soraypampa',
-                'Almuerzo en ruta (Huayracmachay)',
-                'Cena en campamento de Chaullay',
-                'Equipo de camping (carpa de cocina, comedor con mesas y sillas).',
-                'Guía profesional con experiencia en Trekking español - inglés.',
-                'Cocinero de aventuras.',
-                'Arriero (encargado de transportar los caballos)',
-                'Caballos de carga (peso máximo de 4 a 5 kilos)',
-                'NOche de Campamento en Chaullay',
-                'Oxígeno y Botiquín de primeros auxilios'
-            ],
-            notIncludes: [
-                'Caballo de Sila',
-                'Bastones de trekking (costo extra: 20.00 USD por los 4 días)',
-                'Matra inﬂable (costo extra: 20.00 USD por los 3 noches)',
-                'Seguro de viaje',
-                'Costes adicionales o retrasos fuera de nuestro control',
-                'Propinas para el staff en ruta'
-            ]
-            },
-            {
-            day: 3,
-            title: 'Chaullay – Playa Sahuayaco – Lucmabamba',
-            description:
-                'Descenso a la ceja de selva con vegetación tropical y campamento en Lucmabamba.',
-            accommodations: 'Campamento en Lucmabamba',
-            meals: ['Desayuno', 'Almuerzo', 'Cena'],
-            includes: [
-                'Desayuno en el campamento de Chaullay',
-                'Almuerzo en la playa-Sahuayaco',
-                'Cena en campamento de Lucmabamba',
-                'Equipo de camping (carpa de cocina, comedor con mesas y sillas).',
-                'Guía profesional con experiencia en Trekking español - inglés.',
-                'Cocinero de aventuras.',
-                'Campamento en Lucmabamba',
-                'Oxígeno y Botiquín de primeros auxilios'
-            ],
-            notIncludes: [
-                'Bastones de trekking (costo extra: 20.00 USD por los 4 días)',
-                'Matra inﬂable (costo extra: 20.00 USD por los 3 noches)',
-                'Seguro de viaje',
-                'Costes adicionales o retrasos fuera de nuestro control',
-                'Propinas para el staff en ruta'
-            ]
-            },
-            {
-            day: 4,
-            title: 'Lucmabamba – Llactapata – Hidroeléctrica – Aguas Calientes',
-            description:
-                'Ruta por camino inca hacia Llactapata y caminata hasta Aguas Calientes.',
-            accommodations: 'Hotel en Aguas Calientes',
-            meals: ['Desayuno', 'Almuerzo'],
-            includes: [
-                'Desayuno en el campamento de Lucmabamba',
-                'Box Lunch o almuerzo en ruta',
-                'Noche de hotel en Aguas Calientes',
-                'Guía profesional con experiencia en Trekking español - inglés.',
-                'Oxígeno y Botiquín de primeros auxilios'
-            ],
-            notIncludes: [
-                'Alimentos: Cena',
-                'Tickets de tren de Hidroeléctrica a Aguas Calientes',
-                'Seguro de viaje',
-                'Costes adicionales o retrasos fuera de nuestro control',
-                'Propinas para el staff'
-            ]
-            },
-            {
-            day: 5,
-            title: 'Aguas Calientes – Machu Picchu – Cusco',
-            description:
-                'Visita guiada a Machu Picchu y retorno a Cusco.',
-            meals: ['Desayuno'],
-            includes: [
-                'Desayuno en el hotel de Aguas Calientes',
-                'Guia turistico para el recorrido en Machu Picchu inglés / español',
-                'Tickets de ingreso a la maravilla del mundo Machu Picchu',
-                'Tickets de bus subida de Aguas Calientes a Machu Picchu y retorno de Machu Picchu a Aguas Calientes',
-                'Tickets de tren expeditions o the voyager de estacion Aguas Calientes a Ollantaytambo',
-                'Transporte turístico de estacion Ollantaytambo a Cusco',
-                'Asistencia permanente'
-            ],
-            notIncludes: [
-                'Tickets de ingreso a la montaña de Wayna Picchu y montaña de Machu Picchu',
-                'Costos extras adicionales',
-                'Alimentos: Almuerzo y Cena',
-                'Tickets de tren servicio Vistadome Observatory'
-            ]
-            }
-        ],
-
-        includes: [
-            'Transporte turístico',
-            'Guía profesional',
-            'Equipo de camping',
-            'Alimentación durante trekking',
-            'Ingreso a Humantay',
-            'Ingreso a Machu Picchu',
-            'Tren de retorno',
-            'Bus Consettur',
-            'Hotel en Aguas Calientes'
-        ],
-
-        notIncludes: [
-            'Seguro de viaje',
-            'Propinas',
-            'Bastones de trekking',
-            'Gastos personales',
-            'Servicios no mencionados'
-        ],
-
-        whatToBring: [
-            'Pasaporte original',
-            'Mochila pequeña Portadores de agua como Camelback',
-            'botas de montaña cómodas',
-            'crema solar / bloqueadores solares',
-            'crema hidratante para la cara',
-            'Repelente de insectos',
-            'Desinfectante de manos',
-            'Toallitas húmedas',
-            'cepillo de dientes y pasta',
-            'Papel higiénico',
-            'medicación personal',
-            'Sombrero para el sol',
-            'Ropa de lluvia',
-            'Cámara de fotos',
-            'Dinero extra para souvenirs, bebidas y propinas.',
-            'Medicamentos personales'
-        ],
-
-        seoTitle: 'Trekking Salkantay 5 Días a Machu Picchu',
-        seoDescription: 'Trekking Salkantay 5 Días a Machu Picchu'
-        }
+        
     ];

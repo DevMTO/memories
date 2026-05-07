@@ -164,6 +164,7 @@ export const toursData: Tour[] = [
         gallery: [
             '/images/cusco/machu-picchu3.webp',
             '/images/cusco/mapi2.webp',
+            '/images/cusco/montana-de-huaynapicchu.webp'
         ],
 
         features: [
@@ -269,6 +270,7 @@ export const toursData: Tour[] = [
         gallery: [
             '/images/cusco/valleSagrado.webp',
             '/images/cusco/MACHU_PICCHU.webp',
+            '/images/cusco/valle-sagrado2.webp'
         ],
 
         features: [
@@ -397,6 +399,7 @@ export const toursData: Tour[] = [
         gallery: [
             '/images/cusco/huayna-picchu.webp',
             '/images/cusco/Machhu-Picchu.webp',
+            '/images/cusco/machu-picchu3.webp'
         ],
 
         features: [
@@ -921,6 +924,7 @@ export const toursData: Tour[] = [
         gallery: [
             '/images/cusco/Moray-Salineras.webp',
             '/images/cusco/moray.webp',
+            '/images/cusco/maras-moray.webp'
         ],
 
         features: [
@@ -1368,6 +1372,7 @@ export const toursData: Tour[] = [
         gallery: [
             '/images/cusco/aguas-turquesas.webp',
             '/images/cusco/laguna-humantay.webp',
+            '/images/cusco/Las-Pozas-Turquesas.webp'
         ],
 
         features: [
@@ -1608,6 +1613,7 @@ export const toursData: Tour[] = [
         gallery: [
             '/images/cusco/montana-palcoyo (1).webp',
             '/images/cusco/palccoyo_1.webp',
+            '/images/cusco/montana-Palcoyo2.webp'
         ],
 
         features: [
@@ -1718,6 +1724,7 @@ export const toursData: Tour[] = [
         gallery: [
             '/images/cusco/Montana-de-7-Colores.webp',
             '/images/cusco/montana-7-colores.webp',
+            '/images/cusco/montana.webp'
         ],
 
         features: [
