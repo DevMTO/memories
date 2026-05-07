@@ -3,6 +3,6 @@ import react from '@astrojs/react';
 
 export default defineConfig({
   output: 'static',
-  base: process.env.NODE_ENV === 'production' ? '/memories/' : '/',
+  base: process.env.BASE_PATH || (process.env.NODE_ENV === 'production' ? '/memories/' : '/'),
   integrations: [react()],
 });
