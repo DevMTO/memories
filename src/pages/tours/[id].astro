@@ -8,7 +8,7 @@ import './_detail.scss';
 export async function getStaticPaths() {
   const tours = await getToursUseCase.executeAll();
   return tours.map((tour) => ({
-    params: { id: tour.id },
+    params: { id: tour.slug },
   }));
 }
 
