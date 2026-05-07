@@ -1,14 +1,8 @@
-// @ts-check
-import { defineConfig } from "astro/config";
-import react from "@astrojs/react";
-import node from "@astrojs/node";
+import { defineConfig } from 'astro/config';
+import react from '@astrojs/react';
 
 export default defineConfig({
-  output: "hybrid",
-
-  adapter: node({
-    mode: "standalone",
-  }),
-
+  output: 'static',
+  base: '/memories/',
   integrations: [react()],
 });

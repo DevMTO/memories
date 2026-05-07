@@ -1,9 +1,16 @@
 ---
-export const prerender = false;
+export const prerender = true;
 
 import Layout from '../../layouts/Layout.astro';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_detail.scss';
+
+export async function getStaticPaths() {
+  const tours = await getToursUseCase.executeAll();
+  return tours.map((tour) => ({
+    params: { id: tour.id },
+  }));
+}
 
 const { id } = Astro.params;
 
