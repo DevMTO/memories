@@ -22,8 +22,13 @@ export const toursData: Tour[] = [
         location: 'Cusco, Peru',
         cities: ['Cusco'],
 
-        imageUrl: '-------',
-        gallery: [],
+        imageUrl: '/images/cusco/ciudad-machu-picchu.webp',
+
+        gallery: [
+            '/images/cusco/cusco.png',
+            '/images/cusco/valle-sagrado_.webp',
+            '/images/cusco/valle-sagrada.webp',
+        ],
 
         features: [
             'Servicio compartido',
@@ -154,8 +159,12 @@ export const toursData: Tour[] = [
         location: 'Cusco, Peru',
         cities: ['Cusco'],
 
-        imageUrl: '--------',
-        gallery: [],
+        imageUrl: '/images/cusco/Machhu-Picchu.webp',
+
+        gallery: [
+            '/images/cusco/machu-picchu3.webp',
+            '/images/cusco/mapi2.webp',
+        ],
 
         features: [
             'Servicio personalizado',
@@ -255,8 +264,12 @@ export const toursData: Tour[] = [
         location: 'Cusco, Peru',
         cities: ['Cusco'],
 
-        imageUrl: '------------',
-        gallery: [],
+        imageUrl: '/images/cusco/valle-sagrado3.webp',
+
+        gallery: [
+            '/images/cusco/valleSagrado.webp',
+            '/images/cusco/MACHU_PICCHU.webp',
+        ],
 
         features: [
             'Servicio compartido',
@@ -379,8 +392,12 @@ export const toursData: Tour[] = [
         location: 'Cusco, Peru',
         cities: ['Cusco'],
 
-        imageUrl: '----------',
-        gallery: [],
+        imageUrl: '/images/cusco/wayna-picchu.webp',
+
+        gallery: [
+            '/images/cusco/huayna-picchu.webp',
+            '/images/cusco/Machhu-Picchu.webp',
+        ],
 
         features: [
             'Servicio privado',
@@ -484,9 +501,12 @@ export const toursData: Tour[] = [
         location: 'Arequipa, Peru',
         cities: ['Arequipa', 'Chivay'],
 
-        imageUrl: '',
+        imageUrl: '/images/arequipa/Canon-del-Colca-en-Arequipa.webp',
+
         gallery: [
-          
+            '/images/arequipa/Agua-termal.webp',
+            '/images/arequipa/Canon-del-Colca.webp',
+            '/images/arequipa/colca-arequipa.webp',
         ],
 
         features: [
@@ -586,9 +606,13 @@ export const toursData: Tour[] = [
         location: 'Cusco, Peru',
         cities: ['Cusco'],
 
-        imageUrl: '',
+        imageUrl: '/images/cusco/cusco1.webp',
+
         gallery: [
-        
+            '/images/cusco/Koricancha.webp',
+            '/images/cusco/qenqo.webp',
+            '/images/cusco/sacsayhuaman.webp',
+            '/images/cusco/tambomacha.webp',
         ],
 
         features: [
@@ -688,9 +712,12 @@ export const toursData: Tour[] = [
         location: 'Lima, Peru',
         cities: ['Lima'],
 
-        imageUrl: '',
+        imageUrl: '/images/lima/lima2.webp',
+
         gallery: [
-           
+            '/images/lima/catedral-de-lima.webp',
+            '/images/lima/miraflores.webp',
+            '/images/lima/Convento-de-San-Agustin.webp',
         ],
 
         features: [
@@ -785,8 +812,13 @@ export const toursData: Tour[] = [
         location: 'Puno, Peru',
         cities: ['Puno'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/puno/Puno6.webp',
+
+        gallery: [
+            '/images/puno/puno4.webp',
+            '/images/puno/puno2.webp',
+            '/images/puno/puno1.webp',
+        ],
 
         features: [
             'Servicio compartido',
@@ -884,8 +916,12 @@ export const toursData: Tour[] = [
         location: 'Cusco, Peru',
         cities: ['Cusco', 'Maras', 'Moray', 'Chinchero'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/maras-moray.webp',
+
+        gallery: [
+            '/images/cusco/Moray-Salineras.webp',
+            '/images/cusco/moray.webp',
+        ],
 
         features: [
             'Servicio compartido',
@@ -986,9 +1022,13 @@ export const toursData: Tour[] = [
         location: 'Lima, Peru',
         cities: ['Lima', 'Paracas', 'Ica', 'Huacachina', 'Nazca'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/ica/ica.png',
 
+        gallery: [
+            '/images/ica/ica1.webp',
+            '/images/ica/paracas1.webp',
+            '/images/ica/nazca1.webp',
+        ],
         features: [
             'Servicio compartido',
             'Guía bilingüe',
@@ -1105,14 +1145,19 @@ export const toursData: Tour[] = [
         durationDays: 1,
         durationNights: 0,
 
-        destinationName: 'Lima',
-        destinationSlug: 'lima',
+        destinationName: 'Ica',
+        destinationSlug: 'ica',
 
         location: 'Lima, Peru',
         cities: ['Lima', 'Paracas', 'Ica', 'Huacachina'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/ica/paracas1.webp',
+
+        gallery: [
+            '/images/ica/PARACAS.webp',
+            '/images/ica/laguna-huacachina.webp',
+            '/images/ica/islas-ballestas-paracas.webp',
+        ],
 
         features: [
             'Servicio compartido',
@@ -1215,8 +1260,13 @@ export const toursData: Tour[] = [
         location: 'Cusco, Peru',
         cities: ['Cusco', 'Pisac', 'Urubamba', 'Ollantaytambo', 'Chinchero'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/valle-sagrado_.webp',
+
+        gallery: [
+            '/images/cusco/pisaq.webp',
+            '/images/cusco/urubamba.webp',
+            '/images/cusco/Chinchero.webp',
+        ],
 
         features: [
             'Servicio compartido',
@@ -1313,8 +1363,12 @@ export const toursData: Tour[] = [
         location: 'Cusco, Peru',
         cities: ['Cusco', 'Mollepata'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/humantay.webp',
+
+        gallery: [
+            '/images/cusco/aguas-turquesas.webp',
+            '/images/cusco/laguna-humantay.webp',
+        ],
 
         features: [
             'Servicio compartido',
@@ -1420,8 +1474,13 @@ export const toursData: Tour[] = [
         location: 'Cusco',
         cities: ['Cusco', 'Ollantaytambo', 'Aguas Calientes'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/camino-inka.webp',
+
+        gallery: [
+            '/images/cusco/aguas-termales.webp',
+            '/images/cusco/MACHU_PICCHU.webp',
+            '/images/cusco/caminata-machu-pichu.webp',
+        ],
 
         features: [
             'Trekking Camino Inca corto',
@@ -1544,8 +1603,12 @@ export const toursData: Tour[] = [
         location: 'Cusco',
         cities: ['Cusco', 'Cusipata'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/Montana-palcoyo.webp',
+
+        gallery: [
+            '/images/cusco/montana-palcoyo (1).webp',
+            '/images/cusco/palccoyo_1.webp',
+        ],
 
         features: [
             'Caminata corta y fácil',
@@ -1650,8 +1713,12 @@ export const toursData: Tour[] = [
         location: 'Cusco',
         cities: ['Cusco', 'Cusipata'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/montaña_7Colores.webp',
+
+        gallery: [
+            '/images/cusco/Montana-de-7-Colores.webp',
+            '/images/cusco/montana-7-colores.webp',
+        ],
 
         features: [
             'Trekking de alta montaña',
@@ -1754,8 +1821,13 @@ export const toursData: Tour[] = [
         location: 'Cusco',
         cities: ['Cusco', 'Cusipata', 'Acomayo'],
 
-        imageUrl: '',
-        gallery: [],
+        imageUrl: '/images/cusco/waqrapukara.webp',
+
+        gallery: [
+            '/images/cusco/waqrapukara2.webp',
+            '/images/cusco/waqrapukara4.webp',
+            '/images/cusco/Waqrapukara3.webp',
+        ],
 
         features: [
             'Trekking de un día',
