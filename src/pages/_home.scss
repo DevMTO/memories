@@ -79,6 +79,18 @@
   background-position: center;
   color: $color-white;
   isolation: isolate;
+
+  @include respond-to($bp-tablet) {
+    min-height: 600px;
+  }
+
+  @include respond-to($bp-mobile) {
+    min-height: 500px;
+  }
+
+  @include respond-to(480px) {
+    min-height: 450px;
+  }
 }
 
 .home-hero__overlay {
@@ -127,6 +139,46 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
+
+  @include respond-to($bp-tablet) {
+    max-width: 450px;
+    padding-top: 60px;
+
+    h1 {
+      font-size: clamp(2.8rem, 5vw, 4.8rem);
+    }
+
+    p {
+      font-size: 0.76rem;
+    }
+  }
+
+  @include respond-to($bp-mobile) {
+    max-width: 100%;
+    padding-top: 40px;
+
+    h1 {
+      font-size: clamp(2rem, 8vw, 3.5rem);
+    }
+
+    p {
+      font-size: 0.7rem;
+      margin: 10px 0 16px;
+    }
+  }
+
+  @include respond-to(480px) {
+    padding-top: 30px;
+
+    h1 {
+      font-size: 2rem;
+      margin: 12px 0 2px;
+    }
+
+    p {
+      font-size: 0.65rem;
+    }
+  }
 }
 
 /* ===============================
@@ -136,6 +188,14 @@
   padding: 42px 0 48px;
   background: $color-white;
   text-align: center;
+
+  @include respond-to($bp-tablet) {
+    padding: 36px 0 40px;
+  }
+
+  @include respond-to($bp-mobile) {
+    padding: 28px 0 32px;
+  }
 }
 
 .recognitions-inner > span {
@@ -146,6 +206,11 @@
   font-weight: 900;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+
+  @include respond-to($bp-mobile) {
+    font-size: 0.6rem;
+    margin-bottom: 22px;
+  }
 }
 
 .recognitions-logos {
@@ -160,6 +225,25 @@
     object-fit: contain;
     filter: grayscale(0.15);
     opacity: 0.9;
+  }
+
+  @include respond-to($bp-tablet) {
+    gap: 50px;
+
+    img {
+      max-width: 72px;
+      max-height: 40px;
+    }
+  }
+
+  @include respond-to($bp-mobile) {
+    gap: 30px;
+    flex-wrap: wrap;
+
+    img {
+      max-width: 60px;
+      max-height: 34px;
+    }
   }
 }
 
@@ -179,6 +263,14 @@
       transparent 18px
     );
   color: $color-white;
+
+  @include respond-to($bp-tablet) {
+    padding: 80px 0;
+  }
+
+  @include respond-to($bp-mobile) {
+    padding: 60px 0;
+  }
 }
 
 .transform-grid {
@@ -186,6 +278,15 @@
   grid-template-columns: 1fr 0.95fr;
   gap: 86px;
   align-items: center;
+
+  @include respond-to($bp-tablet) {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  @include respond-to($bp-mobile) {
+    gap: 40px;
+  }
 }
 
 .transform-copy {
@@ -213,6 +314,18 @@
     color: rgba($color-white, 0.82);
     font-size: 0.9rem;
     line-height: 1.75;
+  }
+
+  @include respond-to($bp-mobile) {
+    h2 {
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      margin: 10px 0 14px;
+    }
+
+    p {
+      font-size: 0.82rem;
+      max-width: 100%;
+    }
   }
 }
 
@@ -319,6 +432,16 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 36px;
+
+  @include respond-to($bp-tablet) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+
+  @include respond-to($bp-mobile) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 }
 
 .home-tour-card {

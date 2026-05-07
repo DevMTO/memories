@@ -67,6 +67,14 @@ ul { list-style: none; }
   max-width: $container-max;
   margin: 0 auto;
   padding: 0 20px;
+
+  @include respond-to($bp-tablet) {
+    padding: 0 16px;
+  }
+
+  @include respond-to($bp-mobile) {
+    padding: 0 14px;
+  }
 }
 
 // ---- Typography Utilities ----
@@ -87,6 +95,11 @@ ul { list-style: none; }
   &--light {
     color: rgba($color-white, 0.7);
   }
+
+  @include respond-to($bp-mobile) {
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+  }
 }
 
 // ---- Buttons ----
@@ -98,6 +111,11 @@ ul { list-style: none; }
   font-size: 0.9rem;
   text-align: center;
   transition: $transition-default;
+
+  @include respond-to($bp-mobile) {
+    padding: 10px 18px;
+    font-size: 0.8rem;
+  }
 
   &-primary {
     background-color: $color-primary;

@@ -33,6 +33,10 @@
     object-fit: cover;
     transition: transform 0.7s ease;
   }
+
+  @include respond-to($bp-mobile) {
+    height: 200px;
+  }
 }
 
 .tour-card__badge {
@@ -47,10 +51,21 @@
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+
+  @include respond-to($bp-mobile) {
+    font-size: 0.6rem;
+    padding: 5px 12px;
+    top: 12px;
+    right: 12px;
+  }
 }
 
 .tour-card__body {
   padding: 24px;
+
+  @include respond-to($bp-mobile) {
+    padding: 18px;
+  }
 }
 
 .tour-card__location {
@@ -61,6 +76,11 @@
   font-weight: 900;
   letter-spacing: 0.15em;
   text-transform: uppercase;
+
+  @include respond-to($bp-mobile) {
+    font-size: 0.6rem;
+    margin-bottom: 10px;
+  }
 }
 
 .tour-card h3 {
@@ -76,6 +96,14 @@
     &:hover {
       color: $color-primary;
     }
+
+    @include respond-to($bp-tablet) {
+      font-size: 1.25rem;
+    }
+
+    @include respond-to($bp-mobile) {
+      font-size: 1.15rem;
+    }
   }
 }
 
@@ -89,6 +117,11 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+  @include respond-to($bp-mobile) {
+    font-size: 0.78rem;
+    min-height: 56px;
+  }
 }
 
 .tour-card__footer {
@@ -98,6 +131,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @include respond-to($bp-mobile) {
+    margin-top: 18px;
+    padding-top: 14px;
+  }
 }
 
 .tour-card__price {
