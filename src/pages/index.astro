@@ -20,7 +20,7 @@ const normalizeSlug = (value = '') =>
     .trim()
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[̀-ͯ]/g, '')
     .replace(/ñ/g, 'n')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
@@ -87,52 +87,75 @@ const displayDestinations = destinationPriority
 ---
 
 <Layout title="Memories Travel Perú | Agencia de viajes en Perú" mainClass="home-main">
-  <!-- HERO -->
+
+  <!-- ==================== HERO ==================== -->
   <section class="home-hero">
     <div class="home-hero__overlay"></div>
 
-    <div class="container home-hero__content reveal-up">
-      <span class="home-eyebrow">Agencia de viajes / Tour operador</span>
+    <div class="container home-hero__content">
+      <span class="home-eyebrow home-eyebrow--light">Agencia de viajes · Tour operador</span>
 
-      <h1>
+      <h1 class="hero-title">
         MEMORIES
-        <span>Travel Perú</span>
+        <em>Travel Perú</em>
       </h1>
 
-      <p>
-        Experiencias curadas y exclusivas. Conectamos tu espíritu con la esencia
-        viva y eterna del Perú.
+      <div class="hero-rule"></div>
+
+      <p class="hero-tagline">
+        Experiencias curadas y exclusivas. Conectamos tu espíritu<br />
+        con la esencia viva y eterna del Perú.
       </p>
 
-      <a href="/packages" class="home-btn home-btn--primary">
-        Design Trip
-      </a>
+      <div class="hero-actions">
+        <a href="/packages" class="home-btn home-btn--primary">Design Trip</a>
+        <a href="#home-tours" class="home-btn home-btn--ghost">Explorar Tours ↓</a>
+      </div>
     </div>
+
+    <div class="hero-stat-badge">
+      <span class="hero-stat-badge__num">500+</span>
+      <span class="hero-stat-badge__label">Viajeros<br />satisfechos</span>
+    </div>
+
+    <a href="#home-tours" class="hero-scroll" aria-label="Desplazarse hacia abajo">
+      <span class="hero-scroll__line"></span>
+      <span class="hero-scroll__text">SCROLL</span>
+    </a>
   </section>
 
-  <!-- RECOGNITIONS -->
+  <!-- ==================== RECOGNITIONS ==================== -->
   <section class="recognitions-section reveal-up">
-    <div class="container recognitions-inner">
+    <div class="recognitions-label-wrap container">
       <span>Reconocidos estratégicamente por</span>
-
-      <div class="recognitions-logos">
-        <img src="/images/mincetur.png" alt="Mincetur" />
-        <img src="/images/promperu.png" alt="PromPerú" />
-        <img src="/images/marcaperu.png" alt="Marca Perú" />
+    </div>
+    <div class="recognitions-marquee">
+      <div class="recognitions-track">
+        <img src="/images/mincetur.png"    alt="Mincetur" />
+        <img src="/images/promperu.png"    alt="PromPerú" />
+        <img src="/images/marcaperu.png"   alt="Marca Perú" />
         <img src="/images/tripadvisor.png" alt="Tripadvisor" />
+        <!-- Duplicate set for seamless loop -->
+        <img src="/images/mincetur.png"    alt="" aria-hidden="true" />
+        <img src="/images/promperu.png"    alt="" aria-hidden="true" />
+        <img src="/images/marcaperu.png"   alt="" aria-hidden="true" />
+        <img src="/images/tripadvisor.png" alt="" aria-hidden="true" />
       </div>
     </div>
   </section>
 
-  <!-- INTRO -->
+  <!-- ==================== TRANSFORM ==================== -->
   <section class="transform-section reveal-up">
     <div class="container transform-grid">
       <div class="transform-copy">
-        <span class="home-eyebrow">Experiencias exclusivas</span>
+        <div class="transform-copy__header">
+          <span class="section-num-label">01</span>
+          <span class="home-eyebrow">Experiencias exclusivas</span>
+        </div>
 
         <h2>
           Viajes Que
-          <span>Transforman</span>
+          <em>Transforman</em>
         </h2>
 
         <p>
@@ -141,20 +164,21 @@ const displayDestinations = destinationPriority
         </p>
 
         <div class="transform-stats">
-          <div>
-            <strong>Nuestros Tours</strong>
-            <span>Guías nativos certificados</span>
+          <div class="transform-stat">
+            <strong>Guías Nativos</strong>
+            <span>Certificados y bilingues</span>
           </div>
-
-          <div>
-            <strong>Sin Límites</strong>
+          <div class="transform-stat">
+            <strong>A Tu Medida</strong>
             <span>Personalización total</span>
+          </div>
+          <div class="transform-stat">
+            <strong>+12 Años</strong>
+            <span>Experiencia probada</span>
           </div>
         </div>
 
-        <a href="/destinations" class="text-link">
-          Ver más destinos →
-        </a>
+        <a href="/destinations" class="text-link">Ver más destinos →</a>
       </div>
 
       <div class="transform-image">
@@ -163,133 +187,129 @@ const displayDestinations = destinationPriority
     </div>
   </section>
 
-  <!-- TOURS -->
-  <section class="home-tours-section reveal-up">
+  <!-- ==================== TOURS ==================== -->
+  <section id="home-tours" class="home-tours-section reveal-up">
     <div class="container">
-      <div class="home-section-header home-section-header--center">
-        <span class="home-eyebrow home-eyebrow--dark">Experiencias exclusivas</span>
-        <h2>Nuestros Tours</h2>
+      <div class="home-section-header">
+        <div class="home-section-header__top">
+          <span class="section-num-label">02</span>
+          <span class="home-eyebrow home-eyebrow--dark">Experiencias exclusivas</span>
+        </div>
+        <h2>Nuestros <em>Tours</em></h2>
         <p>
-          Itinerarios diseñados meticulosamente para viajeros que buscan
-          autenticidad.
+          Itinerarios diseñados meticulosamente para viajeros que buscan autenticidad.
         </p>
       </div>
 
       <div class="home-tours-grid">
-      {
-        displayTours.map((tour, index) => {
-          const fallbackImages = [
-            "/images/cusco.png",
-            "/images/vinicunca.png",
-            "/images/lima.png",
-          ];
+        {
+          displayTours.map((tour, index) => {
+            const fallbackImages = [
+              "/images/cusco.png",
+              "/images/vinicunca.png",
+              "/images/lima.png",
+            ];
 
-          const imageUrl =
-            tour.imageUrl &&
-            tour.imageUrl.trim() !== "" &&
-            !tour.imageUrl.includes("---")
-              ? tour.imageUrl
-              : fallbackImages[index] || "/public/images/cusco/cusco.png";
+            const imageUrl =
+              tour.imageUrl &&
+              tour.imageUrl.trim() !== "" &&
+              !tour.imageUrl.includes("---")
+                ? tour.imageUrl
+                : fallbackImages[index] || "/images/cusco/cusco.png";
 
-          const priceLabel =
-            tour.price && tour.price > 0
-              ? `$ ${tour.price.toLocaleString()}`
-              : "A medida";
+            const priceLabel =
+              tour.price && tour.price > 0
+                ? `$ ${tour.price.toLocaleString()}`
+                : "A medida";
 
-          const durationLabel = tour.durationNights
-            ? `${tour.durationDays}D / ${tour.durationNights}N`
-            : `${tour.durationDays || 1} DÍA${tour.durationDays === 1 ? "" : "S"}`;
+            const durationLabel = tour.durationNights
+              ? `${tour.durationDays}D / ${tour.durationNights}N`
+              : `${tour.durationDays || 1} DÍA${tour.durationDays === 1 ? "" : "S"}`;
 
-          return (
-            <article class="home-tour-card">
-              <a href={`/tours/${tour.slug || tour.id}`} class="home-tour-card__image">
-                <img src={imageUrl} alt={tour.title} />
+            return (
+              <article class="home-tour-card">
+                <a href={`/tours/${tour.slug || tour.id}`} class="home-tour-card__link">
+                  <figure class="home-tour-card__figure">
+                    <img src={imageUrl} alt={tour.title} />
+                    <span class="home-tour-card__badge">{durationLabel}</span>
+                  </figure>
 
-                <span class="home-tour-card__badge">
-                  {durationLabel}
-                </span>
-              </a>
+                  <div class="home-tour-card__body">
+                    <span class="home-tour-card__location">
+                      {(tour.destinationName || tour.location || "Perú").toUpperCase()}
+                    </span>
 
-              <div class="home-tour-card__body">
-                <span class="home-tour-card__location">
-                  {(tour.destinationName || tour.location || "Perú").toUpperCase()}
-                </span>
+                    <h3>{tour.title}</h3>
 
-                <h3>
-                  <a href={`/tours/${tour.slug || tour.id}`}>
-                    {tour.title}
-                  </a>
-                </h3>
+                    <p>
+                      {tour.shortDescription ||
+                        tour.description ||
+                        "Descubre Perú con una experiencia diseñada a tu medida."}
+                    </p>
 
-                <p>
-                  {tour.shortDescription ||
-                    tour.description ||
-                    "Descubre Perú con una experiencia diseñada a tu medida."}
-                </p>
-
-                <div class="home-tour-card__footer">
-                  <div>
-                    <span>{tour.price && tour.price > 0 ? "Desde" : "Consultar"}</span>
-                    <strong>{priceLabel}</strong>
+                    <div class="home-tour-card__footer">
+                      <div class="home-tour-card__price">
+                        <span>{tour.price && tour.price > 0 ? "Desde" : "Consultar"}</span>
+                        <strong>{priceLabel}</strong>
+                      </div>
+                      <span class="tour-card-arrow">→</span>
+                    </div>
                   </div>
+                </a>
+              </article>
+            );
+          })
+        }
+      </div>
 
-                  <a href={`/tours/${tour.slug || tour.id}`} aria-label={`Ver ${tour.title}`}>
-                    →
-                  </a>
-                </div>
-              </div>
-            </article>
-          );
-        })
-      }
-    </div>
+      <div class="home-tours-footer">
+        <a href="/tours" class="home-btn home-btn--outline-dark">Ver todos los tours</a>
+      </div>
     </div>
   </section>
 
-  <!-- DESTINATIONS -->
-<section class="home-destinations-section reveal-up">
-  <div class="home-destinations-bg"></div>
-
-  <div class="container">
-    <div class="home-section-header destinations-header">
-      <div>
-        <span class="home-eyebrow home-eyebrow--dark">Colección 2026</span>
-        <h2>
-          Destinos
-          <span>Icónicos</span>
-        </h2>
+  <!-- ==================== DESTINATIONS ==================== -->
+  <section class="home-destinations-section reveal-up">
+    <div class="container">
+      <div class="home-section-header destinations-header">
+        <div>
+          <div class="home-section-header__top">
+            <span class="section-num-label">03</span>
+            <span class="home-eyebrow home-eyebrow--dark">Colección 2026</span>
+          </div>
+          <h2>Destinos <em>Icónicos</em></h2>
+        </div>
+        <a href="/destinations" class="destinations-link">Ver más destinos →</a>
       </div>
 
-      <a href="/destinations" class="destinations-link">
-        Ver más destinos
-      </a>
+      {
+        displayDestinations.length > 0 ? (
+          <div class="home-destinations-grid">
+            {displayDestinations.map((destination, index) => (
+              <a
+                href={`/destinations/${destination.slug}`}
+                class={`destination-card ${
+                  index === 0 ? 'destination-card--large' : index === 1 ? 'destination-card--wide' : ''
+                }`}
+              >
+                <img src={destination.imageUrl} alt={destination.name} />
+                <div class="destination-card__overlay"></div>
+                <div class="destination-card__content">
+                  <span class="destination-card__index">0{index + 1}</span>
+                  <h3>{destination.name}</h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="home-destinations-empty">
+            <p>No hay destinos disponibles en los paquetes activos.</p>
+          </div>
+        )
+      }
     </div>
+  </section>
 
-    {
-      displayDestinations.length > 0 ? (
-        <div class="home-destinations-grid">
-          {displayDestinations.map((destination, index) => (
-            <a
-              href={`/destinations/${destination.slug}`}
-              class={`destination-card ${
-                index === 0 ? 'destination-card--large' : index === 1 ? 'destination-card--wide' : ''
-              }`}
-            >
-              <img src={destination.imageUrl} alt={destination.name} />
-              <h3>{destination.name}</h3>
-            </a>
-          ))}
-        </div>
-      ) : (
-        <div class="home-destinations-empty">
-          <p>No hay destinos disponibles en los paquetes activos.</p>
-        </div>
-      )
-    }
-  </div>
-</section>
-
-  
 </Layout>
 
 <script>
@@ -306,27 +326,22 @@ const displayDestinations = destinationPriority
   };
 
   const revealObserver = new IntersectionObserver(revealCallback, {
-    threshold: 0.15,
-    rootMargin: "0px 0px -50px 0px",
+    threshold: 0.12,
+    rootMargin: "0px 0px -40px 0px",
   });
 
   document.querySelectorAll(".reveal-up").forEach((el) => {
     revealObserver.observe(el);
   });
-
 </script>
 
 <style is:global>
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   .reveal-up {
     opacity: 0;
-    transform: translateY(34px);
-    transition:
-      opacity 0.8s ease,
-      transform 0.8s ease;
+    transform: translateY(32px);
+    transition: opacity 0.85s ease, transform 0.85s ease;
   }
 
   .reveal-up.is-revealed {
