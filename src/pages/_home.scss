@@ -169,7 +169,7 @@ $font-display: 'Cormorant Garamond', #{$font-serif};
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: url('/images/hero.png') center 25% / cover no-repeat;
+  background: url('/images/hero.webp') center 25% / cover no-repeat;
   animation: heroBgZoom 26s ease-in-out infinite alternate;
 }
 
@@ -341,58 +341,41 @@ $font-display: 'Cormorant Garamond', #{$font-serif};
 }
 
 /* -----------------------------------------------
-   RECOGNITIONS  (marquee)
+   RECOGNITIONS  (static)
 ----------------------------------------------- */
 .recognitions-section {
-  padding: 28px 0;
+  padding: 44px 0;
   background: $color-white;
   border-top: 1px solid rgba($color-primary, 0.07);
   border-bottom: 1px solid rgba($color-primary, 0.07);
-  overflow: hidden;
 }
 
 .recognitions-label-wrap {
-  margin-bottom: 20px;
+  margin-bottom: 28px;
   text-align: center;
 
   span {
     color: $color-primary;
-    font-size: 0.58rem;
+    font-size: 0.78rem;
     font-weight: 900;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
   }
 }
 
-.recognitions-marquee {
-  overflow: hidden;
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 12%,
-    black 88%,
-    transparent 100%
-  );
-}
-
-@keyframes marqueeScroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-.recognitions-track {
+.recognitions-row {
   display: flex;
   align-items: center;
-  gap: 72px;
-  width: max-content;
-  animation: marqueeScroll 20s linear infinite;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 96px;
 
   img {
     flex-shrink: 0;
-    max-height: 42px;
-    max-width: 88px;
+    max-height: 88px;
+    max-width: 180px;
     object-fit: contain;
-    opacity: 0.7;
+    opacity: 0.8;
     filter: grayscale(0.1);
     transition: opacity 0.3s;
 
@@ -400,8 +383,8 @@ $font-display: 'Cormorant Garamond', #{$font-serif};
   }
 
   @include respond-to($bp-mobile) {
-    gap: 48px;
-    img { max-height: 34px; max-width: 70px; }
+    gap: 52px;
+    img { max-height: 62px; max-width: 132px; }
   }
 }
 

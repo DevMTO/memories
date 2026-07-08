@@ -92,7 +92,9 @@
 }
 
 .footer-logo {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
   margin-bottom: 18px;
   color: $color-white;
   font-family: $font-sans;
@@ -104,7 +106,19 @@
 
   &:hover {
     color: $color-accent;
+
+    .footer-logo-mark {
+      transform: rotate(-4deg);
+    }
   }
+}
+
+.footer-logo-mark {
+  display: block;
+  height: 46px;
+  width: 46px;
+  object-fit: contain;
+  transition: transform 0.25s ease;
 }
 
 .footer-brand p {
@@ -125,22 +139,25 @@
   margin-top: 22px;
 
   a {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: 1px solid rgba($color-white, 0.45);
     color: $color-white;
-    font-size: 0.68rem;
-    font-weight: 800;
     text-decoration: none;
     transition:
       background 0.25s ease,
       color 0.25s ease,
       border-color 0.25s ease,
       transform 0.25s ease;
+
+    svg {
+      width: 15px;
+      height: 15px;
+    }
 
     &:hover {
       background: $color-accent;
@@ -235,7 +252,13 @@
   }
 
   .footer-logo {
+    gap: 11px;
     font-size: 1.8rem;
+  }
+
+  .footer-logo-mark {
+    height: 38px;
+    width: 38px;
   }
 
   .footer-col a,

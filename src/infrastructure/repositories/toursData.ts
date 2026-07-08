@@ -28,6 +28,8 @@ export const toursData: Tour[] = [
             '/images/cusco/cusco.png',
             '/images/cusco/valle-sagrado_.webp',
             '/images/cusco/valle-sagrada.webp',
+            '/images/cusco/Ollantaytambo-Cusco.webp',
+            '/images/cusco/valle-sagrado1.webp',
         ],
 
         features: [

@@ -86,7 +86,11 @@ const displayDestinations = destinationPriority
   .filter(Boolean);
 ---
 
-<Layout title="Memories Travel Perú | Agencia de viajes en Perú" mainClass="home-main">
+<Layout
+  title="Memories Travel Perú | Agencia de viajes en Perú"
+  mainClass="home-main"
+  preloadImage="/images/hero.webp"
+>
 
   <!-- ==================== HERO ==================== -->
   <section class="home-hero">
@@ -129,18 +133,11 @@ const displayDestinations = destinationPriority
     <div class="recognitions-label-wrap container">
       <span>Reconocidos estratégicamente por</span>
     </div>
-    <div class="recognitions-marquee">
-      <div class="recognitions-track">
-        <img src="/images/mincetur.png"    alt="Mincetur" />
-        <img src="/images/promperu.png"    alt="PromPerú" />
-        <img src="/images/marcaperu.png"   alt="Marca Perú" />
-        <img src="/images/tripadvisor.png" alt="Tripadvisor" />
-        <!-- Duplicate set for seamless loop -->
-        <img src="/images/mincetur.png"    alt="" aria-hidden="true" />
-        <img src="/images/promperu.png"    alt="" aria-hidden="true" />
-        <img src="/images/marcaperu.png"   alt="" aria-hidden="true" />
-        <img src="/images/tripadvisor.png" alt="" aria-hidden="true" />
-      </div>
+    <div class="recognitions-row">
+      <img src="/images/mincetur.png"    alt="Mincetur" />
+      <img src="/images/promperu.png"    alt="PromPerú" />
+      <img src="/images/marcaperu.png"   alt="Marca Perú" />
+      <img src="/images/tripadvisor.png" alt="Tripadvisor" />
     </div>
   </section>
 

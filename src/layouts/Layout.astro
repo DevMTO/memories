@@ -8,9 +8,10 @@ interface Props {
   title: string;
   mainClass?: string;
   showQuoteForm?: boolean;
+  preloadImage?: string;
 }
 
-const { title, mainClass, showQuoteForm = true } = Astro.props;
+const { title, mainClass, showQuoteForm = true, preloadImage } = Astro.props;
 ---
 
 <!doctype html>
@@ -21,10 +22,13 @@ const { title, mainClass, showQuoteForm = true } = Astro.props;
       name="description"
       content="Memories Travel Peru - Experiencias exclusivas de viaje"
     />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/webp" href="/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-1.webp" />
     <meta name="generator" content={Astro.generator} />
     <title>{title} | Memories Travel Peru</title>
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />
+    )}
   </head>
 
   <body>
