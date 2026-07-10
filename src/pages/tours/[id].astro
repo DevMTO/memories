@@ -314,16 +314,23 @@ const getInitials = (name: string) =>
             </button>
 
             <div class="tour-gallery__side">
-              {galleryImages.slice(1).map((src, i) => (
-                <button
-                  type="button"
-                  class="lightbox-trigger"
-                  data-gallery-index={i + 1}
-                  aria-label={`Ampliar foto ${i + 2}`}
-                >
-                  <img src={src} alt={tour.title} loading="lazy" />
-                </button>
-              ))}
+              {galleryImages.slice(1, 5).map((src, i, arr) => {
+                const hiddenCount = galleryImages.length - 5;
+                const isLast = i === arr.length - 1;
+                return (
+                  <button
+                    type="button"
+                    class="lightbox-trigger"
+                    data-gallery-index={i + 1}
+                    aria-label={`Ampliar foto ${i + 2}`}
+                  >
+                    <img src={src} alt={tour.title} loading="lazy" />
+                    {isLast && hiddenCount > 0 && (
+                      <span class="tour-gallery__more">+{hiddenCount}</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </section>

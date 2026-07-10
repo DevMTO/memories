@@ -399,8 +399,21 @@
   gap: 12px;
 
   button {
+    position: relative;
     height: 204px;
   }
+}
+
+.tour-gallery__more {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba($color-primary-dark, 0.6);
+  color: $color-white;
+  font-family: $font-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
 /* ===============================

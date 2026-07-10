@@ -12,16 +12,30 @@
 /* ===============================
    HERO
 ================================ */
+@keyframes aboutHeroBgZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.07); }
+}
+
 .about-hero {
   position: relative;
   min-height: 560px;
   display: flex;
   align-items: center;
+  color: $color-white;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.about-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
   background:
     linear-gradient(rgba($color-primary-dark, 0.44), rgba($color-primary-dark, 0.56)),
     url('/images/about.png') center/cover no-repeat;
-  color: $color-white;
-  isolation: isolate;
+  animation: aboutHeroBgZoom 26s ease-in-out infinite alternate;
 }
 
 .about-hero__overlay {
@@ -236,7 +250,7 @@
   color: $color-white;
 
   h3 {
-    margin: 18px 0 12px;
+    margin: 4px 0 12px;
     color: $color-accent;
     font-family: $font-serif;
     font-size: 1.9rem;
@@ -251,9 +265,33 @@
   }
 }
 
+.mission-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
 .mission-card__icon {
-  color: rgba($color-white, 0.9);
-  font-size: 1.8rem;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba($color-white, 0.12);
+  color: $color-accent;
+
+  svg {
+    width: 23px;
+    height: 23px;
+  }
+}
+
+.mission-card__num {
+  font-family: $font-serif;
+  font-style: italic;
+  font-size: 1.7rem;
+  color: rgba($color-white, 0.25);
 }
 
 /* ===============================
@@ -278,9 +316,14 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 88px;
+  gap: 28px;
 
   article {
+    padding: 34px 32px;
+    border-radius: 12px;
+    background: #f7f7f7;
+    border: 1px solid rgba($color-primary-dark, 0.08);
+
     span {
       display: block;
       margin-bottom: 10px;
@@ -300,12 +343,28 @@
   }
 }
 
+.why-card__icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba($color-primary, 0.08);
+  color: $color-primary;
+
+  svg {
+    width: 23px;
+    height: 23px;
+  }
+}
+
 /* ===============================
    CUSCO INFO
 ================================ */
 .cusco-info-section {
-  padding: 0 0 80px;
-  background: $color-white;
+  padding: 88px 0 96px;
+  background: $color-primary-dark;
 }
 
 .cusco-info-grid {
@@ -315,15 +374,15 @@
   gap: 24px;
 
   article {
-    padding: 26px;
+    padding: 30px 28px;
     border-radius: 12px;
-    background: #f7f7f7;
-    border: 1px solid rgba($color-primary-dark, 0.08);
+    background: rgba($color-white, 0.06);
+    border: 1px solid rgba($color-white, 0.1);
 
     span {
       display: block;
       margin-bottom: 10px;
-      color: $color-primary;
+      color: $color-accent;
       font-size: 0.65rem;
       font-weight: 900;
       letter-spacing: 0.2em;
@@ -332,17 +391,33 @@
 
     h3 {
       margin: 0 0 12px;
-      color: $color-primary-dark;
+      color: $color-white;
       font-family: $font-serif;
       font-size: 1.5rem;
     }
 
     p {
       margin: 0;
-      color: $color-text-light;
+      color: rgba($color-white, 0.75);
       font-size: 0.82rem;
       line-height: 1.7;
     }
+  }
+}
+
+.cusco-info-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba($color-white, 0.1);
+  color: $color-accent;
+
+  svg {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -384,6 +459,10 @@
   .mission-section,
   .why-section {
     padding: 54px 0;
+  }
+
+  .cusco-info-section {
+    padding: 60px 0 68px;
   }
 
   .founder-card,
