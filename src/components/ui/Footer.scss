@@ -96,19 +96,15 @@
   align-items: center;
   gap: 14px;
   margin-bottom: 18px;
-  color: $color-white;
-  font-family: $font-sans;
-  font-size: 2.05rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
   text-decoration: none;
-  transition: color 0.25s ease;
 
   &:hover {
-    color: $color-accent;
-
     .footer-logo-mark {
       transform: rotate(-4deg);
+    }
+
+    .footer-logo-wordmark {
+      opacity: 0.85;
     }
   }
 }
@@ -119,6 +115,14 @@
   width: 46px;
   object-fit: contain;
   transition: transform 0.25s ease;
+}
+
+.footer-logo-wordmark {
+  display: block;
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  transition: opacity 0.25s ease;
 }
 
 .footer-brand p {
@@ -253,12 +257,15 @@
 
   .footer-logo {
     gap: 11px;
-    font-size: 1.8rem;
   }
 
   .footer-logo-mark {
     height: 38px;
     width: 38px;
+  }
+
+  .footer-logo-wordmark {
+    height: 20px;
   }
 
   .footer-col a,

@@ -1,13 +1,27 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ComingSoon from "../components/ui/ComingSoon.astro";
 ---
 
-<Layout title="Flights">
-  <section class="section">
-    <div class="container text-center">
-      <h1>Flights</h1>
-      <p>Book your flights with ease. Coming soon.</p>
-      <a href="/" class="btn btn-primary">Back to Home</a>
-    </div>
-  </section>
+<Layout title="Vuelos">
+  <ComingSoon
+    eyebrow="Muy pronto"
+    title="Estamos preparando tus vuelos"
+    message="Muy pronto podrás reservar tus vuelos directamente con nosotros. Mientras tanto, nuestro equipo puede ayudarte a cotizarlos a medida."
+  >
+    <svg
+      slot="icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M21 3 3 10.5l7 2.5 2.5 7L21 3Z"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linejoin="round"
+      />
+      <path d="M21 3 10.5 13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+    </svg>
+  </ComingSoon>
 </Layout>

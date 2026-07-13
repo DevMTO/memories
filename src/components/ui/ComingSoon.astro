@@ -1,0 +1,144 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  message: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  message,
+  ctaLabel = 'Explorar tours',
+  ctaHref = '/tours',
+} = Astro.props;
+---
+
+<section class="coming-soon">
+  <div class="container coming-soon__inner">
+    <div class="coming-soon__icon">
+      <slot name="icon" />
+    </div>
+
+    <span class="coming-soon__eyebrow">{eyebrow}</span>
+
+    <h1>{title}</h1>
+
+    <p>{message}</p>
+
+    <div class="coming-soon__actions">
+      <a href={ctaHref} class="coming-soon__btn">{ctaLabel}</a>
+      <a href="/" class="coming-soon__link">Volver al inicio</a>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+
+  .coming-soon {
+    padding: 140px 0 120px;
+    background: $color-background;
+    text-align: center;
+  }
+
+  .coming-soon__inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .coming-soon__icon {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba($color-primary, 0.08);
+    color: $color-primary;
+
+    :global(svg) {
+      width: 34px;
+      height: 34px;
+    }
+  }
+
+  .coming-soon__eyebrow {
+    display: inline-block;
+    margin-bottom: 14px;
+    color: $color-accent;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0 0 18px;
+    color: $color-primary-dark;
+    font-family: $font-serif;
+    font-style: italic;
+    font-size: clamp(2.2rem, 4.5vw, 3rem);
+    line-height: 1.15;
+  }
+
+  p {
+    margin: 0 auto 36px;
+    max-width: 460px;
+    color: $color-text-light;
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .coming-soon__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .coming-soon__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 32px;
+    border-radius: 999px;
+    background: $color-primary;
+    border: 1px solid $color-accent;
+    color: $color-white;
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+
+    &:hover {
+      background: $color-accent;
+      color: $color-primary-dark;
+      transform: translateY(-2px);
+    }
+  }
+
+  .coming-soon__link {
+    color: $color-text-light;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.25s ease;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .coming-soon {
+      padding: 100px 0 88px;
+    }
+  }
+</style>

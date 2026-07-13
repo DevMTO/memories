@@ -1,13 +1,28 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ComingSoon from "../components/ui/ComingSoon.astro";
 ---
 
-<Layout title="Our Blogs">
-  <section class="section">
-    <div class="container text-center">
-      <h1>Our Blogs</h1>
-      <p>Stories from our travels and expert tips. Coming soon.</p>
-      <a href="/" class="btn btn-primary">Back to Home</a>
-    </div>
-  </section>
+<Layout title="Blogs">
+  <ComingSoon
+    eyebrow="Muy pronto"
+    title="Historias que están por contarse"
+    message="Estamos escribiendo relatos de viaje, guías y recomendaciones de expertos para inspirar tu próxima aventura por el Perú. Vuelve pronto."
+  >
+    <svg
+      slot="icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 3.5h11l3 3v13.5a.5.5 0 0 1-.5.5H5.5a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5Z"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linejoin="round"
+      />
+      <path d="M16 3.5V6a.5.5 0 0 0 .5.5H19" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+      <path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+    </svg>
+  </ComingSoon>
 </Layout>
