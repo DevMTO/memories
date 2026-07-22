@@ -4,6 +4,7 @@ export const prerender = true;
 import Layout from '../../layouts/Layout.astro';
 import PackageCard from '../../components/PackageCard.astro';
 import TourCard from '../../components/TourCard.astro';
+import { sitePath } from '../../core/site-path';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_destination-detail.scss';
 
@@ -99,8 +100,10 @@ const destinationData: Record<string, {
 const destination = destinationData[destinationSlug];
 
 if (!destination) {
-  return Astro.redirect('/');
+  return Astro.redirect(sitePath('/'));
 }
+
+const destinationImage = sitePath(destination.imageUrl);
 
 const packagesRaw = await getToursUseCase.executePackages();
 const toursRaw = await getToursUseCase.executeAll();
@@ -172,7 +175,7 @@ const withSafeImage = (item: any, index: number) => ({
   mainClass="destination-detail-main"
   showQuoteForm={false}
 >
-  <section class="destination-hero" style={`background-image: url('${destination.imageUrl}');`}>
+  <section class="destination-hero" style={`background-image: url('${destinationImage}');`}>
     <div class="destination-hero__overlay"></div>
 
     <div class="container destination-hero__content">

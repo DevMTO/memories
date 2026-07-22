@@ -1,13 +1,14 @@
 ---
 import './Header.scss';
 import SocialIcons from './SocialIcons.astro';
+import { sitePath } from '../../core/site-path';
 
 const navItems = [
-  { href: '/packages', label: 'Packages' },
-  { href: '/tours', label: 'Tours' },
-  { href: '/flights', label: 'Flights' },
-  { href: '/about', label: 'About us' },
-  { href: '/blogs', label: 'Blogs' },
+  { href: sitePath('/packages'), label: 'Packages' },
+  { href: sitePath('/tours'), label: 'Tours' },
+  { href: sitePath('/flights'), label: 'Flights' },
+  { href: sitePath('/about'), label: 'About us' },
+  { href: sitePath('/blogs'), label: 'Blogs' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -43,16 +44,16 @@ const isActive = (href: string) =>
 
   <nav class="main-nav">
     <div class="container main-nav__inner">
-      <a href="/" class="logo" aria-label="Memories Travel Perú">
+      <a href={sitePath('/')} class="logo" aria-label="Memories Travel Perú">
         <img
-          src="/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-4.webp"
+          src={sitePath('/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-4.webp')}
           alt=""
           class="logo-mark"
           width="1080"
           height="1080"
         />
         <img
-          src="/images/LOGOTIPOS/LOGOTIPO-MEMORIES-TRAVEL-5.webp"
+          src={sitePath('/images/LOGOTIPOS/LOGOTIPO-MEMORIES-TRAVEL-5.webp')}
           alt="Memories Travel"
           class="logo-wordmark"
           width="1080"

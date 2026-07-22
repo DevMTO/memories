@@ -1,5 +1,6 @@
 ---
 import './Footer.scss';
+import { sitePath } from '../../core/site-path';
 ---
 
 <footer class="footer">
@@ -9,16 +10,16 @@ import './Footer.scss';
     <div class="footer-content container">
       <div class="footer-grid">
         <div class="footer-col footer-brand">
-          <a href="/" class="footer-logo" aria-label="Memories Travel Perú">
+          <a href={sitePath('/')} class="footer-logo" aria-label="Memories Travel Perú">
             <img
-              src="/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-4.webp"
+              src={sitePath('/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-4.webp')}
               alt=""
               class="footer-logo-mark"
               width="1080"
               height="1080"
             />
             <img
-              src="/images/LOGOTIPOS/LOGOTIPO-MEMORIES-TRAVEL-5.webp"
+              src={sitePath('/images/LOGOTIPOS/LOGOTIPO-MEMORIES-TRAVEL-5.webp')}
               alt="Memories Travel"
               class="footer-logo-wordmark"
               width="1080"
@@ -60,20 +61,20 @@ import './Footer.scss';
         <div class="footer-col">
           <h4>Explorar</h4>
           <ul>
-            <li><a href="/destinations">Destinos</a></li>
-            <li><a href="/tours">Experiencias</a></li>
-            <li><a href="/hotels">Hoteles</a></li>
-            <li><a href="/blogs">Blogs</a></li>
+            <li><a href={sitePath('/destinations')}>Destinos</a></li>
+            <li><a href={sitePath('/tours')}>Experiencias</a></li>
+            <li><a href={sitePath('/hotels')}>Hoteles</a></li>
+            <li><a href={sitePath('/blogs')}>Blogs</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
           <h4>Empresa</h4>
           <ul>
-            <li><a href="/about">Quiénes Somos</a></li>
-            <li><a href="/terms">Términos Y Condiciones</a></li>
-            <li><a href="/privacy">Política De Privacidad</a></li>
-            <li><a href="/claims-book">Libro De Reclamaciones</a></li>
+            <li><a href={sitePath('/about')}>Quiénes Somos</a></li>
+            <li><a href={sitePath('/terms')}>Términos Y Condiciones</a></li>
+            <li><a href={sitePath('/privacy')}>Política De Privacidad</a></li>
+            <li><a href={sitePath('/claims-book')}>Libro De Reclamaciones</a></li>
           </ul>
         </div>
 

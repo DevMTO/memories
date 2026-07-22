@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { sitePath } from '../core/site-path';
 import './_about.scss';
 ---
 
@@ -57,7 +58,7 @@ import './_about.scss';
       </div>
 
       <div class="founder-card">
-        <img src="/images/luzmillattito.png" alt="Luzmilla Ttito - Fundadora de Memories Travel Perú" />
+        <img src={sitePath('/images/luzmillattito.png')} alt="Luzmilla Ttito - Fundadora de Memories Travel Perú" />
 
         <div class="founder-card__content">
           <span>Fundadora & CEO</span>

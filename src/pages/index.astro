@@ -3,6 +3,7 @@ export const prerender = true;
 
 import Layout from "../layouts/Layout.astro";
 import { getToursUseCase } from "../infrastructure/di";
+import { sitePath } from "../core/site-path";
 import "./_home.scss";
 
 const featuredTours = await getToursUseCase.executeFeatured();
@@ -112,7 +113,7 @@ const displayDestinations = destinationPriority
       </p>
 
       <div class="hero-actions">
-        <a href="/packages" class="home-btn home-btn--primary">Design Trip</a>
+        <a href={sitePath('/packages')} class="home-btn home-btn--primary">Design Trip</a>
         <a href="#home-tours" class="home-btn home-btn--ghost">Explorar Tours ↓</a>
       </div>
     </div>
@@ -134,10 +135,10 @@ const displayDestinations = destinationPriority
       <span>Reconocidos estratégicamente por</span>
     </div>
     <div class="recognitions-row">
-      <img src="/images/mincetur.png"    alt="Mincetur" />
-      <img src="/images/promperu.png"    alt="PromPerú" />
-      <img src="/images/marcaperu.png"   alt="Marca Perú" />
-      <img src="/images/tripadvisor.png" alt="Tripadvisor" />
+      <img src={sitePath('/images/mincetur.png')}    alt="Mincetur" />
+      <img src={sitePath('/images/promperu.png')}    alt="PromPerú" />
+      <img src={sitePath('/images/marcaperu.png')}   alt="Marca Perú" />
+      <img src={sitePath('/images/tripadvisor.png')} alt="Tripadvisor" />
     </div>
   </section>
 
@@ -175,11 +176,11 @@ const displayDestinations = destinationPriority
           </div>
         </div>
 
-        <a href="/destinations" class="text-link">Ver más destinos →</a>
+        <a href={sitePath('/destinations')} class="text-link">Ver más destinos →</a>
       </div>
 
       <div class="transform-image">
-        <img src="/images/viajes.png" alt="Viajes que transforman" />
+        <img src={sitePath('/images/viajes.png')} alt="Viajes que transforman" />
       </div>
     </div>
   </section>
@@ -225,9 +226,9 @@ const displayDestinations = destinationPriority
 
             return (
               <article class="home-tour-card">
-                <a href={`/tours/${tour.slug || tour.id}`} class="home-tour-card__link">
+                <a href={sitePath(`/tours/${tour.slug || tour.id}`)} class="home-tour-card__link">
                   <figure class="home-tour-card__figure">
-                    <img src={imageUrl} alt={tour.title} />
+                    <img src={sitePath(imageUrl)} alt={tour.title} />
                     <span class="home-tour-card__badge">{durationLabel}</span>
                   </figure>
 
@@ -260,7 +261,7 @@ const displayDestinations = destinationPriority
       </div>
 
       <div class="home-tours-footer">
-        <a href="/tours" class="home-btn home-btn--outline-dark">Ver todos los tours</a>
+        <a href={sitePath('/tours')} class="home-btn home-btn--outline-dark">Ver todos los tours</a>
       </div>
     </div>
   </section>
@@ -276,7 +277,7 @@ const displayDestinations = destinationPriority
           </div>
           <h2>Destinos <em>Icónicos</em></h2>
         </div>
-        <a href="/destinations" class="destinations-link">Ver más destinos →</a>
+        <a href={sitePath('/destinations')} class="destinations-link">Ver más destinos →</a>
       </div>
 
       {
@@ -284,12 +285,12 @@ const displayDestinations = destinationPriority
           <div class="home-destinations-grid">
             {displayDestinations.map((destination, index) => (
               <a
-                href={`/destinations/${destination.slug}`}
+                href={sitePath(`/destinations/${destination.slug}`)}
                 class={`destination-card ${
                   index === 0 ? 'destination-card--large' : index === 1 ? 'destination-card--wide' : ''
                 }`}
               >
-                <img src={destination.imageUrl} alt={destination.name} />
+                <img src={sitePath(destination.imageUrl)} alt={destination.name} />
                 <div class="destination-card__overlay"></div>
                 <div class="destination-card__content">
                   <span class="destination-card__index">0{index + 1}</span>

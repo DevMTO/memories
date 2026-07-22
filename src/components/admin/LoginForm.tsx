@@ -42,7 +42,7 @@ function LoginContent() {
       `}</style>
       
       <img
-        src="/images/IMAGOTIPOS/IMAGOTIPO-MEMORIES-TRAVEL-1.webp"
+        src={`${import.meta.env.BASE_URL}images/IMAGOTIPOS/IMAGOTIPO-MEMORIES-TRAVEL-1.webp`}
         alt="Memories Travel"
         className="login-logo"
         width={1080}

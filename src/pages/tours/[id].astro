@@ -2,6 +2,7 @@
 export const prerender = true;
 
 import Layout from '../../layouts/Layout.astro';
+import { sitePath } from '../../core/site-path';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_detail.scss';
 
@@ -21,7 +22,7 @@ const tour =
     : null;
 
 if (!tour) {
-  return Astro.redirect('/tours');
+  return Astro.redirect(sitePath('/tours'));
 }
 
 const features = tour.features ?? [];
@@ -36,8 +37,8 @@ const heroImage =
   tour.imageUrl &&
   tour.imageUrl.trim() !== '' &&
   !tour.imageUrl.includes('---')
-    ? tour.imageUrl
-    : '/images/cusco/cusco.png';
+    ? sitePath(tour.imageUrl)
+    : sitePath('/images/cusco/cusco.png');
 
 const durationDays = tour.durationDays || 1;
 const durationNights = tour.durationNights || 0;
@@ -54,14 +55,15 @@ const destinationName = tour.destinationName || tour.location || 'Perú';
 
 const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`;
 
-const galleryImages =
+const galleryImages = (
   gallery.length > 0
     ? gallery
     : [
         '/images/cusco/cusco.png',
         '/images/hero.webp',
         '/images/lima/lima.png',
-      ];
+      ]
+).map(sitePath);
 
 const getDayImages = (dayIndex: number) => {
   if (galleryImages.length === 0) return [];

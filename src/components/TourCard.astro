@@ -1,5 +1,6 @@
 ---
 import type { Tour } from '../core/domain/models';
+import { sitePath } from '../core/site-path';
 import './TourCard.scss';
 
 interface Props {
@@ -31,12 +32,13 @@ const priceLabel =
     ? `$ ${tour.price.toLocaleString()}`
     : 'A medida';
 
-const detailUrl = `/tours/${tour.slug || tour.id}`;
+const detailUrl = sitePath(`/tours/${tour.slug || tour.id}`);
+const resolvedImageUrl = sitePath(imageUrl);
 ---
 
 <article class="tour-card">
   <a href={detailUrl} class="tour-card__image">
-    <img src={imageUrl} alt={tour.title} />
+    <img src={resolvedImageUrl} alt={tour.title} />
 
     <span class="tour-card__badge">
       {durationLabel}

@@ -4,6 +4,7 @@ export const prerender = true;
 import Layout from '../layouts/Layout.astro';
 import PackageCard from '../components/PackageCard.astro';
 import { getToursUseCase } from '../infrastructure/di';
+import { sitePath } from '../core/site-path';
 import './_packages.scss';
 
 const url = Astro.url;
@@ -155,7 +156,7 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
               Buscar
             </button>
 
-            <a href="/packages" class="filter-reset">
+            <a href={sitePath('/packages')} class="filter-reset">
               Limpiar filtros
             </a>
           </div>

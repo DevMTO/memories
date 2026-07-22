@@ -1,5 +1,6 @@
 ---
 import type { Package } from '../core/domain/models';
+import { sitePath } from '../core/site-path';
 import './PackageCard.scss';
 
 interface Props {
@@ -32,11 +33,14 @@ const priceLabel =
   pkg.price && pkg.price > 0
     ? `$ ${pkg.price.toLocaleString()}`
     : 'A medida';
+
+const detailUrl = sitePath(`/packages/${pkg.slug || pkg.id}`);
+const resolvedImageUrl = sitePath(imageUrl);
 ---
 
 <article class="package-card">
-  <a href={`/packages/${pkg.slug || pkg.id}`} class="package-card__image">
-    <img src={imageUrl} alt={pkg.title} />
+  <a href={detailUrl} class="package-card__image">
+    <img src={resolvedImageUrl} alt={pkg.title} />
 
     <span class="package-card__badge">
       {durationLabel}
@@ -49,7 +53,7 @@ const priceLabel =
     </span>
 
     <h3>
-      <a href={`/packages/${pkg.slug || pkg.id}`}>
+      <a href={detailUrl}>
         {pkg.title}
       </a>
     </h3>
@@ -63,7 +67,7 @@ const priceLabel =
       </div>
 
       <a
-        href={`/packages/${pkg.slug || pkg.id}`}
+        href={detailUrl}
         class="package-card__arrow"
         aria-label={`Ver ${pkg.title}`}
       >

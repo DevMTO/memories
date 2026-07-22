@@ -2,6 +2,7 @@
 export const prerender = true;
 
 import Layout from '../../layouts/Layout.astro';
+import { sitePath } from '../../core/site-path';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_package-detail.scss';
 
@@ -24,7 +25,7 @@ const pkg =
     : null;
 
 if (!pkg) {
-  return Astro.redirect('/packages');
+  return Astro.redirect(sitePath('/packages'));
 }
 
 const destinations = pkg.destinations ?? [];
@@ -39,8 +40,8 @@ const heroImage =
   pkg.imageUrl &&
   pkg.imageUrl.trim() !== '' &&
   !pkg.imageUrl.includes('---')
-    ? pkg.imageUrl
-    : '/images/cusco/cusco.png';
+    ? sitePath(pkg.imageUrl)
+    : sitePath('/images/cusco/cusco.png');
 
 const durationDays = pkg.durationDays || 1;
 const durationNights = pkg.durationNights || 0;
@@ -60,14 +61,15 @@ const destinationText =
 
 const whatsappMessage = `Hola, quiero información sobre el paquete: ${pkg.title}`;
 
-const galleryImages =
+const galleryImages = (
   gallery.length > 0
     ? gallery
     : [
         '/images/cusco/cusco.png',
         '/images/hero.webp',
         '/images/lima/lima.png',
-      ];
+      ]
+).map(sitePath);
 
 const getDayImages = (dayIndex: number) => {
   if (galleryImages.length === 0) return [];
