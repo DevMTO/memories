@@ -1,0 +1,33 @@
+@use '../../styles/variables' as *;
+
+.quote-fab {
+  position: fixed;
+  right: clamp(18px, 3vw, 42px);
+  bottom: clamp(18px, 3vw, 36px);
+  z-index: 990;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 50px;
+  padding: 0 17px 0 14px;
+  border: 1px solid rgba($color-white, .55);
+  border-radius: 999px;
+  background: $color-primary-dark;
+  box-shadow: 0 14px 30px rgba($color-primary-dark, .3);
+  color: $color-white;
+  font-size: .67rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transition: opacity .25s ease, transform .25s ease, visibility .25s ease, background .2s ease;
+
+  svg { width: 21px; height: 21px; color: $color-accent; }
+  &:hover { background: $color-primary; transform: translateY(-3px); }
+  &:focus-visible { outline: 3px solid $color-accent; outline-offset: 3px; }
+  &.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(12px); }
+}
+
+@include respond-to($bp-mobile) {
+  .quote-fab { right: 16px; bottom: 16px; width: 50px; padding: 0; justify-content: center; }
+  .quote-fab span { display: none; }
+}

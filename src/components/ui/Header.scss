@@ -89,11 +89,65 @@
   }
 }
 
+.header-top__actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 4px 3px 14px;
+  border-left: 1px solid rgba($color-white, 0.25);
+}
+
+.language-switcher__icon {
+  width: 17px;
+  height: 17px;
+  color: $color-accent;
+  flex-shrink: 0;
+}
+
+.language-switcher__options {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid rgba($color-white, 0.22);
+  border-radius: 999px;
+  background: rgba($color-primary-dark, 0.16);
+}
+
+.language-switcher__button {
+  min-width: 27px;
+  min-height: 22px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba($color-white, 0.72);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+
+  &[aria-pressed='true'],
+  &:hover {
+    border-color: rgba($color-accent, 0.76);
+    background: rgba($color-accent, 0.16);
+    color: $color-white;
+  }
+}
+
+.mobile-language-switcher {
+  display: none;
+}
+
 /* ===============================
    MAIN NAV
 ================================ */
 .main-nav {
-  height: 72px;
+  height: 96px;
   border-bottom: 1px solid rgba($color-white, 0.12);
 }
 
@@ -108,37 +162,21 @@
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  width: fit-content;
   text-decoration: none;
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease;
 
   &:hover {
     transform: translateY(-1px);
-
-    .logo-mark {
-      transform: rotate(-4deg);
-    }
-
-    .logo-wordmark {
-      opacity: 0.85;
-    }
+    opacity: 0.86;
   }
 }
 
-.logo-mark {
+.logo-image {
   display: block;
-  height: 38px;
-  width: 38px;
+  width: 135px;
+  height: auto;
   object-fit: contain;
-  transition: transform 0.25s ease;
-}
-
-.logo-wordmark {
-  display: block;
-  height: 20px;
-  width: auto;
-  object-fit: contain;
-  transition: opacity 0.25s ease;
 }
 
 .nav-links {
@@ -423,8 +461,30 @@
     display: none;
   }
 
+  .mobile-language-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin: -14px 0 34px;
+    padding: 8px 11px;
+    border: 1px solid rgba($color-white, 0.2);
+    border-radius: 999px;
+    background: rgba($color-white, 0.05);
+
+    .language-switcher__icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .language-switcher__button {
+      min-width: 34px;
+      min-height: 28px;
+      color: rgba($color-white, 0.82);
+    }
+  }
+
   .main-nav {
-    height: 68px;
+    height: 76px;
   }
 
   .main-nav__inner {
@@ -437,16 +497,12 @@
   }
 
   .logo {
-    gap: 9px;
+    flex-shrink: 0;
   }
 
-  .logo-mark {
-    height: 30px;
-    width: 30px;
-  }
-
-  .logo-wordmark {
-    height: 16px;
+  .logo-image {
+    width: 100px;
+    height: auto;
   }
 
   .design-trip-btn {

@@ -2,6 +2,7 @@
 import Header from '../components/ui/Header.astro';
 import Footer from '../components/ui/Footer.astro';
 import QuoteForm from '../components/ui/QuoteForm.astro';
+import QuoteFab from '../components/ui/QuoteFab.astro';
 import { sitePath } from '../core/site-path';
 import '../styles/global.scss';
 
@@ -40,6 +41,7 @@ const { title, mainClass, showQuoteForm = true, preloadImage } = Astro.props;
     </main>
 
     {showQuoteForm && <QuoteForm />}
+    {showQuoteForm && <QuoteFab />}
 
     <Footer />
   </body>

@@ -27,7 +27,7 @@
    MAIN AREA
 ================================ */
 .footer-main {
-  background: #00413c;
+  background: $color-primary-dark;
   padding: 52px 0 40px;
 }
 
@@ -210,6 +210,7 @@
   .footer-contact {
     grid-column: span 3;
   }
+
 }
 
 @include respond-to($bp-tablet) {
@@ -232,6 +233,7 @@
   .footer-contact {
     grid-column: span 2;
   }
+
 }
 
 @include respond-to($bp-mobile) {

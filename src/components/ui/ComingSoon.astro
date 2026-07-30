@@ -5,6 +5,7 @@ interface Props {
   message: string;
   ctaLabel?: string;
   ctaHref?: string;
+  i18nPrefix?: string;
 }
 
 const {
@@ -13,6 +14,7 @@ const {
   message,
   ctaLabel = 'Explorar tours',
   ctaHref = '/tours',
+  i18nPrefix,
 } = Astro.props;
 ---
 
@@ -22,15 +24,15 @@ const {
       <slot name="icon" />
     </div>
 
-    <span class="coming-soon__eyebrow">{eyebrow}</span>
+    <span class="coming-soon__eyebrow" data-i18n={i18nPrefix ? `${i18nPrefix}.eyebrow` : undefined}>{eyebrow}</span>
 
-    <h1>{title}</h1>
+    <h1 data-i18n={i18nPrefix ? `${i18nPrefix}.title` : undefined}>{title}</h1>
 
-    <p>{message}</p>
+    <p data-i18n={i18nPrefix ? `${i18nPrefix}.message` : undefined}>{message}</p>
 
     <div class="coming-soon__actions">
-      <a href={ctaHref} class="coming-soon__btn">{ctaLabel}</a>
-      <a href="/" class="coming-soon__link">Volver al inicio</a>
+      <a href={ctaHref} class="coming-soon__btn" data-i18n={i18nPrefix ? `${i18nPrefix}.explore` : undefined}>{ctaLabel}</a>
+      <a href="/" class="coming-soon__link" data-i18n={i18nPrefix ? `${i18nPrefix}.home` : undefined}>Volver al inicio</a>
     </div>
   </div>
 </section>

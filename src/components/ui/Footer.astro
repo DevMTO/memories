@@ -1,6 +1,9 @@
 ---
-import './Footer.scss';
-import { sitePath } from '../../core/site-path';
+import "./Footer.scss";
+import { sitePath } from "../../core/site-path";
+
+const primaryWhatsApp = '51908043192';
+const emergencyPhone = '51954669589';
 ---
 
 <footer class="footer">
@@ -10,16 +13,22 @@ import { sitePath } from '../../core/site-path';
     <div class="footer-content container">
       <div class="footer-grid">
         <div class="footer-col footer-brand">
-          <a href={sitePath('/')} class="footer-logo" aria-label="Memories Travel Perú">
+          <a
+            href={sitePath("/")}
+            class="footer-logo"
+            aria-label="Memories Travel Perú"
+          >
             <img
-              src={sitePath('/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-4.webp')}
+              src={sitePath("/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-4.webp")}
               alt=""
               class="footer-logo-mark"
               width="1080"
               height="1080"
             />
             <img
-              src={sitePath('/images/LOGOTIPOS/LOGOTIPO-MEMORIES-TRAVEL-5.webp')}
+              src={sitePath(
+                "/images/LOGOTIPOS/LOGOTIPO-MEMORIES-TRAVEL-5.webp",
+              )}
               alt="Memories Travel"
               class="footer-logo-wordmark"
               width="1080"
@@ -27,7 +36,7 @@ import { sitePath } from '../../core/site-path';
             />
           </a>
 
-          <p>
+          <p data-i18n="footer.description">
             Comparta sus planes con nosotros. Un especialista en viajes de lujo
             curará una propuesta exclusiva adaptada a sus preferencias.
           </p>
@@ -35,61 +44,88 @@ import { sitePath } from '../../core/site-path';
           <div class="socials">
             <a href="#" aria-label="Instagram">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.7" />
-                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7" />
-                <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" />
+                <rect
+                  x="3"
+                  y="3"
+                  width="18"
+                  height="18"
+                  rx="5"
+                  stroke="currentColor"
+                  stroke-width="1.7"></rect>
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="4"
+                  stroke="currentColor"
+                  stroke-width="1.7"></circle>
+                <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"></circle>
               </svg>
             </a>
             <a href="#" aria-label="Facebook">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M13.5 21v-8.2h2.75l.41-3.2h-3.16V7.5c0-.93.26-1.56 1.6-1.56h1.7V3.1C15.98 3.05 15.07 3 14 3c-2.44 0-4.11 1.49-4.11 4.22v2.38H7.13v3.2h2.76V21h3.61z" />
+                <path
+                  d="M13.5 21v-8.2h2.75l.41-3.2h-3.16V7.5c0-.93.26-1.56 1.6-1.56h1.7V3.1C15.98 3.05 15.07 3 14 3c-2.44 0-4.11 1.49-4.11 4.22v2.38H7.13v3.2h2.76V21h3.61z"
+                ></path>
               </svg>
             </a>
-            <a href="https://wa.me/51984544245" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <a
+              href={`https://wa.me/${primaryWhatsApp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+            >
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.47 1.34 4.98L2 22l5.2-1.36a9.9 9.9 0 0 0 4.84 1.24h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2Zm5.83 14.14c-.24.68-1.4 1.3-1.93 1.35-.5.05-1.14.07-1.83-.11-.42-.11-.96-.3-1.65-.6-2.91-1.26-4.8-4.2-4.95-4.4-.15-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.4.27-.28.58-.35.78-.35h.55c.18 0 .42-.02.65.51.24.55.82 1.98.9 2.13.07.15.12.32.02.51-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.77 1.3 1.65 2.1 1.14 1.03 2.1 1.35 2.4 1.5.3.15.47.13.65-.07.18-.2.75-.87.95-1.17.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.44Z" />
+                <path
+                  d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.47 1.34 4.98L2 22l5.2-1.36a9.9 9.9 0 0 0 4.84 1.24h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2Zm5.83 14.14c-.24.68-1.4 1.3-1.93 1.35-.5.05-1.14.07-1.83-.11-.42-.11-.96-.3-1.65-.6-2.91-1.26-4.8-4.2-4.95-4.4-.15-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.4.27-.28.58-.35.78-.35h.55c.18 0 .42-.02.65.51.24.55.82 1.98.9 2.13.07.15.12.32.02.51-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.77 1.3 1.65 2.1 1.14 1.03 2.1 1.35 2.4 1.5.3.15.47.13.65-.07.18-.2.75-.87.95-1.17.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.44Z"
+                ></path>
               </svg>
             </a>
             <a href="#" aria-label="YouTube">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M21.6 7.2c-.24-.9-.94-1.6-1.84-1.84C18.1 5 12 5 12 5s-6.1 0-7.76.36c-.9.24-1.6.94-1.84 1.84C2 8.86 2 12 2 12s0 3.14.4 4.8c.24.9.94 1.6 1.84 1.84C5.9 19 12 19 12 19s6.1 0 7.76-.36c.9-.24 1.6-.94 1.84-1.84.4-1.66.4-4.8.4-4.8s0-3.14-.4-4.8ZM10 15.5v-7l6 3.5-6 3.5Z" />
+                <path
+                  d="M21.6 7.2c-.24-.9-.94-1.6-1.84-1.84C18.1 5 12 5 12 5s-6.1 0-7.76.36c-.9.24-1.6.94-1.84 1.84C2 8.86 2 12 2 12s0 3.14.4 4.8c.24.9.94 1.6 1.84 1.84C5.9 19 12 19 12 19s6.1 0 7.76-.36c.9-.24 1.6-.94 1.84-1.84.4-1.66.4-4.8.4-4.8s0-3.14-.4-4.8ZM10 15.5v-7l6 3.5-6 3.5Z"
+                ></path>
               </svg>
             </a>
           </div>
         </div>
 
         <div class="footer-col">
-          <h4>Explorar</h4>
+          <h4 data-i18n="footer.explore">Explorar</h4>
           <ul>
-            <li><a href={sitePath('/destinations')}>Destinos</a></li>
-            <li><a href={sitePath('/tours')}>Experiencias</a></li>
-            <li><a href={sitePath('/hotels')}>Hoteles</a></li>
-            <li><a href={sitePath('/blogs')}>Blogs</a></li>
+            <li><a href={sitePath("/destinations")} data-i18n="footer.destinations">Destinos</a></li>
+            <li><a href={sitePath("/tours")} data-i18n="footer.experiences">Experiencias</a></li>
+            <li><a href={sitePath("/hotels")} data-i18n="footer.hotels">Hoteles</a></li>
+            <li><a href={sitePath("/blogs")}>Blogs</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h4>Empresa</h4>
+          <h4 data-i18n="footer.company">Empresa</h4>
           <ul>
-            <li><a href={sitePath('/about')}>Quiénes Somos</a></li>
-            <li><a href={sitePath('/terms')}>Términos Y Condiciones</a></li>
-            <li><a href={sitePath('/privacy')}>Política De Privacidad</a></li>
-            <li><a href={sitePath('/claims-book')}>Libro De Reclamaciones</a></li>
+            <li><a href={sitePath("/about")} data-i18n="footer.about">Quiénes somos</a></li>
+            <li><a href={sitePath("/terms")} data-i18n="footer.terms">Términos y condiciones</a></li>
+            <li><a href={sitePath("/privacy")} data-i18n="footer.privacy">Política de privacidad</a></li>
+            <li>
+              <a href={sitePath("/claims-book")} data-i18n="footer.claims">Libro de reclamaciones</a>
+            </li>
           </ul>
         </div>
 
         <div class="footer-col footer-contact">
-          <h4>Contacto</h4>
+          <h4 data-i18n="footer.contact">Contacto</h4>
           <ul>
-            <li><a href="#">Av. El Sol 345, Cusco</a></li>
-            <li><a href="tel:+51984544245">+51 984 544 245</a></li>
+            <li>Luis Vallejo Santoni C-2, Santiago - Cusco</li>
+            <li><a href={`https://wa.me/${primaryWhatsApp}`} target="_blank" rel="noopener noreferrer">WhatsApp: +51 908 043 192</a></li>
+            <li><a href={`tel:+${emergencyPhone}`}><span data-i18n="footer.emergency">Emergencias</span>: +51 954 669 589</a></li>
           </ul>
         </div>
+
       </div>
     </div>
   </div>
 
   <div class="footer-bottom">
-    <p>© 2026 MEMORABLE TRAVEL PERU</p>
+    <p>© 2026 Memories Travel Perú</p>
   </div>
 </footer>

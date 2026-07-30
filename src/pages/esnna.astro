@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { sitePath } from '../core/site-path';
+---
+
+<Layout title="ESNNA | Memories Travel Perú" mainClass="esnna-main">
+  <section class="esnna-page">
+    <div class="container esnna-page__grid">
+      <div>
+        <span data-i18n="esnna.eyebrow">Turismo responsable</span>
+        <h1 data-i18n="esnna.title">Protegemos a niñas, niños y adolescentes.</h1>
+        <p data-i18n="esnna.first">En Memories Travel Perú promovemos viajes seguros, respetuosos y libres de toda forma de explotación sexual de niñas, niños y adolescentes.</p>
+        <p data-i18n="esnna.second">Invitamos a nuestros viajeros, aliados y equipo a informar de inmediato cualquier situación que ponga en riesgo a una persona menor de edad.</p>
+      </div>
+      <figure>
+        <img src={sitePath('/images/esnna-1.png.webp')} alt="Protégeme: turismo responsable para prevenir la explotación sexual de niñas, niños y adolescentes" />
+      </figure>
+    </div>
+  </section>
+</Layout>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  .esnna-page { background: $color-primary-dark; padding: clamp(96px, 14vw, 170px) 0; color: $color-white; }
+  .esnna-page__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 390px); gap: clamp(42px, 8vw, 110px); align-items: center; }
+  .esnna-page span { color: $color-accent; font: 800 0.72rem/1 $font-sans; letter-spacing: 0.2em; text-transform: uppercase; }
+  .esnna-page h1 { max-width: 690px; margin: 18px 0 26px; font: 600 clamp(2.7rem, 5vw, 5rem)/0.98 $font-serif; }
+  .esnna-page p { max-width: 650px; margin: 0 0 16px; color: rgba($color-white, 0.88); font-size: 1.05rem; line-height: 1.8; }
+  .esnna-page figure { margin: 0; padding: 20px; border-radius: 20px; background: rgba($color-white, 0.97); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25); }
+  .esnna-page img { display: block; width: 100%; height: auto; }
+  @media (max-width: 760px) { .esnna-page__grid { grid-template-columns: 1fr; } }
+</style>

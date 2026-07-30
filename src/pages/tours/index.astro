@@ -53,7 +53,7 @@ const fallbackImages = [
     <div class="tours-hero__overlay"></div>
 
     <div class="container tours-hero__content">
-      <h1>NUESTROS TOURS</h1>
+      <h1 data-i18n="listings.tours">Nuestros tours</h1>
     </div>
   </section>
 
@@ -64,7 +64,7 @@ const fallbackImages = [
       <aside class="tours-sidebar">
         <div class="filters-box">
           <div class="filter-group">
-            <h3>Travel Styles</h3>
+            <h3 data-i18n="filters.travelStyles">Estilos de viaje</h3>
 
             <div class="filter-options">
               {styles.map((style) => (
@@ -74,14 +74,14 @@ const fallbackImages = [
                     data-filter="style"
                     value={style.value}
                   />
-                  <span>{style.label}</span>
+                <span data-i18n={style.label === 'Vacaciones' ? 'listings.vacations' : style.label === 'Honeymoon' ? 'listings.honeymoon' : style.label === 'Family' ? 'listings.family' : 'nav.tours'}>{style.label}</span>
                 </label>
               ))}
             </div>
           </div>
 
           <div class="filter-group">
-            <h3>Country</h3>
+            <h3 data-i18n="filters.country">País</h3>
 
             <div class="filter-options">
               {destinations.slice(0, 8).map((destination) => (
@@ -98,12 +98,12 @@ const fallbackImages = [
           </div>
 
           <div class="filter-group">
-            <h3>Duration</h3>
+            <h3 data-i18n="filters.duration">Duración</h3>
 
             <div class="filter-options">
               <label class="filter-check">
                 <input type="checkbox" data-filter="duration" value="1" />
-                <span>Full Day</span>
+                <span data-i18n="filters.fullDay">Día completo</span>
               </label>
 
               <label class="filter-check">
@@ -113,13 +113,13 @@ const fallbackImages = [
 
               <label class="filter-check">
                 <input type="checkbox" data-filter="durationRange" value="3" />
-                <span>3 días a más</span>
+                <span data-i18n="filters.moreDays">3 días o más</span>
               </label>
             </div>
           </div>
 
           <div class="filter-group">
-            <h3>Price</h3>
+            <h3 data-i18n="filters.price">Precio</h3>
 
             <div class="filter-price">
               <input
@@ -140,11 +140,11 @@ const fallbackImages = [
 
           <div class="filter-actions">
             <button type="button" class="filter-btn" id="clearFilters">
-              Buscar
+              <span data-i18n="filters.search">Buscar</span>
             </button>
 
             <button type="button" class="filter-reset" id="resetFilters">
-              Limpiar filtros
+              <span data-i18n="filters.clear">Limpiar filtros</span>
             </button>
           </div>
         </div>

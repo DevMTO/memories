@@ -173,6 +173,85 @@ $font-display: 'Cormorant Garamond', #{$font-serif};
   animation: heroBgZoom 26s ease-in-out infinite alternate;
 }
 
+/* -----------------------------------------------
+   ESNNA — responsible tourism commitment
+----------------------------------------------- */
+.home-esnna {
+  position: relative;
+  padding: clamp(42px, 6vw, 76px) 0;
+  background: linear-gradient(118deg, #f4fbfa 0%, #ffffff 58%);
+  border-bottom: 1px solid rgba($color-primary-dark, 0.08);
+}
+
+.home-esnna__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(28px, 8vw, 120px);
+}
+
+.home-esnna__copy {
+  max-width: 700px;
+
+  h2 {
+    max-width: 620px;
+    margin: 12px 0 14px;
+    color: $color-primary-dark;
+    font-family: $font-display;
+    font-size: clamp(2rem, 3.2vw, 3.45rem);
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  p {
+    max-width: 650px;
+    margin: 0;
+    color: $color-text;
+    font-size: 0.98rem;
+    line-height: 1.75;
+  }
+}
+
+.home-esnna__link {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 19px;
+  color: $color-primary;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  span { font-size: 1.1rem; transition: transform 0.25s ease; }
+  &:hover span { transform: translateX(4px); }
+}
+
+.home-esnna__badge {
+  display: block;
+  flex: 0 0 min(250px, 29vw);
+  padding: 13px;
+  border: 1px solid rgba($color-primary-dark, 0.14);
+  border-radius: 18px;
+  background: $color-white;
+  box-shadow: 0 20px 48px rgba($color-primary-dark, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  img { display: block; width: 100%; height: auto; }
+  &:hover { transform: translateY(-5px); box-shadow: 0 26px 56px rgba($color-primary-dark, 0.18); }
+}
+
+@include respond-to($bp-tablet) {
+  .home-esnna__inner { gap: 34px; }
+  .home-esnna__badge { flex-basis: 210px; }
+}
+
+@include respond-to($bp-mobile) {
+  .home-esnna__inner { display: grid; grid-template-columns: 1fr; }
+  .home-esnna__badge { width: min(250px, 100%); }
+}
+
 // Layered gradient overlay — strong on left, fades right and bottom
 .home-hero__overlay {
   position: absolute;

@@ -36,8 +36,8 @@ function LoginContent() {
         .login-subtitle { display: block; text-align: center; color: #666; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 28px; }
         .login-form { display: flex; flex-direction: column; gap: 20px; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-login { background: #10594c; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1rem; }
-        .btn-login:hover { background: #0a3d34; }
+        .btn-login { background: #008178; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .btn-login:hover { background: #004d47; }
         .error-msg { color: #dc3545; font-size: 0.85rem; text-align: center; }
       `}</style>
       

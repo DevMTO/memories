@@ -16,9 +16,7 @@ const imageUrl =
     ? pkg.imageUrl
     : '/images/cusco.png';
 
-const durationLabel = pkg.durationNights
-  ? `${pkg.durationDays || 1} DÍAS`
-  : `${pkg.durationDays || 1} DÍAS`;
+const durationDays = pkg.durationDays || 1;
 
 const locationLabel =
   pkg.destinations?.map((d) => d.name).slice(0, 1).join(', ') ||
@@ -43,7 +41,7 @@ const resolvedImageUrl = sitePath(imageUrl);
     <img src={resolvedImageUrl} alt={pkg.title} />
 
     <span class="package-card__badge">
-      {durationLabel}
+      <span data-i18n-count="cards.days" data-count={durationDays}>{durationDays} días</span>
     </span>
   </a>
 
@@ -62,8 +60,8 @@ const resolvedImageUrl = sitePath(imageUrl);
 
     <div class="package-card__footer">
       <div class="package-card__price">
-        <span>Desde</span>
-        <strong>{priceLabel}</strong>
+        <span data-i18n="cards.from">Desde</span>
+        <strong>{pkg.price && pkg.price > 0 ? priceLabel : <span data-i18n="cards.tailorMade">A medida</span>}</strong>
       </div>
 
       <a

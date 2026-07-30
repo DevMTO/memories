@@ -113,7 +113,7 @@ const displayDestinations = destinationPriority
       </p>
 
       <div class="hero-actions">
-        <a href={sitePath('/packages')} class="home-btn home-btn--primary">Design Trip</a>
+        <a href={sitePath('/packages')} class="home-btn home-btn--primary" data-i18n="nav.designTrip">Diseña tu viaje</a>
         <a href="#home-tours" class="home-btn home-btn--ghost">Explorar Tours ↓</a>
       </div>
     </div>
@@ -127,6 +127,22 @@ const displayDestinations = destinationPriority
       <span class="hero-scroll__line"></span>
       <span class="hero-scroll__text">SCROLL</span>
     </a>
+  </section>
+
+  <!-- ==================== ESNNA ==================== -->
+  <section class="home-esnna reveal-up" aria-labelledby="esnna-title">
+    <div class="container home-esnna__inner">
+      <div class="home-esnna__copy">
+        <span class="home-eyebrow home-eyebrow--dark" data-i18n="esnna.eyebrow">Turismo responsable</span>
+        <h2 id="esnna-title" data-i18n="esnna.title">Protegemos a niñas, niños y adolescentes.</h2>
+        <p data-i18n="esnna.first">En Memories Travel Perú promovemos viajes seguros, respetuosos y libres de toda forma de explotación sexual de niñas, niños y adolescentes.</p>
+        <a href={sitePath('/esnna')} class="home-esnna__link"><span data-i18n="esnna.learn">Conoce nuestro compromiso</span><span aria-hidden="true">→</span></a>
+      </div>
+
+      <a href={sitePath('/esnna')} class="home-esnna__badge" aria-label="Conoce nuestro compromiso ESNNA">
+        <img src={sitePath('/images/esnna-1.png.webp')} alt="Protégeme: turismo responsable para prevenir la explotación sexual de niñas, niños y adolescentes" width="421" height="274" loading="lazy" />
+      </a>
+    </div>
   </section>
 
   <!-- ==================== RECOGNITIONS ==================== -->

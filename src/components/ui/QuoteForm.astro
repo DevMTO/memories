@@ -2,121 +2,107 @@
 import './QuoteForm.scss';
 ---
 
-<section class="quote-section">
+<section class="quote-section" id="quote" aria-labelledby="quote-title">
   <div class="container">
     <div class="quote-box">
       <div class="quote-header text-center">
-        <span class="quote-eyebrow">DISEÑE SU VIAJE</span>
-        <h2 class="quote-title">Solicitar Cotización</h2>
-        <p class="quote-desc">
-          Comparta Sus Planes Con Nosotros. Un Especialista En Viajes De Lujo
-          Curará Una Propuesta Exclusiva Adaptada A Sus Preferencias.
-        </p>
+        <span class="quote-eyebrow" data-i18n="quote.eyebrow">Diseña tu viaje</span>
+        <h2 class="quote-title" id="quote-title" data-i18n="quote.title">Solicitar cotización</h2>
+        <p class="quote-desc" data-i18n="quote.description">Comparte tus planes con nosotros. Un especialista en viajes preparará una propuesta exclusiva adaptada a tus preferencias.</p>
       </div>
 
-      <form class="quote-form">
+      <form class="quote-form" id="quote-form">
         <div class="quote-grid quote-grid--three">
-          <div class="form-group form-group--name">
-            <label class="form-label">NOMBRE COMPLETO</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Ej. Juan Perez"
-            />
-          </div>
-
-          <div class="form-group form-group--travelers">
-            <label class="form-label">N° DE VIAJEROS</label>
-            <input
-              type="number"
-              class="form-control text-center"
-              placeholder="3"
-            />
-          </div>
-
-          <div class="form-group form-group--date">
-            <label class="form-label">FECHA DE VIAJE</label>
-            <input
-              type="text"
-              class="form-control text-center"
-              placeholder="dd/mm/yy"
-            />
-          </div>
+          <label class="form-group form-group--name">
+            <span class="form-label" data-i18n="quote.name">Nombre completo</span>
+            <input name="name" type="text" class="form-control" autocomplete="name" required data-i18n-placeholder="quote.namePlaceholder" placeholder="Ej. Ana Pérez" />
+          </label>
+          <label class="form-group form-group--travelers">
+            <span class="form-label" data-i18n="quote.travelers">Viajeros</span>
+            <input name="travelers" type="number" min="1" value="2" class="form-control text-center" required />
+          </label>
+          <label class="form-group form-group--date">
+            <span class="form-label" data-i18n="quote.date">Fecha estimada</span>
+            <input name="date" type="date" class="form-control text-center" required />
+          </label>
         </div>
 
         <div class="quote-grid quote-grid--two">
-          <div class="form-group">
-            <label class="form-label">CORREO ELECTRONICO</label>
-            <input
-              type="email"
-              class="form-control"
-              placeholder="nombre@nombre.com"
-            />
-          </div>
-
+          <label class="form-group">
+            <span class="form-label" data-i18n="quote.email">Correo electrónico</span>
+            <input name="email" type="email" class="form-control" autocomplete="email" required data-i18n-placeholder="quote.emailPlaceholder" placeholder="nombre@correo.com" />
+          </label>
           <div class="form-group form-group--experience">
-            <label class="form-label">ESTILO DE EXPERIENCIA</label>
-
+            <span class="form-label" data-i18n="quote.experience">Tipo de experiencia</span>
             <div class="experience-options">
-              <label class="experience-pill">
-                <input type="radio" name="style" value="Lujo" />
-                <span class="experience-pill__box"></span>
-                <span>Lujo</span>
-              </label>
-
-              <label class="experience-pill">
-                <input type="radio" name="style" value="Aventura" />
-                <span class="experience-pill__box"></span>
-                <span>Aventura</span>
-              </label>
-
-              <label class="experience-pill">
-                <input type="radio" name="style" value="Cultural" />
-                <span class="experience-pill__box"></span>
-                <span>Cultural</span>
-              </label>
+              <label class="experience-pill"><input type="radio" name="experience" value="Lujo" checked /><span class="experience-pill__box"></span><span data-i18n="quote.luxury">Lujo</span></label>
+              <label class="experience-pill"><input type="radio" name="experience" value="Aventura" /><span class="experience-pill__box"></span><span data-i18n="quote.adventure">Aventura</span></label>
+              <label class="experience-pill"><input type="radio" name="experience" value="Cultural" /><span class="experience-pill__box"></span><span data-i18n="quote.cultural">Cultural</span></label>
             </div>
           </div>
         </div>
 
         <div class="quote-grid quote-grid--two">
-          <div class="form-group">
-            <label class="form-label">TELEFONO / WHATSAPP</label>
-            <input
-              type="tel"
-              class="form-control"
-              placeholder="+51 999 999 999"
-            />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">DESTINO DE INTERÉS</label>
-            <select class="form-control">
-              <option selected disabled>seleccione uno</option>
-              <option>Cusco</option>
-              <option>Lima</option>
-              <option>Ica</option>
-              <option>Puno</option>
-              <option>Arequipa</option>
+          <label class="form-group">
+            <span class="form-label" data-i18n="quote.phone">Teléfono o WhatsApp</span>
+            <input name="phone" type="tel" class="form-control" autocomplete="tel" required data-i18n-placeholder="quote.phonePlaceholder" placeholder="+51 999 999 999" />
+          </label>
+          <label class="form-group">
+            <span class="form-label" data-i18n="quote.destination">Destino de interés</span>
+            <select name="destination" class="form-control" required>
+              <option value="" selected disabled data-i18n="quote.selectDestination">Selecciona un destino</option>
+              <option>Cusco</option><option>Lima</option><option>Arequipa</option><option>Ica</option><option>Puno</option><option>Machu Picchu</option>
             </select>
-          </div>
+          </label>
         </div>
 
-        <div class="form-group form-group--full">
-          <label class="form-label form-label--center">DESTINO DE INTERÉS</label>
-          <textarea
-            class="form-control form-control--textarea"
-            rows="4"
-            placeholder="¿algún interés especial o requerimiento?"
-          ></textarea>
-        </div>
+        <label class="form-group form-group--full">
+          <span class="form-label form-label--center" data-i18n="quote.message">Cuéntanos qué te gustaría vivir</span>
+          <textarea name="message" class="form-control form-control--textarea" rows="4" data-i18n-placeholder="quote.messagePlaceholder" placeholder="Intereses, fechas flexibles o alguna necesidad especial…"></textarea>
+        </label>
 
         <div class="quote-submit text-center">
-          <button type="submit" class="quote-btn">
-            SOLICITAR MI PROPUESTA PERSONALIZADA
-          </button>
+          <p class="quote-form__status" role="status" aria-live="polite"></p>
+          <button type="submit" class="quote-btn"><span data-i18n="quote.submit">Solicitar mi propuesta personalizada</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg></button>
         </div>
       </form>
     </div>
   </div>
 </section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#quote-form');
+  const status = form?.querySelector<HTMLElement>('.quote-form__status');
+
+  const fieldLabel = (name: string, fallback: string) => {
+    const field = form?.querySelector<HTMLElement>(`[name="${name}"]`);
+    return field?.closest('.form-group')?.querySelector<HTMLElement>('.form-label')?.textContent?.trim() || fallback;
+  };
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+
+    const data = new FormData(form);
+    const selectedExperience = form.querySelector<HTMLInputElement>('input[name="experience"]:checked');
+    const experienceText = selectedExperience?.closest('label')?.querySelector<HTMLSpanElement>('span:last-child')?.textContent?.trim() || String(data.get('experience'));
+    const selectedDestination = form.querySelector<HTMLSelectElement>('select[name="destination"]')?.selectedOptions[0]?.textContent?.trim() || String(data.get('destination'));
+    const title = document.getElementById('quote-title')?.textContent?.trim() || 'Solicitud de viaje — Memories Travel Perú';
+    const lines = [
+      `*${title}*`, '',
+      `*${fieldLabel('name', 'Nombre')}:* ${data.get('name')}`,
+      `*${fieldLabel('travelers', 'Viajeros')}:* ${data.get('travelers')}`,
+      `*${fieldLabel('date', 'Fecha')}:* ${data.get('date')}`,
+      `*${fieldLabel('email', 'Correo')}:* ${data.get('email')}`,
+      `*${fieldLabel('phone', 'Teléfono')}:* ${data.get('phone')}`,
+      `*${fieldLabel('experience', 'Experiencia')}:* ${experienceText}`,
+      `*${fieldLabel('destination', 'Destino')}:* ${selectedDestination}`,
+      `*${fieldLabel('message', 'Detalles')}:* ${data.get('message') || '—'}`,
+    ];
+
+    const whatsappWindow = window.open(`https://wa.me/51908043192?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener,noreferrer');
+    if (status) status.textContent = whatsappWindow
+      ? 'WhatsApp se abrió con tu solicitud lista para enviar.'
+      : 'Permite las ventanas emergentes para abrir WhatsApp.';
+  });
+</script>

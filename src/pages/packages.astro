@@ -63,7 +63,7 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
     <div class="packages-hero__overlay"></div>
 
     <div class="container packages-hero__content">
-      <h1>NUESTROS PAQUETES</h1>
+      <h1 data-i18n="listings.packages">Nuestros paquetes</h1>
     </div>
   </section>
 
@@ -74,7 +74,7 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
       <aside class="packages-sidebar">
         <form method="GET" class="filters-box">
           <div class="filter-group">
-            <h3>Travel Styles</h3>
+            <h3 data-i18n="filters.travelStyles">Estilos de viaje</h3>
 
             <div class="filter-options">
               <label class="filter-check">
@@ -84,7 +84,7 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
                   value=""
                   checked={selectedStyle === ''}
                 />
-                <span>Todos</span>
+                <span data-i18n="filters.all">Todos</span>
               </label>
 
               {styles.slice(0, 6).map((style) => (
@@ -102,7 +102,7 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
           </div>
 
           <div class="filter-group">
-            <h3>Country / Destination</h3>
+            <h3 data-i18n="filters.destination">País / destino</h3>
 
             <div class="filter-options">
               <label class="filter-check">
@@ -112,7 +112,7 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
                   value=""
                   checked={selectedDestination === ''}
                 />
-                <span>Todos</span>
+                <span data-i18n="filters.all">Todos</span>
               </label>
 
               {destinations.slice(0, 8).map((destination) => (
@@ -130,7 +130,7 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
           </div>
 
           <div class="filter-group">
-            <h3>Price</h3>
+            <h3 data-i18n="filters.price">Precio</h3>
 
             <div class="filter-price">
               <input
@@ -153,11 +153,11 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
 
           <div class="filter-actions">
             <button type="submit" class="filter-btn">
-              Buscar
+              <span data-i18n="filters.search">Buscar</span>
             </button>
 
             <a href={sitePath('/packages')} class="filter-reset">
-              Limpiar filtros
+              <span data-i18n="filters.clear">Limpiar filtros</span>
             </a>
           </div>
         </form>

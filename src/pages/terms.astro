@@ -1,0 +1,139 @@
+---
+import Layout from '../layouts/Layout.astro';
+import './_terms.scss';
+
+const primaryWhatsApp = '51908043192';
+const whatsappLink = (airline: string) =>
+  `https://wa.me/${primaryWhatsApp}?text=${encodeURIComponent(`Hola, deseo información sobre vuelos con ${airline}.`)}`;
+
+const sections = [
+  {
+    title: 'ARTÍCULO 1: ÁMBITO DE APLICACIÓN',
+    paragraphs: [
+      'Estos términos y condiciones generales son válidos para todos los tours, experiencias y servicios ofrecidos por la agencia de viajes Memories Travel Perú. Al realizar su reserva y efectuar un depósito, usted reconoce automáticamente haber leído y aceptado los siguientes términos y condiciones.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 2: INFORMACIÓN GENERAL',
+    paragraphs: [
+      'Memories Travel Perú es una agencia de viajes ubicada en la ciudad de Cusco, Perú. Por lo tanto, la empresa opera de acuerdo con las leyes y regulaciones de Perú. Reservar un servicio ofrecido por Memories Travel Perú implica la aceptación de las leyes de este país. El cliente afirma explícitamente que ha leído toda la información proporcionada sobre el servicio reservado.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 3: RESERVA',
+    paragraphs: [
+      'Al reservar el servicio contratado, se debe abonar un depósito no reembolsable del 50% para reservar los servicios solicitados, y el pago total debe realizarse 30 días antes del inicio del servicio. Si la reserva se realizó con menos de 30 días de antelación a la salida, se deberá cobrar el precio total de inmediato. Si reserva nuestros servicios a través de una plataforma en línea o de un tercero, se aplicarán sus políticas de reserva y condiciones de depósito.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 4: PAGOS',
+    paragraphs: [
+      '4.1) POR PAYPAL: Le enviaremos un enlace de pago seguro de PayPal. Recuerde que deberá abonar la comisión del 6 % cobrada por la plataforma de pagos PayPal y no por el agente de viajes.',
+      '4.2) POR TARJETA DE CRÉDITO O DÉBITO: Nuestro equipo de ventas le enviará un enlace de pago para que pueda seguir fácilmente las instrucciones de pago en nuestro sitio web y pagar con su tarjeta de crédito o débito. Deberá asumir la comisión por uso de la plataforma.',
+      '4.3) POR TRANSFERENCIA BANCARIA (USD): Le enviaremos toda la información necesaria para que pueda realizar la transferencia desde su país sin inconvenientes. Recuerde que la comisión de transferencia deberá asumirla su banco.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 5: CANCELACIÓN DE SERVICIOS POR PARTE DEL CLIENTE',
+    paragraphs: [
+      'Si el cliente debe cancelar el servicio reservado por motivos personales, se aplicarán las siguientes medidas. Una vez realizado el pago, procederemos a reservar todos los servicios, por lo que algunos servicios ya pagados no serán reembolsables.',
+    ],
+    items: [
+      'Con más de 80 días de antelación al inicio del tour, se retendrá el 25 % del importe total, excluyendo gastos bancarios, costos de trenes reservados, entradas no reembolsables a Machu Picchu y Camino Inca, y vuelos.',
+      'Entre 60 y 15 días antes de la salida, se retendrá el 50 % del importe total, con las mismas exclusiones.',
+      'Entre 15 y 4 días antes de la salida, se retendrá el 75 % del importe total, con las mismas exclusiones.',
+      'Tres o menos días antes de la salida, se retendrá el importe total.',
+      'Si reservó a través de una plataforma en línea, se aplican las políticas de cancelación de dicha plataforma.',
+    ],
+    closing: 'Si abandona el tour antes de la hora de finalización, no se emitirá ningún reembolso. Las comisiones bancarias no están incluidas en el costo del servicio. Los permisos del Camino Inca, boletos de tren, bus y entradas a Machu Picchu ya adquiridos no son transferibles. La reserva no podrá transferirse ni reasignarse a otra persona. Recomendamos llegar al menos dos días antes del inicio del servicio para reducir el riesgo de perderlo por cancelación de vuelo. Los servicios perdidos por retrasos, llegadas tardías o abandono anticipado no son reembolsables.',
+  },
+  {
+    title: 'ARTÍCULO 5: CANCELACIÓN DE SERVICIOS POR PARTE DE MEMORIES TRAVEL PERÚ',
+    paragraphs: [
+      'En caso de que los servicios reservados no puedan realizarse por causas de fuerza mayor, como eventos sociales, huelgas, fenómenos meteorológicos o catástrofes sanitarias, la agencia ofrece las siguientes opciones:',
+    ],
+    items: [
+      'Reprogramación de su programa de viaje, en cuyo caso su depósito se conservará hasta el inicio de su viaje.',
+      'Cancelación de su viaje. El importe del reembolso se calculará individualmente según las políticas de cancelación de nuestros proveedores, una vez que estos se hayan comunicado con nosotros y reembolsado los servicios pagados.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 6: PRECIOS',
+    paragraphs: ['Memories Travel Perú cotiza los precios en USD ($) y soles peruanos (S/) para ofrecerle el valor exacto de nuestros proveedores.'],
+  },
+  {
+    title: 'ARTÍCULO 7: CAMBIO DE PROGRAMA',
+    paragraphs: [
+      'El cliente comprende y reconoce que viajar a países en desarrollo requiere flexibilidad y debe contemplar alternativas. La ruta, horarios, itinerarios, servicios y modo de transporte pueden estar sujetos a cambios sin previo aviso debido a circunstancias o eventos locales, incluyendo enfermedad, avería mecánica, cancelaciones de vuelos, huelgas, disputas políticas, dificultades de entrada o frontera, clima y otras circunstancias imprevistas. Si es necesario cambiar de hotel, se sustituirá por otro de categoría similar o superior.',
+      'Al reservar con Memories Travel Perú, el cliente acepta acatar la autoridad del guía o líder turístico. Debe cumplir las leyes, costumbres y regulaciones de los países visitados e informar cualquier condición médica o de otra índole que pudiera afectar el disfrute del tour. El incumplimiento o un comportamiento que cause peligro, angustia o molestias puede terminar el viaje sin responsabilidad de la empresa ni derecho a reembolso por servicios no utilizados.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 8: SEGURO DE VIAJE',
+    paragraphs: [
+      'Viajar a países en desarrollo conlleva riesgos debido al estado de las carreteras, la distancia a los hospitales y otros factores. Por lo tanto, el seguro de viaje es obligatorio antes de comenzar el recorrido. Lleve una copia de su póliza y verifique si su tarjeta de crédito ofrece cobertura. El seguro debe incluir lesiones personales, tratamiento médico, repatriación y evacuación durante todo el viaje. No contar con un seguro válido es responsabilidad total del cliente y la agencia no se hace responsable.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 9: AUTORIZACIÓN PARA EL USO DE FOTOGRAFÍAS',
+    paragraphs: [
+      'El cliente autoriza a Memories Travel Perú a utilizar fotografías o videos para la promoción de futuros programas de la empresa. Si no desea que su imagen se utilice en nuestro material promocional, por favor infórmenos durante el viaje.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 10: DOCUMENTACIÓN DE VIAJE',
+    paragraphs: [
+      'Los clientes deben tener un pasaporte válido y las visas necesarias para todo el viaje. Es responsabilidad del cliente obtener la documentación requerida. La empresa proporciona información y asesoramiento sobre visas, vacunas y clima, pero no se hace responsable. La información del pasaporte puede ser obligatoria para ciertos servicios.',
+    ],
+  },
+  {
+    title: 'ARTÍCULO 11: AVIÓN Y EQUIPAJE',
+    paragraphs: [
+      'Memories Travel Perú se exime de toda responsabilidad por retrasos de vuelo, billetes perdidos, huelgas, disturbios o perturbaciones meteorológicas. Los gastos suplementarios causados por estos acontecimientos estarán a cargo del cliente. Los equipajes están bajo la responsabilidad del pasajero durante toda la duración del viaje. En caso de pérdida de vuelo o daño en los equipajes, Memories Travel Perú no puede considerarse responsable.',
+    ],
+  },
+];
+---
+
+<Layout title="Términos y Condiciones" mainClass="terms-main" showQuoteForm={false}>
+  <section class="terms-hero">
+    <div class="container">
+      <span>Términos y condiciones</span>
+      <h1>Viaja con la tranquilidad de estar bien informado</h1>
+      <p>Condiciones aplicables a nuestros tours, experiencias y servicios.</p>
+    </div>
+  </section>
+
+  <section class="terms-content">
+    <div class="container terms-content__inner">
+      {sections.map((section) => (
+        <article class="terms-article">
+          <h2>{section.title}</h2>
+          {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          {section.items && (
+            <ul>
+              {section.items.map((item) => <li>{item}</li>)}
+            </ul>
+          )}
+          {section.closing && <p>{section.closing}</p>}
+        </article>
+      ))}
+
+      <section class="flight-info" aria-labelledby="flight-info-title">
+        <span>Información para vuelos</span>
+        <h2 id="flight-info-title">Vuela por Perú con nuestro acompañamiento</h2>
+        <p>
+          En Perú, LATAM, Sky y JetSMART ofrecen vuelos a distintos destinos del país.
+          Para planificar tu viaje con seguridad, podemos ayudarte a reservar tus vuelos.
+        </p>
+        <div class="flight-info__actions">
+          {['LATAM', 'JetSMART', 'Sky'].map((airline) => (
+            <a href={whatsappLink(airline)} target="_blank" rel="noopener noreferrer">
+              Consultar {airline}
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  </section>
+</Layout>
