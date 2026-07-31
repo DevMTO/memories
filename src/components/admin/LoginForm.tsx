@@ -11,7 +11,7 @@ function LoginContent() {
 
   useEffect(() => {
     if (!loading && user) {
-      window.location.href = '/admin/tours';
+      window.location.href = `${import.meta.env.BASE_URL}admin/tours`;
     }
   }, [user, loading]);
 
@@ -39,6 +39,13 @@ function LoginContent() {
         .btn-login { background: #008178; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1rem; }
         .btn-login:hover { background: #004d47; }
         .error-msg { color: #dc3545; font-size: 0.85rem; text-align: center; }
+        @media (max-width: 520px) {
+          .login-container { width: calc(100% - 28px); margin: 64px auto; padding: 30px 22px; border-radius: 14px; }
+          .login-logo { width: 160px; }
+          .login-subtitle { margin-bottom: 22px; }
+          .login-form { gap: 15px; }
+          .form-group input, .btn-login { min-height: 44px; }
+        }
       `}</style>
       
       <img

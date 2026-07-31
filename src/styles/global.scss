@@ -35,7 +35,19 @@ body {
   color: $color-text;
   background-color: $color-background;
   line-height: 1.6;
+  overflow-x: hidden;
 }
+
+body.is-mobile-menu-open { overflow: hidden; }
+
+img,
+svg { max-width: 100%; }
+
+button,
+a,
+input,
+select,
+textarea { -webkit-tap-highlight-color: transparent; }
 
 html.is-translating {
   cursor: progress;
@@ -180,6 +192,25 @@ ul { list-style: none; }
 .section-header {
   margin-bottom: 3rem;
   text-align: center;
+}
+
+@include respond-to($bp-mobile) {
+  .section { padding: 56px 0; }
+  .section-title { font-size: clamp(2rem, 10vw, 2.6rem); }
+  .section-header { margin-bottom: 2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 // ---- Forms ----

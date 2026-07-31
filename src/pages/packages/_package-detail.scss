@@ -859,3 +859,66 @@
     font-size: 2.3rem;
   }
 }
+
+/* Mobile refinement: compact information without losing hierarchy. */
+@include respond-to($bp-mobile) {
+  .package-hero { min-height: 430px; }
+  .package-hero__content { padding: 108px 0 54px; }
+  .package-hero__eyebrow { margin-bottom: 10px; font-size: .64rem; }
+  .package-hero h1 { font-size: clamp(2.45rem, 12vw, 3.65rem); line-height: .98; }
+  .package-hero p { font-size: .61rem; letter-spacing: .09em; }
+
+  .package-info-wrapper { margin-top: -34px; }
+  .package-info-bar {
+    min-height: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 14px;
+    border-radius: 14px;
+  }
+  .package-info-item { gap: 5px; padding: 8px 4px; }
+  .package-info-icon { width: 23px; height: 23px; }
+  .package-info-label { font-size: .56rem; letter-spacing: .11em; }
+  .package-info-value { font-size: .76rem; line-height: 1.35; }
+
+  .package-detail-section { padding: 48px 0 58px; }
+  .package-detail-layout { gap: 30px; }
+  .package-copy-block,
+  .package-itinerary-block,
+  .package-service-block,
+  .package-gallery-block { margin-bottom: 42px; }
+  .package-copy-block h2,
+  .package-itinerary-block h2,
+  .package-service-block h2,
+  .package-gallery-block h2 { margin-bottom: 17px; font-size: 1.7rem; }
+  .package-copy-block p { font-size: .83rem; line-height: 1.75; }
+  .package-mini-highlights { gap: 7px; }
+  .package-mini-highlights span { padding: 7px 10px; font-size: .66rem; }
+
+  .timeline-item { grid-template-columns: 26px minmax(0, 1fr); gap: 12px; }
+  .package-timeline::before { left: 11px; }
+  .timeline-marker { width: 24px; height: 24px; }
+  .timeline-content p { font-size: .8rem; }
+  .timeline-gallery { overflow-x: auto; padding-bottom: 5px; scroll-snap-type: inline proximity; }
+  .timeline-gallery__item { scroll-snap-align: start; }
+
+  .package-service-grid article { padding: 20px; }
+
+  .package-gallery { grid-template-columns: 1fr; }
+  .package-gallery__large { grid-row: auto; height: 230px; }
+  .package-gallery__side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .package-gallery__side button { height: 118px; }
+
+  .package-sidebar { max-width: none; width: 100%; }
+  .booking-widget { padding: 28px 22px 24px; }
+  .booking-widget h3 { font-size: 2.25rem; }
+  .booking-field input,
+  .booking-btn { min-height: 42px; }
+  .help-card { padding: 28px 22px 24px; }
+
+  .package-reviews-section { padding: 52px 0 58px; }
+  .package-reviews-grid { gap: 16px; }
+  .review-card { padding: 22px 20px; }
+  .review-card__stars { margin-bottom: 12px; }
+  .review-card__text { margin-bottom: 17px; font-size: .81rem; line-height: 1.68; }
+}

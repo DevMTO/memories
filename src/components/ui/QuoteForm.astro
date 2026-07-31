@@ -27,22 +27,7 @@ import './QuoteForm.scss';
           </label>
         </div>
 
-        <div class="quote-grid quote-grid--two">
-          <label class="form-group">
-            <span class="form-label" data-i18n="quote.email">Correo electrónico</span>
-            <input name="email" type="email" class="form-control" autocomplete="email" maxlength="120" required data-i18n-placeholder="quote.emailPlaceholder" placeholder="nombre@correo.com" />
-          </label>
-          <div class="form-group form-group--experience">
-            <span class="form-label" data-i18n="quote.experience">Tipo de experiencia</span>
-            <div class="experience-options">
-              <label class="experience-pill"><input type="radio" name="experience" value="Lujo" checked /><span class="experience-pill__box"></span><span data-i18n="quote.luxury">Lujo</span></label>
-              <label class="experience-pill"><input type="radio" name="experience" value="Aventura" /><span class="experience-pill__box"></span><span data-i18n="quote.adventure">Aventura</span></label>
-              <label class="experience-pill"><input type="radio" name="experience" value="Cultural" /><span class="experience-pill__box"></span><span data-i18n="quote.cultural">Cultural</span></label>
-            </div>
-          </div>
-        </div>
-
-        <div class="quote-grid quote-grid--two">
+        <div class="quote-grid quote-grid--contact">
           <label class="form-group">
             <span class="form-label" data-i18n="quote.phone">Teléfono de contacto</span>
             <input name="phone" type="tel" class="form-control" autocomplete="tel" inputmode="tel" pattern="[-0-9 ()+]{7,20}" maxlength="20" title="Ingresa un teléfono válido con código de país" required data-i18n-placeholder="quote.phonePlaceholder" placeholder="+51 999 999 999" />
@@ -54,11 +39,19 @@ import './QuoteForm.scss';
               <option class="notranslate" translate="no">Cusco</option><option class="notranslate" translate="no">Lima</option><option class="notranslate" translate="no">Arequipa</option><option class="notranslate" translate="no">Ica</option><option class="notranslate" translate="no">Puno</option><option class="notranslate" translate="no">Machu Picchu</option>
             </select>
           </label>
+          <div class="form-group form-group--experience">
+            <span class="form-label" data-i18n="quote.experience">Tipo de experiencia</span>
+            <div class="experience-options">
+              <label class="experience-pill"><input type="radio" name="experience" value="Lujo" checked /><span class="experience-pill__box"></span><span data-i18n="quote.luxury">Lujo</span></label>
+              <label class="experience-pill"><input type="radio" name="experience" value="Aventura" /><span class="experience-pill__box"></span><span data-i18n="quote.adventure">Aventura</span></label>
+              <label class="experience-pill"><input type="radio" name="experience" value="Cultural" /><span class="experience-pill__box"></span><span data-i18n="quote.cultural">Cultural</span></label>
+            </div>
+          </div>
         </div>
 
         <label class="form-group form-group--full">
           <span class="form-label form-label--center" data-i18n="quote.message">Cuéntanos qué te gustaría vivir</span>
-          <textarea name="message" class="form-control form-control--textarea" rows="4" maxlength="1200" data-i18n-placeholder="quote.messagePlaceholder" placeholder="Intereses, fechas flexibles o alguna necesidad especial…"></textarea>
+          <textarea name="message" class="form-control form-control--textarea" rows="3" maxlength="1200" data-i18n-placeholder="quote.messagePlaceholder" placeholder="Intereses, fechas flexibles o alguna necesidad especial…"></textarea>
         </label>
 
         <div class="quote-submit text-center">
@@ -127,7 +120,6 @@ import './QuoteForm.scss';
       [fieldLabel('name', 'Nombre'), data.get('name')],
       [fieldLabel('travelers', 'Viajeros'), data.get('travelers')],
       [fieldLabel('date', 'Fecha'), formatDate(data.get('date'))],
-      [fieldLabel('email', 'Correo'), data.get('email')],
       [fieldLabel('phone', 'Teléfono'), data.get('phone')],
       [fieldLabel('experience', 'Experiencia'), experienceText],
       [fieldLabel('destination', 'Destino'), selectedDestination],

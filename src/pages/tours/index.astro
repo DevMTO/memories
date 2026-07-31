@@ -4,6 +4,7 @@ export const prerender = true;
 import Layout from '../../layouts/Layout.astro';
 import TourCard from '../../components/TourCard.astro';
 import { getToursUseCase } from '../../infrastructure/di';
+import { sitePath } from '../../core/site-path';
 import '../_tours.scss';
 
 const allToursRaw = await getToursUseCase.executeAll();
@@ -49,7 +50,7 @@ const fallbackImages = [
 
 <Layout title="Nuestros Tours | Memories Travel Perú" mainClass="tours-page">
   <!-- HERO -->
-  <section class="tours-hero">
+  <section class="tours-hero" style={`--tours-hero-image: url('${sitePath('/images/hero.webp')}')`}>
     <div class="tours-hero__overlay"></div>
 
     <div class="container tours-hero__content">
@@ -62,7 +63,17 @@ const fallbackImages = [
     <div class="container tours-layout">
       <!-- SIDEBAR -->
       <aside class="tours-sidebar">
-        <div class="filters-box">
+        <button type="button" class="filters-toggle" id="tours-filter-toggle" aria-controls="tours-filters" aria-expanded="false">
+          <svg class="filters-toggle__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M7 14v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          <span>Filtrar resultados</span>
+          <svg class="filters-toggle__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="filters-box" id="tours-filters">
           <div class="filter-group">
             <h3 data-i18n="filters.travelStyles">Estilos de viaje</h3>
 
@@ -226,6 +237,21 @@ const fallbackImages = [
   const emptyState = document.querySelector<HTMLElement>('#toursEmpty');
   const clearButton = document.querySelector<HTMLButtonElement>('#clearFilters');
   const resetButton = document.querySelector<HTMLButtonElement>('#resetFilters');
+  const filtersToggle = document.querySelector<HTMLButtonElement>('#tours-filter-toggle');
+  const filtersSidebar = document.querySelector<HTMLElement>('.tours-sidebar');
+  const compactFiltersQuery = window.matchMedia('(max-width: 1080px)');
+
+  const closeFiltersPanel = () => {
+    filtersSidebar?.classList.remove('is-filter-open');
+    filtersToggle?.setAttribute('aria-expanded', 'false');
+  };
+
+  filtersToggle?.addEventListener('click', () => {
+    const isOpen = filtersSidebar?.classList.toggle('is-filter-open') || false;
+    filtersToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  compactFiltersQuery.addEventListener('change', closeFiltersPanel);
 
   function normalizeText(value: string) {
     return value
@@ -304,7 +330,10 @@ const fallbackImages = [
 
   priceRange?.addEventListener('input', applyFilters);
 
-  clearButton?.addEventListener('click', applyFilters);
+  clearButton?.addEventListener('click', () => {
+    applyFilters();
+    if (compactFiltersQuery.matches) closeFiltersPanel();
+  });
 
   resetButton?.addEventListener('click', () => {
     filterInputs.forEach((input) => {

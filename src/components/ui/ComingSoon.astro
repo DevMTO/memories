@@ -142,7 +142,16 @@ const {
 
   @media (max-width: 768px) {
     .coming-soon {
-      padding: 100px 0 88px;
+      min-height: 520px;
+      display: grid;
+      align-items: center;
+      padding: 108px 0 64px;
     }
+
+    .coming-soon__icon { width: 64px; height: 64px; margin-bottom: 22px; }
+    .coming-soon__icon :global(svg) { width: 29px; height: 29px; }
+    h1 { font-size: clamp(2rem, 11vw, 2.7rem); }
+    p { margin-bottom: 28px; font-size: .84rem; line-height: 1.7; }
+    .coming-soon__btn { width: min(280px, 100%); }
   }
 </style>

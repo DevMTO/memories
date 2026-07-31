@@ -13,19 +13,32 @@ import './QuoteFab.scss';
 <script>
   const fab = document.querySelector<HTMLButtonElement>('.quote-fab');
   const quoteSection = document.getElementById('quote');
+  const footer = document.querySelector<HTMLElement>('.footer');
 
   if (fab && quoteSection) {
-    const setVisibility = (isQuoteVisible: boolean) => {
-      fab.classList.toggle('is-hidden', isQuoteVisible);
-      fab.tabIndex = isQuoteVisible ? -1 : 0;
+    let isQuoteVisible = false;
+    let isFooterVisible = false;
+
+    const syncVisibility = () => {
+      const shouldHide = isQuoteVisible || isFooterVisible;
+      fab.classList.toggle('is-hidden', shouldHide);
+      fab.tabIndex = shouldHide ? -1 : 0;
+      fab.setAttribute('aria-hidden', String(shouldHide));
     };
 
     const observer = new IntersectionObserver(
-      ([entry]) => setVisibility(entry.isIntersecting),
-      { threshold: 0.2 },
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === quoteSection) isQuoteVisible = entry.isIntersecting;
+          if (entry.target === footer) isFooterVisible = entry.isIntersecting;
+        });
+        syncVisibility();
+      },
+      { threshold: 0.08 },
     );
 
     observer.observe(quoteSection);
+    if (footer) observer.observe(footer);
 
     fab.addEventListener('click', () => {
       quoteSection.scrollIntoView({ behavior: 'smooth', block: 'center' });

@@ -16,7 +16,7 @@
 .footer-art {
   width: 100%;
   height: 390px;
-  background-image: url('/images/footer.png');
+  background-image: var(--footer-art-image);
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
@@ -199,24 +199,29 @@
 
 @include respond-to($bp-mobile) {
   .footer-art {
-    height: 220px;
+    height: clamp(140px, 46vw, 190px);
     background-size: cover;
-    background-position: center top;
+    background-position: center bottom;
   }
 
   .footer-main {
-    padding: 40px 0 34px;
+    padding: 34px 0 30px;
   }
 
   .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
   }
 
   .footer-brand,
   .footer-contact {
-    grid-column: span 1;
+    grid-column: span 2;
   }
+
+  .footer-brand p { max-width: 520px; }
+
+  .footer-col h4 { margin-bottom: 14px; font-size: .62rem; }
+  .footer-col ul { gap: 9px; }
 
   .footer-logo {
     gap: 11px;
@@ -233,11 +238,22 @@
 
   .footer-col a,
   .footer-brand p {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    line-height: 1.65;
   }
+
+  .footer-contact li { overflow-wrap: anywhere; font-size: .8rem; }
+
+  .footer-bottom { padding: 11px 14px; }
 
   .footer-bottom p {
     font-size: 0.62rem;
     letter-spacing: 0.2em;
   }
+}
+
+@include respond-to(380px) {
+  .footer-grid { gap: 24px 14px; }
+  .footer-logo { margin-bottom: 14px; }
+  .footer-bottom p { font-size: .56rem; letter-spacing: .15em; }
 }

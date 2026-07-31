@@ -321,3 +321,51 @@
     font-size: 0.7rem;
   }
 }
+
+@include respond-to($bp-mobile) {
+  .destination-hero { min-height: 430px; }
+  .destination-hero__content { padding: 108px 0 54px; }
+  .destination-hero__content span { margin-bottom: 10px; font-size: .62rem; }
+  .destination-hero__content h1 { font-size: clamp(2.9rem, 14vw, 4.2rem); line-height: .95; }
+  .destination-hero__content p { font-size: .64rem; letter-spacing: .07em; }
+
+  .destination-info-wrapper { margin-top: -34px; }
+  .destination-info-bar {
+    min-height: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 14px;
+  }
+  .destination-info-bar div { gap: 5px; padding: 9px 5px; }
+  .destination-info-bar span { font-size: .54rem; letter-spacing: .11em; }
+  .destination-info-bar strong { font-size: .75rem; line-height: 1.35; }
+
+  .destination-intro-section { padding: 56px 0 18px; }
+  .destination-intro-grid { gap: 18px; }
+  .destination-intro-grid h2 { font-size: clamp(2.25rem, 11vw, 3rem); }
+  .destination-intro-grid p { font-size: .84rem; line-height: 1.75; }
+
+  .destination-products-section { padding: 48px 0 28px; }
+  .destination-products-section--tours { padding-top: 30px; }
+  .destination-section-header { margin-bottom: 30px; }
+  .destination-section-header h2 { font-size: clamp(2.25rem, 11vw, 3rem); }
+  .destination-section-header p { font-size: .8rem; line-height: 1.65; }
+  .destination-grid { gap: 18px; }
+
+  .destination-tips-section { padding: 48px 0 56px; }
+  .destination-tips-grid {
+    display: grid;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(84%, 1fr);
+    gap: 14px;
+    margin-right: -14px;
+    padding: 2px 14px 12px 0;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: rgba($color-primary, .42) transparent;
+  }
+  .destination-tips-grid article { padding: 26px 22px; scroll-snap-align: start; }
+}

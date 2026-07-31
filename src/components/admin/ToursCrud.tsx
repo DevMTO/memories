@@ -90,7 +90,7 @@ export default function ToursCrud() {
         .crud-container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; font-family: sans-serif; }
         .crud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .btn-new-tour { background: #28a745; color: white; margin-right: 15px; }
-        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; background: #008178; color: white; }
+        .crud-container button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; background: #008178; color: white; }
         .btn-delete { background: #dc3545; }
         .btn-edit { background: #ffc107; color: black; }
         .btn-logout { background: #6c757d; }
@@ -101,9 +101,21 @@ export default function ToursCrud() {
         .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
         .form-group label { font-size: 0.9rem; font-weight: 600; color: #333; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
-        input:focus, textarea:focus { outline: none; border-color: #008178; box-shadow: 0 0 0 2px rgba(0,129,120,0.2); }
-        textarea { resize: vertical; min-height: 100px; }
+        .crud-container input, .crud-container textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+        .crud-container input:focus, .crud-container textarea:focus { outline: none; border-color: #008178; box-shadow: 0 0 0 2px rgba(0,129,120,0.2); }
+        .crud-container textarea { resize: vertical; min-height: 100px; }
+        @media (max-width: 768px) {
+          .crud-container { padding: 28px 14px; }
+          .crud-header { align-items: flex-start; gap: 18px; }
+          .crud-header, .crud-header > div { flex-direction: column; }
+          .crud-header > div { width: 100%; align-items: stretch !important; gap: 10px !important; }
+          .btn-new-tour { margin-right: 0; }
+          .tours-grid { grid-template-columns: 1fr; }
+          .modal-overlay { align-items: flex-end; }
+          .modal-content { width: 100%; max-height: 92svh; padding: 24px 18px; border-radius: 20px 20px 0 0; }
+          .form-row { grid-template-columns: 1fr; gap: 0; }
+          .crud-container button, .crud-container input { min-height: 44px; }
+        }
       `}</style>
       
       <div className="crud-header">

@@ -59,7 +59,7 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
 
 <Layout title="Nuestros Paquetes | Memories Travel Perú" mainClass="packages-page">
   <!-- HERO -->
-  <section class="packages-hero">
+  <section class="packages-hero" style={`--packages-hero-image: url('${sitePath('/images/hero.webp')}')`}>
     <div class="packages-hero__overlay"></div>
 
     <div class="container packages-hero__content">
@@ -72,7 +72,17 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
     <div class="container packages-layout">
       <!-- SIDEBAR -->
       <aside class="packages-sidebar">
-        <form method="GET" class="filters-box">
+        <button type="button" class="filters-toggle" id="packages-filter-toggle" aria-controls="packages-filters" aria-expanded="false">
+          <svg class="filters-toggle__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M7 14v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          <span>Filtrar resultados</span>
+          <svg class="filters-toggle__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <form method="GET" class="filters-box" id="packages-filters">
           <div class="filter-group">
             <h3 data-i18n="filters.travelStyles">Estilos de viaje</h3>
 
@@ -174,3 +184,21 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
     </div>
   </section>
 </Layout>
+
+<script>
+  const packageFiltersToggle = document.querySelector<HTMLButtonElement>('#packages-filter-toggle');
+  const packageFiltersSidebar = document.querySelector<HTMLElement>('.packages-sidebar');
+  const compactPackageFiltersQuery = window.matchMedia('(max-width: 1080px)');
+
+  const closePackageFilters = () => {
+    packageFiltersSidebar?.classList.remove('is-filter-open');
+    packageFiltersToggle?.setAttribute('aria-expanded', 'false');
+  };
+
+  packageFiltersToggle?.addEventListener('click', () => {
+    const isOpen = packageFiltersSidebar?.classList.toggle('is-filter-open') || false;
+    packageFiltersToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  compactPackageFiltersQuery.addEventListener('change', closePackageFilters);
+</script>

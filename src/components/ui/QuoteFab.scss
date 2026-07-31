@@ -28,6 +28,13 @@
 }
 
 @include respond-to($bp-mobile) {
-  .quote-fab { right: 16px; bottom: 16px; width: 50px; padding: 0; justify-content: center; }
+  .quote-fab { right: 14px; bottom: max(14px, env(safe-area-inset-bottom)); width: 48px; min-height: 48px; padding: 0; justify-content: center; box-shadow: 0 12px 28px rgba($color-primary-dark, .34); }
   .quote-fab span { display: none; }
+}
+
+body.is-mobile-menu-open .quote-fab {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(12px) scale(.9);
 }

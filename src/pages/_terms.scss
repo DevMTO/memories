@@ -44,8 +44,14 @@
 .flight-info__actions a:hover { background: $color-accent; color: $color-primary-dark; }
 
 @media (max-width: 768px) {
-  .terms-hero { padding: 160px 0 68px; }
-  .terms-content { padding: 56px 0 72px; }
+  .terms-hero { padding: 132px 0 58px; }
+  .terms-hero h1 { font-size: clamp(2.4rem, 12vw, 3.4rem); }
+  .terms-hero p { font-size: .84rem; line-height: 1.7; }
+  .terms-content { padding: 48px 0 62px; }
   .terms-article { padding: 26px 0; }
-  .flight-info { margin-top: 34px; padding: 32px 26px; }
+  .terms-article p,
+  .terms-article li { font-size: .84rem; line-height: 1.75; }
+  .flight-info { margin-top: 30px; padding: 28px 22px; }
+  .flight-info__actions { display: grid; }
+  .flight-info__actions a { width: 100%; text-align: center; }
 }
