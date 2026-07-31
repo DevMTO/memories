@@ -1,4 +1,6 @@
 ---
+import { sitePath } from '../../core/site-path';
+
 interface Props {
   eyebrow: string;
   title: string;
@@ -31,8 +33,8 @@ const {
     <p data-i18n={i18nPrefix ? `${i18nPrefix}.message` : undefined}>{message}</p>
 
     <div class="coming-soon__actions">
-      <a href={ctaHref} class="coming-soon__btn" data-i18n={i18nPrefix ? `${i18nPrefix}.explore` : undefined}>{ctaLabel}</a>
-      <a href="/" class="coming-soon__link" data-i18n={i18nPrefix ? `${i18nPrefix}.home` : undefined}>Volver al inicio</a>
+      <a href={sitePath(ctaHref)} class="coming-soon__btn" data-i18n={i18nPrefix ? `${i18nPrefix}.explore` : undefined}>{ctaLabel}</a>
+      <a href={sitePath('/')} class="coming-soon__link" data-i18n={i18nPrefix ? `${i18nPrefix}.home` : undefined}>Volver al inicio</a>
     </div>
   </div>
 </section>

@@ -1,6 +1,5 @@
 ---
 import './Header.scss';
-import SocialIcons from './SocialIcons.astro';
 import LanguageSwitcher from './LanguageSwitcher';
 import { sitePath } from '../../core/site-path';
 
@@ -40,9 +39,6 @@ const isActive = (href: string) =>
       </div>
 
       <div class="header-top__actions">
-        <div class="header-top__socials">
-          <SocialIcons whatsappNumber={primaryWhatsApp} />
-        </div>
         <LanguageSwitcher client:load />
       </div>
     </div>
@@ -134,9 +130,6 @@ const isActive = (href: string) =>
       </a>
     </div>
 
-    <div class="mobile-menu__socials">
-      <SocialIcons whatsappNumber={primaryWhatsApp} />
-    </div>
   </div>
 </div>
 

@@ -27,10 +27,13 @@ select.form-control option { color: $color-primary-dark; background: $color-whit
 .experience-pill__box { width: 11px; height: 11px; border: 1px solid rgba($color-white, .82); border-radius: 50%; flex-shrink: 0; }
 .experience-pill:has(input:checked) .experience-pill__box { border: 3px solid $color-white; background: $color-accent; }
 .quote-submit { margin-top: 26px; }
-.quote-form__status { min-height: 1.25em; margin: 0 0 12px; color: rgba($color-white, .84); font-size: .78rem; }
+.quote-submit__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.quote-form__status { min-height: 1.25em; margin-top: 8px; color: $color-accent; font-size: .76rem; font-weight: 650; }
+.quote-form__status p { margin: 0; }
+.quote-form__status [hidden] { display: none; }
 .quote-btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 46px; padding: 0 28px; border: 1px solid $color-accent; border-radius: 999px; background: $color-white; color: $color-primary-dark; font-family: $font-sans; font-size: .68rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease; }
 .quote-btn svg { width: 17px; height: 17px; }
 .quote-btn:hover { background: $color-accent; color: $color-primary-dark; box-shadow: 0 10px 24px rgba($color-primary-dark, .2); transform: translateY(-2px); }
 
 @include respond-to($bp-tablet) { .quote-box { padding: 46px 32px; } .quote-grid--three, .quote-grid--two { grid-template-columns: 1fr; } .quote-title { font-size: 3rem; } }
-@include respond-to($bp-mobile) { .quote-section { padding: 70px 0; } .quote-box { padding: 34px 18px; border-radius: 16px; } .quote-header { margin-bottom: 28px; } .quote-title { font-size: 2.5rem; } .quote-desc { font-size: .9rem; } .form-control, .experience-pill { min-height: 44px; } .quote-btn { width: 100%; padding: 0 18px; } }
+@include respond-to($bp-mobile) { .quote-section { padding: 70px 0; } .quote-box { padding: 34px 18px; border-radius: 16px; } .quote-header { margin-bottom: 28px; } .quote-title { font-size: 2.5rem; } .quote-desc { font-size: .9rem; } .form-control, .experience-pill { min-height: 44px; } .quote-submit__actions { flex-direction: column; } .quote-btn { width: 100%; padding: 0 18px; } }

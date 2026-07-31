@@ -15,11 +15,11 @@ import './QuoteForm.scss';
         <div class="quote-grid quote-grid--three">
           <label class="form-group form-group--name">
             <span class="form-label" data-i18n="quote.name">Nombre completo</span>
-            <input name="name" type="text" class="form-control" autocomplete="name" required data-i18n-placeholder="quote.namePlaceholder" placeholder="Ej. Ana Pérez" />
+            <input name="name" type="text" class="form-control" autocomplete="name" minlength="2" maxlength="80" required data-i18n-placeholder="quote.namePlaceholder" placeholder="Ej. Ana Pérez" />
           </label>
           <label class="form-group form-group--travelers">
             <span class="form-label" data-i18n="quote.travelers">Viajeros</span>
-            <input name="travelers" type="number" min="1" value="2" class="form-control text-center" required />
+            <input name="travelers" type="number" min="1" max="99" value="2" class="form-control text-center" required />
           </label>
           <label class="form-group form-group--date">
             <span class="form-label" data-i18n="quote.date">Fecha estimada</span>
@@ -30,7 +30,7 @@ import './QuoteForm.scss';
         <div class="quote-grid quote-grid--two">
           <label class="form-group">
             <span class="form-label" data-i18n="quote.email">Correo electrónico</span>
-            <input name="email" type="email" class="form-control" autocomplete="email" required data-i18n-placeholder="quote.emailPlaceholder" placeholder="nombre@correo.com" />
+            <input name="email" type="email" class="form-control" autocomplete="email" maxlength="120" required data-i18n-placeholder="quote.emailPlaceholder" placeholder="nombre@correo.com" />
           </label>
           <div class="form-group form-group--experience">
             <span class="form-label" data-i18n="quote.experience">Tipo de experiencia</span>
@@ -44,26 +44,38 @@ import './QuoteForm.scss';
 
         <div class="quote-grid quote-grid--two">
           <label class="form-group">
-            <span class="form-label" data-i18n="quote.phone">Teléfono o WhatsApp</span>
-            <input name="phone" type="tel" class="form-control" autocomplete="tel" required data-i18n-placeholder="quote.phonePlaceholder" placeholder="+51 999 999 999" />
+            <span class="form-label" data-i18n="quote.phone">Teléfono de contacto</span>
+            <input name="phone" type="tel" class="form-control" autocomplete="tel" inputmode="tel" pattern="[-0-9 ()+]{7,20}" maxlength="20" title="Ingresa un teléfono válido con código de país" required data-i18n-placeholder="quote.phonePlaceholder" placeholder="+51 999 999 999" />
           </label>
           <label class="form-group">
             <span class="form-label" data-i18n="quote.destination">Destino de interés</span>
             <select name="destination" class="form-control" required>
               <option value="" selected disabled data-i18n="quote.selectDestination">Selecciona un destino</option>
-              <option>Cusco</option><option>Lima</option><option>Arequipa</option><option>Ica</option><option>Puno</option><option>Machu Picchu</option>
+              <option class="notranslate" translate="no">Cusco</option><option class="notranslate" translate="no">Lima</option><option class="notranslate" translate="no">Arequipa</option><option class="notranslate" translate="no">Ica</option><option class="notranslate" translate="no">Puno</option><option class="notranslate" translate="no">Machu Picchu</option>
             </select>
           </label>
         </div>
 
         <label class="form-group form-group--full">
           <span class="form-label form-label--center" data-i18n="quote.message">Cuéntanos qué te gustaría vivir</span>
-          <textarea name="message" class="form-control form-control--textarea" rows="4" data-i18n-placeholder="quote.messagePlaceholder" placeholder="Intereses, fechas flexibles o alguna necesidad especial…"></textarea>
+          <textarea name="message" class="form-control form-control--textarea" rows="4" maxlength="1200" data-i18n-placeholder="quote.messagePlaceholder" placeholder="Intereses, fechas flexibles o alguna necesidad especial…"></textarea>
         </label>
 
         <div class="quote-submit text-center">
-          <p class="quote-form__status" role="status" aria-live="polite"></p>
-          <button type="submit" class="quote-btn"><span data-i18n="quote.submit">Solicitar mi propuesta personalizada</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg></button>
+          <div class="quote-submit__actions">
+            <button type="submit" class="quote-btn quote-btn--whatsapp">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12.04 2.8a9.1 9.1 0 0 0-7.77 13.84L3 21.2l4.68-1.23a9.1 9.1 0 1 0 4.36-17.17Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+                <path d="M8.55 7.75c.2-.45.4-.46.62-.47h.53c.17 0 .44.06.67.56.23.5.78 1.9.85 2.04.07.13.12.29.02.46-.1.18-.15.29-.29.45-.14.16-.3.35-.42.47-.14.14-.29.29-.13.57.16.29.72 1.18 1.54 1.91 1.06.94 1.95 1.24 2.23 1.38.28.14.44.12.6-.07.17-.19.7-.81.89-1.09.18-.27.37-.23.62-.14.26.09 1.59.74 1.86.88.28.13.46.2.53.31.07.12.07.68-.16 1.3-.22.62-1.3 1.18-1.8 1.23-.47.05-1.06.07-1.7-.1-.39-.1-.9-.27-1.54-.55-2.71-1.15-4.47-3.82-4.6-4-.14-.18-1.1-1.43-1.1-2.72 0-1.29.7-1.93.94-2.18Z" fill="currentColor" />
+              </svg>
+              <span>Enviar solicitud por WhatsApp</span>
+            </button>
+          </div>
+          <span data-source-label hidden>Página de origen</span>
+          <div class="quote-form__status" role="status" aria-live="polite">
+            <p data-status="whatsapp" hidden>Tu solicitud está lista en WhatsApp. Solo falta confirmar el envío.</p>
+            <p data-status="whatsapp-fallback" hidden>WhatsApp se abrirá en esta ventana para asegurar el envío.</p>
+          </div>
         </div>
       </form>
     </div>
@@ -71,38 +83,87 @@ import './QuoteForm.scss';
 </section>
 
 <script>
+  const primaryWhatsApp = '51908043192';
   const form = document.querySelector<HTMLFormElement>('#quote-form');
-  const status = form?.querySelector<HTMLElement>('.quote-form__status');
+  const dateInput = form?.querySelector<HTMLInputElement>('input[name="date"]');
+  const statusMessages = form?.querySelectorAll<HTMLElement>('[data-status]');
+
+  if (dateInput) {
+    const today = new Date();
+    const offset = today.getTimezoneOffset();
+    dateInput.min = new Date(today.getTime() - offset * 60_000).toISOString().slice(0, 10);
+  }
 
   const fieldLabel = (name: string, fallback: string) => {
     const field = form?.querySelector<HTMLElement>(`[name="${name}"]`);
     return field?.closest('.form-group')?.querySelector<HTMLElement>('.form-label')?.textContent?.trim() || fallback;
   };
 
-  form?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
+  const showStatus = (statusName: string) => {
+    statusMessages?.forEach((message) => {
+      message.hidden = message.dataset.status !== statusName;
+    });
+  };
 
+  const formatDate = (value: FormDataEntryValue | null) => {
+    if (!value) return '—';
+    const [year, month, day] = String(value).split('-').map(Number);
+    if (!year || !month || !day) return String(value);
+    return new Intl.DateTimeFormat(document.documentElement.lang || 'es', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    }).format(new Date(year, month - 1, day));
+  };
+
+  const buildRequest = () => {
+    if (!form) return null;
     const data = new FormData(form);
     const selectedExperience = form.querySelector<HTMLInputElement>('input[name="experience"]:checked');
     const experienceText = selectedExperience?.closest('label')?.querySelector<HTMLSpanElement>('span:last-child')?.textContent?.trim() || String(data.get('experience'));
     const selectedDestination = form.querySelector<HTMLSelectElement>('select[name="destination"]')?.selectedOptions[0]?.textContent?.trim() || String(data.get('destination'));
     const title = document.getElementById('quote-title')?.textContent?.trim() || 'Solicitud de viaje — Memories Travel Perú';
-    const lines = [
-      `*${title}*`, '',
-      `*${fieldLabel('name', 'Nombre')}:* ${data.get('name')}`,
-      `*${fieldLabel('travelers', 'Viajeros')}:* ${data.get('travelers')}`,
-      `*${fieldLabel('date', 'Fecha')}:* ${data.get('date')}`,
-      `*${fieldLabel('email', 'Correo')}:* ${data.get('email')}`,
-      `*${fieldLabel('phone', 'Teléfono')}:* ${data.get('phone')}`,
-      `*${fieldLabel('experience', 'Experiencia')}:* ${experienceText}`,
-      `*${fieldLabel('destination', 'Destino')}:* ${selectedDestination}`,
-      `*${fieldLabel('message', 'Detalles')}:* ${data.get('message') || '—'}`,
+    const fields = [
+      [fieldLabel('name', 'Nombre'), data.get('name')],
+      [fieldLabel('travelers', 'Viajeros'), data.get('travelers')],
+      [fieldLabel('date', 'Fecha'), formatDate(data.get('date'))],
+      [fieldLabel('email', 'Correo'), data.get('email')],
+      [fieldLabel('phone', 'Teléfono'), data.get('phone')],
+      [fieldLabel('experience', 'Experiencia'), experienceText],
+      [fieldLabel('destination', 'Destino'), selectedDestination],
+      [fieldLabel('message', 'Detalles'), data.get('message') || '—'],
     ];
+    const sourceLabel = form.querySelector<HTMLElement>('[data-source-label]')?.textContent?.trim() || 'Página de origen';
 
-    const whatsappWindow = window.open(`https://wa.me/51908043192?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener,noreferrer');
-    if (status) status.textContent = whatsappWindow
-      ? 'WhatsApp se abrió con tu solicitud lista para enviar.'
-      : 'Permite las ventanas emergentes para abrir WhatsApp.';
+    return {
+      title,
+      whatsappText: [
+        `*${title}*`,
+        '',
+        ...fields.map(([label, value]) => `*${label}:* ${value}`),
+        '',
+        `*${sourceLabel}:* ${window.location.href}`,
+      ].join('\n'),
+    };
+  };
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+
+    const request = buildRequest();
+    if (!request) return;
+    const whatsappUrl = `https://wa.me/${primaryWhatsApp}?text=${encodeURIComponent(request.whatsappText)}`;
+    const whatsappWindow = window.open('', '_blank');
+
+    if (whatsappWindow) {
+      whatsappWindow.opener = null;
+      whatsappWindow.location.href = whatsappUrl;
+      showStatus('whatsapp');
+      return;
+    }
+
+    showStatus('whatsapp-fallback');
+    window.setTimeout(() => window.location.assign(whatsappUrl), 350);
   });
 </script>

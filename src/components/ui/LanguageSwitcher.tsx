@@ -13,7 +13,7 @@ const languages: Array<{ code: Language; label: string; name: string }> = [
 
 const storageKey = 'memories-language';
 const cacheKey = 'memories-translation-cache-v2';
-const excludedSelector = '.notranslate, [data-no-translate], script, style, noscript, svg, code, pre, textarea, input';
+const excludedSelector = '.notranslate, [data-no-translate], [translate="no"], script, style, noscript, svg, code, pre, textarea, input';
 const translatablePattern = /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/;
 
 const loadCache = (): Record<string, string> => {
@@ -58,7 +58,7 @@ const getTextRecords = (): TextRecord[] => {
 const getAttributeRecords = (): AttributeRecord[] => {
   const records: AttributeRecord[] = [];
   document.querySelectorAll<HTMLElement>('[placeholder], [title], [aria-label]').forEach((element) => {
-    if (element.closest('.notranslate, [data-no-translate]')) return;
+    if (element.closest('.notranslate, [data-no-translate], [translate="no"]')) return;
     ['placeholder', 'title', 'aria-label'].forEach((attribute) => {
       const original = element.getAttribute(attribute);
       if (original && translatablePattern.test(original)) records.push({ element, attribute, original });

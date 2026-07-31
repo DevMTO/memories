@@ -104,6 +104,9 @@ if (!destination) {
 }
 
 const destinationImage = sitePath(destination.imageUrl);
+const destinationTitleSuffix = destination.title.startsWith(destination.name)
+  ? destination.title.slice(destination.name.length)
+  : destination.title;
 
 const packagesRaw = await getToursUseCase.executePackages();
 const toursRaw = await getToursUseCase.executeAll();
@@ -180,7 +183,7 @@ const withSafeImage = (item: any, index: number) => ({
 
     <div class="container destination-hero__content">
       <span>{destination.eyebrow}</span>
-      <h1>{destination.name}</h1>
+      <h1 class="notranslate" translate="no">{destination.name}</h1>
       <p>{destination.description}</p>
     </div>
   </section>
@@ -213,7 +216,7 @@ const withSafeImage = (item: any, index: number) => ({
     <div class="container destination-intro-grid">
       <div>
         <span class="destination-eyebrow">Destino destacado</span>
-        <h2>{destination.title}</h2>
+        <h2><span class="notranslate" translate="no">{destination.name}</span>{destinationTitleSuffix}</h2>
       </div>
 
       <p>{destination.description}</p>
@@ -224,7 +227,7 @@ const withSafeImage = (item: any, index: number) => ({
     <div class="container">
       <div class="destination-section-header">
         <span class="destination-eyebrow">Paquetes disponibles</span>
-        <h2>Viajes a {destination.name}</h2>
+        <h2>Viajes a <span class="notranslate" translate="no">{destination.name}</span></h2>
         <p>
           Programas diseñados para conocer este destino con una operación organizada,
           rutas cuidadas y acompañamiento profesional.
@@ -240,7 +243,7 @@ const withSafeImage = (item: any, index: number) => ({
           </div>
         ) : (
           <div class="destination-empty">
-            <h3>No hay paquetes activos para {destination.name}</h3>
+            <h3>No hay paquetes activos para <span class="notranslate" translate="no">{destination.name}</span></h3>
             <p>
               Puedes solicitar una propuesta personalizada para este destino.
             </p>
@@ -256,7 +259,7 @@ const withSafeImage = (item: any, index: number) => ({
         <div class="container">
           <div class="destination-section-header">
             <span class="destination-eyebrow">Experiencias seleccionadas</span>
-            <h2>Tours en {destination.name}</h2>
+            <h2>Tours en <span class="notranslate" translate="no">{destination.name}</span></h2>
             <p>
               Actividades y recorridos para complementar tu visita con cultura,
               paisajes y experiencias locales.

@@ -192,7 +192,7 @@ const displayDestinations = destinationPriority
           </div>
         </div>
 
-        <a href={sitePath('/destinations')} class="text-link">Ver más destinos →</a>
+        <a href="#destinations" class="text-link">Ver más destinos →</a>
       </div>
 
       <div class="transform-image">
@@ -249,7 +249,7 @@ const displayDestinations = destinationPriority
                   </figure>
 
                   <div class="home-tour-card__body">
-                    <span class="home-tour-card__location">
+                    <span class="home-tour-card__location notranslate" translate="no">
                       {(tour.destinationName || tour.location || "Perú").toUpperCase()}
                     </span>
 
@@ -283,7 +283,7 @@ const displayDestinations = destinationPriority
   </section>
 
   <!-- ==================== DESTINATIONS ==================== -->
-  <section class="home-destinations-section reveal-up">
+  <section id="destinations" class="home-destinations-section reveal-up">
     <div class="container">
       <div class="home-section-header destinations-header">
         <div>
@@ -293,7 +293,7 @@ const displayDestinations = destinationPriority
           </div>
           <h2>Destinos <em>Icónicos</em></h2>
         </div>
-        <a href={sitePath('/destinations')} class="destinations-link">Ver más destinos →</a>
+        <a href="#destinations" class="destinations-link">Ver más destinos →</a>
       </div>
 
       {
@@ -310,7 +310,7 @@ const displayDestinations = destinationPriority
                 <div class="destination-card__overlay"></div>
                 <div class="destination-card__content">
                   <span class="destination-card__index">0{index + 1}</span>
-                  <h3>{destination.name}</h3>
+                  <h3 class="notranslate" translate="no">{destination.name}</h3>
                 </div>
               </a>
             ))}
