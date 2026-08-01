@@ -1,19 +1,10 @@
 ---
-export const prerender = true;
-
 import Layout from '../../layouts/Layout.astro';
 import PackageCard from '../../components/PackageCard.astro';
 import TourCard from '../../components/TourCard.astro';
 import { sitePath } from '../../core/site-path';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_destination-detail.scss';
-
-export async function getStaticPaths() {
-  const destinations = ['cusco', 'lima', 'ica', 'puno', 'arequipa'];
-  return destinations.map((slug) => ({
-    params: { slug },
-  }));
-}
 
 const { slug } = Astro.params;
 

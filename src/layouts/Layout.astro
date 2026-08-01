@@ -3,31 +3,50 @@ import Header from '../components/ui/Header.astro';
 import Footer from '../components/ui/Footer.astro';
 import QuoteForm from '../components/ui/QuoteForm.astro';
 import QuoteFab from '../components/ui/QuoteFab.astro';
+import WhatsAppFab from '../components/ui/WhatsAppFab.astro';
 import { sitePath } from '../core/site-path';
 import '../styles/global.scss';
 
 interface Props {
   title: string;
   mainClass?: string;
+  description?: string;
   showQuoteForm?: boolean;
   preloadImage?: string;
+  socialImage?: string;
 }
 
-const { title, mainClass, showQuoteForm = true, preloadImage } = Astro.props;
+const {
+  title,
+  mainClass,
+  description = 'Memories Travel Perú: tours, trekkings y paquetes personalizados con atención local desde Cusco.',
+  showQuoteForm = true,
+  preloadImage,
+  socialImage,
+} = Astro.props;
+
+const documentTitle = /memories travel/i.test(title)
+  ? title
+  : `${title} | Memories Travel Perú`;
+const metaDescription = description.trim().replace(/\s+/g, ' ').slice(0, 160);
+const absoluteSocialImage = socialImage
+  ? new URL(sitePath(socialImage), Astro.url).toString()
+  : undefined;
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="description"
-      content="Memories Travel Peru - Experiencias exclusivas de viaje"
-    />
+    <meta name="description" content={metaDescription} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/webp" href={sitePath('/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-1.webp')} />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} | Memories Travel Peru</title>
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:type" content="website" />
+    {absoluteSocialImage && <meta property="og:image" content={absoluteSocialImage} />}
+    <title>{documentTitle}</title>
     {preloadImage && (
       <link rel="preload" as="image" href={sitePath(preloadImage)} fetchpriority="high" />
     )}
@@ -42,6 +61,7 @@ const { title, mainClass, showQuoteForm = true, preloadImage } = Astro.props;
 
     {showQuoteForm && <QuoteForm />}
     {showQuoteForm && <QuoteFab />}
+    <WhatsAppFab />
 
     <Footer />
   </body>

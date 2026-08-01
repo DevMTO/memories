@@ -21,3 +21,9 @@ node_modules/
 
 # jetbrains setting folder
 .idea/
+
+# SQLite runtime database
+/data/*.sqlite
+/data/*.sqlite-*
+/data/*.db
+/data/*.db-*

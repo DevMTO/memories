@@ -1,9 +1,9 @@
 ---
-import "./Footer.scss";
-import { sitePath } from "../../core/site-path";
+import './Footer.scss';
+import { sitePath } from '../../core/site-path';
+import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
 
-const primaryWhatsApp = '51908043192';
-const emergencyPhone = '51954669589';
+const whatsappUrl = buildWhatsAppUrl('Hola, quisiera recibir información sobre sus tours y paquetes.');
 ---
 
 <footer class="footer">
@@ -13,67 +13,56 @@ const emergencyPhone = '51954669589';
     <div class="footer-content container">
       <div class="footer-grid">
         <div class="footer-col footer-brand">
-          <a
-            href={sitePath("/")}
-            class="footer-logo"
-            aria-label="Memories Travel Perú"
-          >
-            <img
-              src={sitePath("/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-4.webp")}
-              alt=""
-              class="footer-logo-mark"
-              width="1080"
-              height="1080"
-            />
-            <img
-              src={sitePath(
-                "/images/LOGOTIPOS/LOGOTIPO-MEMORIES-TRAVEL-5.webp",
-              )}
-              alt="Memories Travel"
-              class="footer-logo-wordmark"
-              width="1080"
-              height="301"
-            />
+          <a href={sitePath('/')} class="footer-logo" aria-label="Memories Travel Perú">
+            <img src={sitePath('/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-4.webp')} alt="" class="footer-logo-mark" width="1080" height="1080" />
+            <img src={sitePath('/images/LOGOTIPOS/LOGOTIPO-MEMORIES-TRAVEL-5.webp')} alt="Memories Travel" class="footer-logo-wordmark" width="1080" height="301" />
           </a>
-
-          <p data-i18n="footer.description">
-            Comparta sus planes con nosotros. Un especialista en viajes de lujo
-            curará una propuesta exclusiva adaptada a sus preferencias.
-          </p>
-
+          <p data-i18n="footer.description">Comparta sus planes con nosotros. Un especialista diseñará una propuesta adaptada a sus preferencias.</p>
         </div>
 
         <div class="footer-col">
           <h4 data-i18n="footer.explore">Explorar</h4>
           <ul>
-            <li><a href={sitePath("/#destinations")} data-i18n="footer.destinations">Destinos</a></li>
-            <li><a href={sitePath("/tours")} data-i18n="footer.experiences">Experiencias</a></li>
-            <li><a href={sitePath("/blogs")}>Blogs</a></li>
+            <li><a href={sitePath('/packages')}>Paquetes</a></li>
+            <li><a href={sitePath('/tours')} data-i18n="footer.experiences">Tours</a></li>
+            <li><a href={sitePath('/trekkings')}>Trekking</a></li>
+            <li><a href={sitePath('/#destinations')} data-i18n="footer.destinations">Destinos</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
           <h4 data-i18n="footer.company">Empresa</h4>
           <ul>
-            <li><a href={sitePath("/about")} data-i18n="footer.about">Quiénes somos</a></li>
-            <li><a href={sitePath("/terms")} data-i18n="footer.terms">Términos y condiciones</a></li>
+            <li><a href={sitePath('/about')} data-i18n="footer.about">Quiénes somos</a></li>
+            <li><a href={sitePath('/terms')} data-i18n="footer.terms">Términos y condiciones</a></li>
+            <li><a href={sitePath('/esnna')}>Turismo responsable</a></li>
           </ul>
         </div>
 
         <div class="footer-col footer-contact">
           <h4 data-i18n="footer.contact">Contacto</h4>
-          <ul>
-            <li>Luis Vallejo Santoni C-2, Santiago - <span class="notranslate" translate="no">Cusco</span></li>
-            <li><a href={`https://wa.me/${primaryWhatsApp}`} target="_blank" rel="noopener noreferrer">WhatsApp: +51 908 043 192</a></li>
-            <li><a href={`tel:+${emergencyPhone}`}><span data-i18n="footer.emergency">Emergencias</span>: +51 954 669 589</a></li>
-          </ul>
+          <div class="footer-contact-list">
+            <div class="footer-contact-item footer-contact-item--address">
+              <span class="footer-contact-icon" aria-hidden="true">⌖</span>
+              <div><small>Oficina</small><span>{SITE_CONTACT.address}</span></div>
+            </div>
+            <a class="footer-contact-item" href={`mailto:${SITE_CONTACT.email}`}>
+              <span class="footer-contact-icon" aria-hidden="true">@</span>
+              <div><small>Correo</small><strong>{SITE_CONTACT.email}</strong></div>
+            </a>
+            <a class="footer-contact-item" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+              <span class="footer-contact-icon" aria-hidden="true">◉</span>
+              <div><small>WhatsApp</small><strong>{SITE_CONTACT.whatsappDisplay}</strong></div>
+            </a>
+            <a class="footer-contact-item footer-contact-item--emergency" href={`tel:+${SITE_CONTACT.emergencyNumber}`}>
+              <span class="footer-contact-icon" aria-hidden="true">!</span>
+              <div><small data-i18n="footer.emergency">Emergencias</small><strong>{SITE_CONTACT.emergencyDisplay}</strong></div>
+            </a>
+          </div>
         </div>
-
       </div>
     </div>
   </div>
 
-  <div class="footer-bottom">
-    <p>© 2026 Memories Travel Perú</p>
-  </div>
+  <div class="footer-bottom"><p>© 2026 Memories Travel Perú</p></div>
 </footer>

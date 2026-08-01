@@ -1,17 +1,18 @@
 ---
-export const prerender = true;
-
 import Layout from "../layouts/Layout.astro";
 import { getToursUseCase } from "../infrastructure/di";
 import { sitePath } from "../core/site-path";
+import heroReelManifest from "../data/hero_reel_manifest.json";
 import "./_home.scss";
+import "./_hero_video_carousel.scss";
 
 const featuredTours = await getToursUseCase.executeFeatured();
+const allExperiences = await getToursUseCase.executeAll();
 const packages = await getToursUseCase.executePackages();
 
-const displayTours = (featuredTours || [])
-  .filter((tour) => tour.isActive !== false)
-  .slice(0, 3);
+const activeExperiences = (allExperiences || []).filter((tour) => tour.isActive !== false);
+const featuredActive = (featuredTours || []).filter((tour) => tour.isActive !== false);
+const displayTours = (featuredActive.length > 0 ? featuredActive : activeExperiences).slice(0, 3);
 
 const activePackages = (packages || []).filter((pkg) => pkg.isActive !== false);
 
@@ -90,12 +91,36 @@ const displayDestinations = destinationPriority
 <Layout
   title="Memories Travel Perú | Agencia de viajes en Perú"
   mainClass="home-main"
-  preloadImage="/images/hero.webp"
+  preloadImage={heroReelManifest.video.poster}
+  socialImage={heroReelManifest.video.poster}
 >
 
-  <!-- ==================== HERO ==================== -->
-  <section class="home-hero" style={`--home-hero-image: url('${sitePath('/images/hero.webp')}')`}>
+  <!-- ==================== HERO VIDEO REEL ==================== -->
+  <section
+    class="home-hero"
+    style={`--home-hero-image: url('${sitePath(heroReelManifest.video.poster)}')`}
+    data-hero-reel
+  >
+    <div class="home-hero__media" aria-hidden="true">
+      <video
+        class="home-hero__video"
+        data-hero-video
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster={sitePath(heroReelManifest.video.poster)}
+        tabindex="-1"
+      >
+        <source src={sitePath(heroReelManifest.video.mp4)} type="video/mp4" />
+      </video>
+    </div>
+
     <div class="home-hero__overlay"></div>
+
+    <div class="hero-water-interaction" data-hero-interaction aria-hidden="true">
+      <div class="hero-water-interaction__surface" data-water-surface></div>
+    </div>
 
     <div class="container home-hero__content">
       <span class="home-eyebrow home-eyebrow--light">Agencia de viajes · Tour operador</span>
@@ -118,15 +143,32 @@ const displayDestinations = destinationPriority
       </div>
     </div>
 
-    <div class="hero-stat-badge">
-      <span class="hero-stat-badge__num">500+</span>
-      <span class="hero-stat-badge__label">Viajeros<br />satisfechos</span>
-    </div>
+  </section>
 
-    <a href="#home-tours" class="hero-scroll" aria-label="Desplazarse hacia abajo">
-      <span class="hero-scroll__line"></span>
-      <span class="hero-scroll__text">SCROLL</span>
-    </a>
+  <!-- ==================== EXPERIENCE GATEWAY ==================== -->
+  <section class="experience-gateway reveal-up" aria-labelledby="experience-gateway-title">
+    <div class="container">
+      <div class="experience-gateway__header">
+        <span class="home-eyebrow home-eyebrow--dark">Encuentra tu forma de viajar</span>
+        <h2 id="experience-gateway-title">Todo el Perú, <em>a tu ritmo</em></h2>
+        <p>Explora experiencias de un día, rutas de trekking y programas completos con información clara antes de reservar.</p>
+      </div>
+
+      <div class="experience-gateway__grid">
+        <a href={sitePath('/tours')} class="experience-gateway__card">
+          <div><strong>Tours</strong><p>Excursiones culturales, naturaleza y experiencias de uno o varios días.</p></div>
+          <span class="experience-gateway__arrow" aria-hidden="true">→</span>
+        </a>
+        <a href={sitePath('/trekkings')} class="experience-gateway__card">
+          <div><strong>Trekking</strong><p>Caminatas andinas con itinerario, equipo recomendado y servicios detallados.</p></div>
+          <span class="experience-gateway__arrow" aria-hidden="true">→</span>
+        </a>
+        <a href={sitePath('/packages')} class="experience-gateway__card">
+          <div><strong>Paquetes</strong><p>Programas integrales para recorrer varios destinos con acompañamiento experto.</p></div>
+          <span class="experience-gateway__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- ==================== ESNNA ==================== -->
@@ -219,9 +261,9 @@ const displayDestinations = destinationPriority
         {
           displayTours.map((tour, index) => {
             const fallbackImages = [
-              "/images/cusco.png",
-              "/images/vinicunca.png",
-              "/images/lima.png",
+              "/images/cusco/cusco.png",
+              "/images/cusco/montana-7-colores.webp",
+              "/images/lima/lima.png",
             ];
 
             const imageUrl =
@@ -327,6 +369,170 @@ const displayDestinations = destinationPriority
 </Layout>
 
 <script>
+  const hero = document.querySelector<HTMLElement>("[data-hero-reel]");
+  const heroVideo = hero?.querySelector<HTMLVideoElement>("[data-hero-video]");
+  const interactionLayer = hero?.querySelector<HTMLElement>("[data-hero-interaction]");
+  const waterSurface = hero?.querySelector<HTMLElement>("[data-water-surface]");
+
+  if (hero && heroVideo && interactionLayer && waterSurface) {
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const precisePointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const saveDataEnabled = Boolean(
+      (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
+    );
+
+    let heroIsVisible = true;
+    let holdPaused = false;
+    let activePointerId: number | null = null;
+    let pointerDownAt = 0;
+    let pointerDownX = 0;
+    let pointerDownY = 0;
+    let pointerFrame = 0;
+
+    const shouldRemainPaused = () =>
+      reducedMotionQuery.matches || saveDataEnabled || holdPaused || !heroIsVisible || document.hidden;
+
+    const syncPlayback = async () => {
+      if (shouldRemainPaused()) {
+        heroVideo.pause();
+        return;
+      }
+
+      try {
+        await heroVideo.play();
+      } catch {
+        // Autoplay can be rejected by the browser. The poster remains as fallback.
+      }
+    };
+
+    const setPointerPosition = (clientX: number, clientY: number) => {
+      cancelAnimationFrame(pointerFrame);
+      pointerFrame = requestAnimationFrame(() => {
+        const bounds = interactionLayer.getBoundingClientRect();
+        const x = Math.max(0, Math.min(clientX - bounds.left, bounds.width));
+        const y = Math.max(0, Math.min(clientY - bounds.top, bounds.height));
+
+        interactionLayer.style.setProperty("--water-x", `${x}px`);
+        interactionLayer.style.setProperty("--water-y", `${y}px`);
+        interactionLayer.classList.add("is-pointer-present");
+      });
+    };
+
+    const spawnWaterImpact = (clientX: number, clientY: number, allowSatellite = true) => {
+      if (reducedMotionQuery.matches) return;
+
+      const bounds = interactionLayer.getBoundingClientRect();
+      const x = Math.max(0, Math.min(clientX - bounds.left, bounds.width));
+      const y = Math.max(0, Math.min(clientY - bounds.top, bounds.height));
+      const impact = document.createElement("span");
+      const ringCount = 3 + Math.floor(Math.random() * 3);
+      const lifetime = 1250 + Math.floor(Math.random() * 450);
+
+      impact.className = "hero-water-impact";
+      impact.style.setProperty("--impact-x", `${x}px`);
+      impact.style.setProperty("--impact-y", `${y}px`);
+      impact.style.setProperty("--impact-rotation", `${-14 + Math.random() * 28}deg`);
+      impact.style.setProperty("--impact-glow", `${0.72 + Math.random() * 0.28}`);
+
+      const drop = document.createElement("span");
+      drop.className = "hero-water-impact__drop";
+      impact.append(drop);
+
+      for (let index = 0; index < ringCount; index += 1) {
+        const ring = document.createElement("span");
+        const offsetX = index === 0 ? 0 : (Math.random() - 0.5) * 16;
+        const offsetY = index === 0 ? 0 : (Math.random() - 0.5) * 9;
+
+        ring.className = "hero-water-impact__ring";
+        ring.style.setProperty("--ring-delay", `${index * (52 + Math.random() * 36)}ms`);
+        ring.style.setProperty("--ring-duration", `${820 + index * 105 + Math.random() * 240}ms`);
+        ring.style.setProperty("--ring-scale", `${0.82 + index * 0.25 + Math.random() * 0.22}`);
+        ring.style.setProperty("--ring-x", `${offsetX}px`);
+        ring.style.setProperty("--ring-y", `${offsetY}px`);
+        impact.append(ring);
+      }
+
+      waterSurface.append(impact);
+      window.setTimeout(() => impact.remove(), lifetime);
+
+      if (allowSatellite && Math.random() > 0.58) {
+        const satelliteX = clientX + (Math.random() - 0.5) * 86;
+        const satelliteY = clientY + (Math.random() - 0.5) * 52;
+        window.setTimeout(() => {
+          if (document.contains(interactionLayer)) spawnWaterImpact(satelliteX, satelliteY, false);
+        }, 90 + Math.random() * 80);
+      }
+    };
+
+    const finishHold = (event: PointerEvent, allowImpact: boolean) => {
+      if (activePointerId !== event.pointerId) return;
+
+      const elapsed = performance.now() - pointerDownAt;
+      const travel = Math.hypot(event.clientX - pointerDownX, event.clientY - pointerDownY);
+      const isSimpleClick = allowImpact && elapsed < 280 && travel < 14;
+
+      holdPaused = false;
+      activePointerId = null;
+      hero.classList.remove("is-reel-held");
+
+      if (interactionLayer.hasPointerCapture(event.pointerId)) {
+        interactionLayer.releasePointerCapture(event.pointerId);
+      }
+
+      if (isSimpleClick) spawnWaterImpact(event.clientX, event.clientY);
+      void syncPlayback();
+    };
+
+    interactionLayer.addEventListener("pointermove", (event) => {
+      if (precisePointerQuery.matches) setPointerPosition(event.clientX, event.clientY);
+    });
+
+    interactionLayer.addEventListener("pointerenter", (event) => {
+      if (precisePointerQuery.matches) setPointerPosition(event.clientX, event.clientY);
+    });
+
+    interactionLayer.addEventListener("pointerleave", () => {
+      if (activePointerId === null) interactionLayer.classList.remove("is-pointer-present");
+    });
+
+    interactionLayer.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 || activePointerId !== null) return;
+
+      activePointerId = event.pointerId;
+      pointerDownAt = performance.now();
+      pointerDownX = event.clientX;
+      pointerDownY = event.clientY;
+      holdPaused = true;
+      interactionLayer.setPointerCapture(event.pointerId);
+      hero.classList.add("is-reel-held");
+      setPointerPosition(event.clientX, event.clientY);
+      heroVideo.pause();
+    });
+
+    interactionLayer.addEventListener("pointerup", (event) => finishHold(event, true));
+    interactionLayer.addEventListener("pointercancel", (event) => finishHold(event, false));
+    interactionLayer.addEventListener("contextmenu", (event) => event.preventDefault());
+
+    heroVideo.addEventListener("loadeddata", () => hero.classList.add("is-video-ready"));
+    heroVideo.addEventListener("canplay", () => hero.classList.add("is-video-ready"));
+    heroVideo.addEventListener("playing", () => hero.classList.add("is-video-ready"));
+
+    const heroVisibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        heroIsVisible = entry.isIntersecting;
+        void syncPlayback();
+      },
+      { threshold: 0.08 }
+    );
+
+    heroVisibilityObserver.observe(hero);
+    document.addEventListener("visibilitychange", () => void syncPlayback());
+    reducedMotionQuery.addEventListener?.("change", () => void syncPlayback());
+
+    if (heroVideo.readyState >= 2) hero.classList.add("is-video-ready");
+    void syncPlayback();
+  }
+
   const revealCallback = (
     entries: IntersectionObserverEntry[],
     observer: IntersectionObserver

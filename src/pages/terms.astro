@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { SITE_CONTACT } from '../config/site';
 import './_terms.scss';
 
-const primaryWhatsApp = '51908043192';
+const primaryWhatsApp = SITE_CONTACT.whatsappNumber;
 const whatsappLink = (airline: string) =>
   `https://wa.me/${primaryWhatsApp}?text=${encodeURIComponent(`Hola, deseo información sobre vuelos con ${airline}.`)}`;
 

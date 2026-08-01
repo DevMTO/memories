@@ -1,5 +1,6 @@
 ---
 import './QuoteForm.scss';
+import { SITE_CONTACT } from '../../config/site';
 ---
 
 <section class="quote-section" id="quote" aria-labelledby="quote-title">
@@ -11,7 +12,7 @@ import './QuoteForm.scss';
         <p class="quote-desc" data-i18n="quote.description">Comparte tus planes con nosotros. Un especialista en viajes preparará una propuesta exclusiva adaptada a tus preferencias.</p>
       </div>
 
-      <form class="quote-form" id="quote-form">
+      <form class="quote-form" id="quote-form" data-whatsapp={SITE_CONTACT.whatsappNumber}>
         <div class="quote-grid quote-grid--three">
           <label class="form-group form-group--name">
             <span class="form-label" data-i18n="quote.name">Nombre completo</span>
@@ -76,7 +77,6 @@ import './QuoteForm.scss';
 </section>
 
 <script>
-  const primaryWhatsApp = '51908043192';
   const form = document.querySelector<HTMLFormElement>('#quote-form');
   const dateInput = form?.querySelector<HTMLInputElement>('input[name="date"]');
   const statusMessages = form?.querySelectorAll<HTMLElement>('[data-status]');
@@ -145,6 +145,8 @@ import './QuoteForm.scss';
 
     const request = buildRequest();
     if (!request) return;
+    const primaryWhatsApp = form.dataset.whatsapp;
+    if (!primaryWhatsApp) return;
     const whatsappUrl = `https://wa.me/${primaryWhatsApp}?text=${encodeURIComponent(request.whatsappText)}`;
     const whatsappWindow = window.open('', '_blank');
 

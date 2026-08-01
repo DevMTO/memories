@@ -1,0 +1,13 @@
+---
+import './WhatsAppFab.scss';
+import { buildWhatsAppUrl } from '../../config/site';
+
+const href = buildWhatsAppUrl('Hola, quisiera información para planificar mi viaje a Perú.');
+---
+
+<a class="whatsapp-fab" href={href} target="_blank" rel="noopener noreferrer" aria-label="Conversar por WhatsApp">
+  <svg viewBox="0 0 32 32" aria-hidden="true">
+    <path fill="currentColor" d="M16 3.3A12.5 12.5 0 0 0 5.4 22.4L4 29l6.8-1.3A12.6 12.6 0 1 0 16 3.3Zm0 22.8c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-4 .8.8-3.9-.3-.4A10.1 10.1 0 1 1 16 26.1Zm5.6-7.5c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.7.1-1.8-.9-3-1.7-4.2-3.8-.3-.6.3-.5.9-1.8.1-.2 0-.5-.1-.7l-1-2.4c-.3-.6-.6-.5-.9-.5h-.8c-.3 0-.7.1-1.1.5-.4.4-1.4 1.4-1.4 3.4s1.5 4 1.7 4.2c.2.3 2.9 4.4 7 6.2 2.6 1.1 3.6 1.2 4.9 1 .8-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.4-.3-.8-.5Z" />
+  </svg>
+  <span>WhatsApp</span>
+</a>

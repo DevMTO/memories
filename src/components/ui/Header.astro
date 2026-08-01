@@ -2,16 +2,18 @@
 import './Header.scss';
 import LanguageSwitcher from './LanguageSwitcher';
 import { sitePath } from '../../core/site-path';
+import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
 
 const navItems = [
   { href: sitePath('/packages'), label: 'Paquetes', key: 'nav.packages' },
   { href: sitePath('/tours'), label: 'Tours', key: 'nav.tours' },
+  { href: sitePath('/trekkings'), label: 'Trekking', key: 'nav.trekking' },
   { href: sitePath('/flights'), label: 'Vuelos', key: 'nav.flights' },
   { href: sitePath('/about'), label: 'Nosotros', key: 'nav.about' },
   { href: sitePath('/blogs'), label: 'Blog', key: 'nav.blogs' },
 ];
 
-const primaryWhatsApp = '51908043192';
+const whatsappUrl = buildWhatsAppUrl('Hola, quiero diseñar un viaje con Memories Travel Perú.');
 
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
@@ -22,19 +24,27 @@ const isActive = (href: string) =>
   <div class="header-top">
     <div class="container header-top__inner">
       <div class="header-top__contact">
-        <a href="mailto:reservas@memoriestravel.com">
+        <a href={`mailto:${SITE_CONTACT.email}`}>
           <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M3.5 5.5h17a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-17a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" />
             <path d="m3 6.5 9 6.5 9-6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-          reservas@memoriestravel.com
+          {SITE_CONTACT.email}
         </a>
 
-        <a href={`https://wa.me/${primaryWhatsApp}`} target="_blank" rel="noopener noreferrer">
+        <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
           <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1.1.5 1.1 1.1v3.4c0 .6-.5 1.1-1.1 1.1C10.9 21.2 2.8 13.1 2.8 3.2c0-.6.5-1.1 1.1-1.1H7.3c.6 0 1.1.5 1.1 1.1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
           </svg>
-          +51 908 043 192
+          {SITE_CONTACT.whatsappDisplay}
+        </a>
+
+        <a href={`tel:+${SITE_CONTACT.emergencyNumber}`} aria-label={`Emergencias ${SITE_CONTACT.emergencyDisplay}`}>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3.2 21 19H3L12 3.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+            <path d="M12 9v4.6M12 17.1v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          Emergencias: {SITE_CONTACT.emergencyDisplay}
         </a>
       </div>
 
@@ -61,7 +71,7 @@ const isActive = (href: string) =>
       </ul>
 
       <a
-        href={`https://wa.me/${primaryWhatsApp}`}
+        href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         class="design-trip-btn"
@@ -97,7 +107,7 @@ const isActive = (href: string) =>
     </ul>
 
     <a
-      href={`https://wa.me/${primaryWhatsApp}`}
+      href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
       class="mobile-menu__cta"
@@ -115,18 +125,25 @@ const isActive = (href: string) =>
     </div>
 
     <div class="mobile-menu__contact">
-      <a href="mailto:reservas@memoriestravel.com">
+      <a href={`mailto:${SITE_CONTACT.email}`}>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M3.5 5.5h17a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-17a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" />
           <path d="m3 6.5 9 6.5 9-6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        reservas@memoriestravel.com
+        {SITE_CONTACT.email}
       </a>
-      <a href={`https://wa.me/${primaryWhatsApp}`} target="_blank" rel="noopener noreferrer">
+      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1.1.5 1.1 1.1v3.4c0 .6-.5 1.1-1.1 1.1C10.9 21.2 2.8 13.1 2.8 3.2c0-.6.5-1.1 1.1-1.1H7.3c.6 0 1.1.5 1.1 1.1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
         </svg>
-        +51 908 043 192
+        {SITE_CONTACT.whatsappDisplay}
+      </a>
+      <a href={`tel:+${SITE_CONTACT.emergencyNumber}`}>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3.2 21 19H3L12 3.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+          <path d="M12 9v4.6M12 17.1v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        Emergencias: {SITE_CONTACT.emergencyDisplay}
       </a>
     </div>
 

@@ -1,11 +1,4 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import LoginForm from '../components/admin/LoginForm';
-import './_login_admin.scss';
+import { sitePath } from '../core/site-path';
+return Astro.redirect(sitePath('/gestion/login'), 301);
 ---
-
-<Layout title="Admin Login">
-  <div class="admin-layout">
-    <LoginForm client:only="react" />
-  </div>
-</Layout>

@@ -1,17 +1,9 @@
 ---
-export const prerender = true;
-
 import Layout from '../../layouts/Layout.astro';
 import { sitePath } from '../../core/site-path';
+import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_detail.scss';
-
-export async function getStaticPaths() {
-  const tours = await getToursUseCase.executeAll();
-  return tours.map((tour) => ({
-    params: { id: tour.slug },
-  }));
-}
 
 const { id } = Astro.params;
 
@@ -31,6 +23,7 @@ const itinerary = tour.itinerary ?? [];
 const includes = tour.includes ?? [];
 const notIncludes = tour.notIncludes ?? [];
 const whatToBring = tour.whatToBring ?? [];
+const importantNotes = tour.importantNotes ?? [];
 const gallery = tour.gallery ?? [];
 
 const heroImage =
@@ -54,6 +47,7 @@ const heroDuration = durationNights
 const destinationName = tour.destinationName || tour.location || 'Perú';
 
 const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`;
+const whatsappUrl = buildWhatsAppUrl(whatsappMessage);
 
 const galleryImages = (
   gallery.length > 0
@@ -102,14 +96,19 @@ const getInitials = (name: string) =>
     .toUpperCase();
 ---
 
-<Layout title={`${tour.title} | Memories Travel Perú`} mainClass="tour-detail-main">
+<Layout
+  title={tour.seoTitle || tour.title}
+  description={tour.seoDescription || tour.shortDescription || tour.description}
+  socialImage={tour.imageUrl}
+  mainClass="tour-detail-main"
+>
   <!-- HERO -->
   <section class="tour-hero" style={`background-image: url('${heroImage}');`}>
     <div class="tour-hero__overlay"></div>
 
     <div class="container tour-hero__content">
       <span class="tour-hero__eyebrow">
-        {heroDuration.toUpperCase()} {durationNights ? '(PRIVADO O GRUPO PEQUEÑO)' : '(EXPERIENCIA PERSONALIZADA)'}
+        {tour.kind === 'trekking' ? 'TREKKING' : 'TOUR'} · {heroDuration.toUpperCase()} {durationNights ? '(PRIVADO O GRUPO PEQUEÑO)' : '(EXPERIENCIA PERSONALIZADA)'}
       </span>
 
       <h1>{tour.title}</h1>
@@ -178,13 +177,24 @@ const getInitials = (name: string) =>
           {
             highlights.length > 0 && (
               <div class="tour-mini-highlights">
-                {highlights.slice(0, 4).map((highlight) => (
+                {highlights.slice(0, 6).map((highlight) => (
                   <span>{highlight}</span>
                 ))}
               </div>
             )
           }
         </section>
+
+        {
+          importantNotes.length > 0 && (
+            <section class="tour-notes-block" aria-labelledby="tour-important-title">
+              <h2 id="tour-important-title">Información importante</h2>
+              <div class="tour-notes-list">
+                {importantNotes.map((note) => <p>{note}</p>)}
+              </div>
+            </section>
+          )
+        }
 
         {
           itinerary.length > 0 && (
@@ -216,6 +226,19 @@ const getInitials = (name: string) =>
 
                               {dayMeals.length > 0 && (
                                 <span>☕ {dayMeals.join(', ')}</span>
+                              )}
+                            </div>
+                          )
+                        }
+
+                        {
+                          ((day.includes?.length || 0) > 0 || (day.notIncludes?.length || 0) > 0) && (
+                            <div class="timeline-services">
+                              {(day.includes?.length || 0) > 0 && (
+                                <div><strong>Incluye este día</strong><ul>{day.includes?.map((item) => <li>{item}</li>)}</ul></div>
+                              )}
+                              {(day.notIncludes?.length || 0) > 0 && (
+                                <div><strong>No incluye este día</strong><ul>{day.notIncludes?.map((item) => <li>{item}</li>)}</ul></div>
                               )}
                             </div>
                           )
@@ -260,7 +283,7 @@ const getInitials = (name: string) =>
                     <article>
                       <h3>Incluye</h3>
                       <ul>
-                        {includes.slice(0, 8).map((item) => (
+                        {includes.map((item) => (
                           <li>{item}</li>
                         ))}
                       </ul>
@@ -273,7 +296,7 @@ const getInitials = (name: string) =>
                     <article>
                       <h3>No incluye</h3>
                       <ul>
-                        {notIncludes.slice(0, 8).map((item) => (
+                        {notIncludes.map((item) => (
                           <li>{item}</li>
                         ))}
                       </ul>
@@ -291,7 +314,7 @@ const getInitials = (name: string) =>
               <h2>Qué llevar</h2>
 
               <div class="tour-bring-list">
-                {whatToBring.slice(0, 12).map((item) => (
+                {whatToBring.map((item) => (
                   <span>{item}</span>
                 ))}
               </div>
@@ -340,27 +363,36 @@ const getInitials = (name: string) =>
           <h3>Diseñe Su Viaje</h3>
           <p>Consultoría Gratuita Experta</p>
 
-          <form class="booking-form">
+          <form
+            class="booking-form js-booking-form"
+            data-whatsapp={SITE_CONTACT.whatsappNumber}
+            data-product={tour.title}
+            data-kind={tour.kind === 'trekking' ? 'trekking' : 'tour'}
+          >
             <div class="booking-field">
-              <label>N° DE VIAJEROS</label>
-              <input type="number" placeholder="2 adultos" />
+              <label for="booking-travelers">N° DE VIAJEROS</label>
+              <input
+                id="booking-travelers"
+                name="travelers"
+                type="number"
+                min="1"
+                max="30"
+                value="2"
+                inputmode="numeric"
+                required
+              />
             </div>
 
             <div class="booking-field">
-              <label>FECHA DE VIAJE</label>
-              <input type="text" placeholder="dd/mm/yy" />
+              <label for="booking-date">FECHA DE VIAJE</label>
+              <input id="booking-date" name="travelDate" type="date" required />
             </div>
 
-            <a
-              href={`https://wa.me/51908043192?text=${encodeURIComponent(whatsappMessage)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="booking-btn"
-            >
+            <button type="submit" class="booking-btn">
               Solicitar mi propuesta personalizada
-            </a>
+            </button>
 
-            <span>Sin cargos ocultos. Confirmación en 24h.</span>
+            <span>La consulta se enviará por WhatsApp. Sin cargos ocultos.</span>
           </form>
         </div>
 
@@ -374,7 +406,7 @@ const getInitials = (name: string) =>
           </p>
 
           <a
-            href={`https://wa.me/51908043192?text=${encodeURIComponent(whatsappMessage)}`}
+            href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -434,6 +466,48 @@ const getInitials = (name: string) =>
 </Layout>
 
 <script>
+  const bookingForm = document.querySelector<HTMLFormElement>('.js-booking-form');
+
+  if (bookingForm) {
+    const dateInput = bookingForm.elements.namedItem('travelDate') as HTMLInputElement | null;
+    const today = new Date();
+    const timezoneOffset = today.getTimezoneOffset() * 60_000;
+    if (dateInput) {
+      dateInput.min = new Date(today.getTime() - timezoneOffset).toISOString().split('T')[0];
+    }
+
+    bookingForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!bookingForm.reportValidity()) return;
+
+      const data = new FormData(bookingForm);
+      const travelers = String(data.get('travelers') || '2');
+      const rawDate = String(data.get('travelDate') || '');
+      const travelDate = rawDate
+        ? new Intl.DateTimeFormat('es-PE', { dateStyle: 'long', timeZone: 'UTC' }).format(
+            new Date(`${rawDate}T00:00:00Z`),
+          )
+        : 'Por definir';
+      const product = bookingForm.dataset.product || 'experiencia';
+      const kind = bookingForm.dataset.kind || 'viaje';
+      const whatsapp = bookingForm.dataset.whatsapp;
+      if (!whatsapp) return;
+
+      const message = [
+        `Hola, quiero una propuesta personalizada para el ${kind}: ${product}.`,
+        `Viajeros: ${travelers}.`,
+        `Fecha estimada: ${travelDate}.`,
+        `Página: ${window.location.href}`,
+      ].join('\n');
+
+      window.open(
+        `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`,
+        '_blank',
+        'noopener,noreferrer',
+      );
+    });
+  }
+
   const galleryData = document.getElementById('gallery-data');
   const images: string[] = galleryData ? JSON.parse(galleryData.textContent || '[]') : [];
 

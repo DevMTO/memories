@@ -1,11 +1,4 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import AdminDashboard from '../../components/admin/AdminDashboard';
-import '../_login_admin.scss';
+import { sitePath } from '../../core/site-path';
+return Astro.redirect(sitePath('/gestion'), 301);
 ---
-
-<Layout title="Gestión de Tours">
-  <div class="admin-layout">
-    <AdminDashboard client:only="react" />
-  </div>
-</Layout>

@@ -1,6 +1,5 @@
-import { MockTourRepository } from "./repositories/MockTourRepository";
-import { GetToursUseCase } from "../core/application/GetToursUseCase";
+import { GetToursUseCase } from '../core/application/GetToursUseCase';
+import { SqliteTravelRepository } from './repositories/SqliteTravelRepository';
 
-const tourRepository = new MockTourRepository();
-
-export const getToursUseCase = new GetToursUseCase(tourRepository);
+export const travelRepository = new SqliteTravelRepository();
+export const getToursUseCase = new GetToursUseCase(travelRepository);

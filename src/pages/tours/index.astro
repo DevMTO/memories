@@ -1,6 +1,4 @@
 ---
-export const prerender = true;
-
 import Layout from '../../layouts/Layout.astro';
 import TourCard from '../../components/TourCard.astro';
 import { getToursUseCase } from '../../infrastructure/di';
@@ -9,7 +7,7 @@ import '../_tours.scss';
 
 const allToursRaw = await getToursUseCase.executeAll();
 
-const activeTours = (allToursRaw || []).filter((tour) => tour?.isActive !== false);
+const activeTours = (allToursRaw || []).filter((tour) => tour?.isActive !== false && tour.kind === 'tour');
 
 const destinations = Array.from(
   new Set(
@@ -215,8 +213,7 @@ const fallbackImages = [
             <div class="tours-empty">
               <h3>No hay tours disponibles</h3>
               <p>
-                Revisa que tu mock data tenga tours activos o que el método
-                executeAll() esté retornando información correctamente.
+                El catálogo no tiene tours publicados por el momento. Puedes gestionarlos desde el panel administrativo.
               </p>
             </div>
           )

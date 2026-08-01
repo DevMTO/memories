@@ -1,11 +1,4 @@
-import type { Tour, Package } from '../models';
-
-type Destination = {
-  id: string;
-  name: string;
-  slug: string;
-  imageUrl: string;
-};
+import type { Destination, Package, Tour, TravelProduct } from '../models';
 
 export interface ITourRepository {
   getAllTours(): Promise<Tour[]>;
@@ -21,4 +14,9 @@ export interface ITourRepository {
   getDestinations(): Promise<Destination[]>;
   getToursByDestination(slug: string): Promise<Tour[]>;
   getPackagesByDestination(slug: string): Promise<Package[]>;
+
+  getAllProductsForAdmin(): Promise<TravelProduct[]>;
+  createProduct(product: TravelProduct): Promise<TravelProduct>;
+  updateProduct(id: string, product: TravelProduct): Promise<TravelProduct | null>;
+  deleteProduct(id: string): Promise<boolean>;
 }

@@ -231,7 +231,25 @@
   }
 
   p {
+    margin: 0 auto 18px;
     color: $color-text-light;
+    line-height: 1.7;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 20px;
+    border-radius: 999px;
+    background: $color-primary;
+    color: $color-white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-decoration: none;
+
+    &:hover { background: $color-primary-dark; }
   }
 }
 

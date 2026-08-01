@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TourCard from '../components/TourCard.astro';
+import { getToursUseCase } from '../infrastructure/di';
+import { sitePath } from '../core/site-path';
+import './_tours.scss';
+
+const allTours = await getToursUseCase.executeAll();
+const trekkings = allTours.filter((tour) => tour.isActive !== false && tour.kind === 'trekking');
+const durations = [
+  { label: 'Full day', value: '1' },
+  { label: '2 días', value: '2' },
+  { label: '4 días', value: '4' },
+  { label: '5 días', value: '5' },
+];
+---
+
+<Layout title="Trekkings en Perú | Memories Travel Perú" mainClass="tours-page">
+  <section class="tours-hero" style={`--tours-hero-image: url('${sitePath('/images/cusco/camino-inka.webp')}')`}>
+    <div class="tours-hero__overlay"></div>
+    <div class="container tours-hero__content">
+      <span class="tours-hero__eyebrow">Caminatas y aventura en los Andes</span>
+      <h1>Nuestros trekkings</h1>
+      <p>Rutas completas con itinerario, servicios incluidos, recomendaciones y acompañamiento especializado.</p>
+    </div>
+  </section>
+
+  <section class="tours-section">
+    <div class="container tours-layout">
+      <aside class="tours-sidebar">
+        <button type="button" class="filters-toggle" id="tours-filter-toggle" aria-controls="tours-filters" aria-expanded="false">
+          <span>Filtrar trekkings</span><span aria-hidden="true">⌄</span>
+        </button>
+        <div class="filters-box" id="tours-filters">
+          <div class="filter-group">
+            <h3>Duración</h3>
+            <div class="filter-options">
+              {durations.map((duration) => (
+                <label class="filter-check"><input type="checkbox" data-filter="duration" value={duration.value} /><span>{duration.label}</span></label>
+              ))}
+            </div>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="filter-reset" id="resetFilters">Limpiar filtros</button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="tours-main">
+        {trekkings.length > 0 ? (
+          <>
+            <div class="tours-grid" id="toursGrid">
+              {trekkings.map((tour) => (
+                <div class="tour-filter-item" data-duration={String(tour.durationDays)}>
+                  <TourCard tour={tour} />
+                </div>
+              ))}
+            </div>
+            <p id="emptyResults" class="tours-empty" hidden>No encontramos trekkings con los filtros seleccionados.</p>
+          </>
+        ) : (
+          <div class="tours-empty">
+            <h3>No hay trekkings publicados</h3>
+            <p>Puedes administrarlos desde la interfaz privada de gestión.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const filters = Array.from(document.querySelectorAll<HTMLInputElement>('[data-filter="duration"]'));
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.tour-filter-item'));
+  const reset = document.getElementById('resetFilters');
+  const empty = document.getElementById('emptyResults');
+  const toggle = document.getElementById('tours-filter-toggle');
+  const panel = document.getElementById('tours-filters');
+
+  const apply = () => {
+    const selected = filters.filter((filter) => filter.checked).map((filter) => filter.value);
+    let visible = 0;
+    items.forEach((item) => {
+      const show = selected.length === 0 || selected.includes(item.dataset.duration || '');
+      item.hidden = !show;
+      if (show) visible += 1;
+    });
+    if (empty) empty.hidden = visible > 0;
+  };
+
+  filters.forEach((filter) => filter.addEventListener('change', apply));
+  reset?.addEventListener('click', () => { filters.forEach((filter) => { filter.checked = false; }); apply(); });
+  toggle?.addEventListener('click', () => {
+    const open = panel?.classList.toggle('is-open') || false;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+</script>

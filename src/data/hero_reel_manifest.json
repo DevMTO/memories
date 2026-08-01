@@ -1,0 +1,282 @@
+{
+  "version": 1,
+  "duration": 112.833,
+  "clipCount": 30,
+  "strategy": "interleaved_3_4_second_clips",
+  "video": {
+    "mp4": "/videos/hero/hero_reel.mp4",
+    "poster": "/videos/hero/hero_reel_poster.webp"
+  },
+  "timeline": [
+    {
+      "index": 0,
+      "source": "cusco",
+      "label": "Cusco",
+      "start": 0.0,
+      "end": 4.0,
+      "duration": 4.0,
+      "round": 1
+    },
+    {
+      "index": 1,
+      "source": "laguna_humantay",
+      "label": "Laguna Humantay",
+      "start": 4.0,
+      "end": 8.0,
+      "duration": 4.0,
+      "round": 1
+    },
+    {
+      "index": 2,
+      "source": "machu_picchu_2",
+      "label": "Machu Picchu",
+      "start": 8.0,
+      "end": 12.042,
+      "duration": 4.042,
+      "round": 1
+    },
+    {
+      "index": 3,
+      "source": "maras_moray",
+      "label": "Maras y Moray",
+      "start": 12.042,
+      "end": 16.042,
+      "duration": 4.0,
+      "round": 1
+    },
+    {
+      "index": 4,
+      "source": "montana_colores",
+      "label": "Montaña de 7 Colores",
+      "start": 16.042,
+      "end": 20.042,
+      "duration": 4.0,
+      "round": 1
+    },
+    {
+      "index": 5,
+      "source": "paracas",
+      "label": "Paracas",
+      "start": 20.042,
+      "end": 24.042,
+      "duration": 4.0,
+      "round": 1
+    },
+    {
+      "index": 6,
+      "source": "salkantay",
+      "label": "Salkantay",
+      "start": 24.042,
+      "end": 28.042,
+      "duration": 4.0,
+      "round": 1
+    },
+    {
+      "index": 7,
+      "source": "saqsayhuaman",
+      "label": "Saqsayhuamán",
+      "start": 28.042,
+      "end": 32.042,
+      "duration": 4.0,
+      "round": 1
+    },
+    {
+      "index": 8,
+      "source": "cusco",
+      "label": "Cusco",
+      "start": 32.042,
+      "end": 36.042,
+      "duration": 4.0,
+      "round": 2
+    },
+    {
+      "index": 9,
+      "source": "laguna_humantay",
+      "label": "Laguna Humantay",
+      "start": 36.042,
+      "end": 40.042,
+      "duration": 4.0,
+      "round": 2
+    },
+    {
+      "index": 10,
+      "source": "machu_picchu_2",
+      "label": "Machu Picchu",
+      "start": 40.042,
+      "end": 43.042,
+      "duration": 3.0,
+      "round": 2
+    },
+    {
+      "index": 11,
+      "source": "maras_moray",
+      "label": "Maras y Moray",
+      "start": 43.042,
+      "end": 47.042,
+      "duration": 4.0,
+      "round": 2
+    },
+    {
+      "index": 12,
+      "source": "montana_colores",
+      "label": "Montaña de 7 Colores",
+      "start": 47.042,
+      "end": 51.042,
+      "duration": 4.0,
+      "round": 2
+    },
+    {
+      "index": 13,
+      "source": "paracas",
+      "label": "Paracas",
+      "start": 51.042,
+      "end": 55.042,
+      "duration": 4.0,
+      "round": 2
+    },
+    {
+      "index": 14,
+      "source": "salkantay",
+      "label": "Salkantay",
+      "start": 55.042,
+      "end": 59.042,
+      "duration": 4.0,
+      "round": 2
+    },
+    {
+      "index": 15,
+      "source": "saqsayhuaman",
+      "label": "Saqsayhuamán",
+      "start": 59.042,
+      "end": 62.042,
+      "duration": 3.0,
+      "round": 2
+    },
+    {
+      "index": 16,
+      "source": "cusco",
+      "label": "Cusco",
+      "start": 62.042,
+      "end": 66.042,
+      "duration": 4.0,
+      "round": 3
+    },
+    {
+      "index": 17,
+      "source": "laguna_humantay",
+      "label": "Laguna Humantay",
+      "start": 66.042,
+      "end": 69.042,
+      "duration": 3.0,
+      "round": 3
+    },
+    {
+      "index": 18,
+      "source": "machu_picchu_2",
+      "label": "Machu Picchu",
+      "start": 69.042,
+      "end": 72.208,
+      "duration": 3.167,
+      "round": 3
+    },
+    {
+      "index": 19,
+      "source": "maras_moray",
+      "label": "Maras y Moray",
+      "start": 72.208,
+      "end": 76.208,
+      "duration": 4.0,
+      "round": 3
+    },
+    {
+      "index": 20,
+      "source": "montana_colores",
+      "label": "Montaña de 7 Colores",
+      "start": 76.208,
+      "end": 79.583,
+      "duration": 3.375,
+      "round": 3
+    },
+    {
+      "index": 21,
+      "source": "paracas",
+      "label": "Paracas",
+      "start": 79.583,
+      "end": 83.583,
+      "duration": 4.0,
+      "round": 3
+    },
+    {
+      "index": 22,
+      "source": "salkantay",
+      "label": "Salkantay",
+      "start": 83.583,
+      "end": 87.583,
+      "duration": 4.0,
+      "round": 3
+    },
+    {
+      "index": 23,
+      "source": "saqsayhuaman",
+      "label": "Saqsayhuamán",
+      "start": 87.583,
+      "end": 90.583,
+      "duration": 3.0,
+      "round": 3
+    },
+    {
+      "index": 24,
+      "source": "cusco",
+      "label": "Cusco",
+      "start": 90.583,
+      "end": 94.583,
+      "duration": 4.0,
+      "round": 4
+    },
+    {
+      "index": 25,
+      "source": "laguna_humantay",
+      "label": "Laguna Humantay",
+      "start": 94.583,
+      "end": 98.125,
+      "duration": 3.542,
+      "round": 4
+    },
+    {
+      "index": 26,
+      "source": "paracas",
+      "label": "Paracas",
+      "start": 98.125,
+      "end": 101.292,
+      "duration": 3.167,
+      "round": 4
+    },
+    {
+      "index": 27,
+      "source": "salkantay",
+      "label": "Salkantay",
+      "start": 101.292,
+      "end": 105.208,
+      "duration": 3.917,
+      "round": 4
+    },
+    {
+      "index": 28,
+      "source": "saqsayhuaman",
+      "label": "Saqsayhuamán",
+      "start": 105.208,
+      "end": 108.833,
+      "duration": 3.625,
+      "round": 4
+    },
+    {
+      "index": 29,
+      "source": "cusco",
+      "label": "Cusco",
+      "start": 108.833,
+      "end": 112.833,
+      "duration": 4.0,
+      "round": 5
+    }
+  ]
+}

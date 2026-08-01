@@ -9,23 +9,22 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "start": "node ./dist/server/entry.mjs",
+    "check:catalog": "node scripts/validate-catalog.mjs",
+    "build:hero_reel": "python3 scripts/build_hero_reel.py"
   },
   "dependencies": {
     "@astrojs/node": "^7.0.4",
     "@astrojs/react": "^4.4.2",
-    "@tanstack/react-query": "^5.99.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "astro": "4.16.19",
-    "firebase": "^12.12.1",
-    "firebase-admin": "^13.8.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "translate": "^3.0.1"
   },
   "devDependencies": {
-    "pdf-parse": "^2.4.5",
     "sass": "^1.99.0"
   }
 }

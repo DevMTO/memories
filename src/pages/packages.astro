@@ -1,6 +1,4 @@
 ---
-export const prerender = true;
-
 import Layout from '../layouts/Layout.astro';
 import PackageCard from '../components/PackageCard.astro';
 import { getToursUseCase } from '../infrastructure/di';
@@ -54,7 +52,6 @@ const filteredPackages = allPackages.filter((pkg) => {
   return matchesStyle && matchesDestination && matchesPrice;
 });
 
-const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPackages;
 ---
 
 <Layout title="Nuestros Paquetes | Memories Travel Perú" mainClass="packages-page">
@@ -175,11 +172,19 @@ const displayPackages = filteredPackages.length > 0 ? filteredPackages : allPack
 
       <!-- GRID -->
       <div class="packages-main">
-        <div class="packages-grid">
-          {displayPackages.map((pkg) => (
-            <PackageCard pkg={pkg} />
-          ))}
-        </div>
+        {filteredPackages.length > 0 ? (
+          <div class="packages-grid">
+            {filteredPackages.map((pkg) => (
+              <PackageCard pkg={pkg} />
+            ))}
+          </div>
+        ) : (
+          <div class="packages-empty">
+            <h3>No encontramos paquetes con esos filtros</h3>
+            <p>Prueba otra combinación o solicita una propuesta personalizada por WhatsApp.</p>
+            <a href={sitePath('/packages')}>Limpiar filtros</a>
+          </div>
+        )}
       </div>
     </div>
   </section>

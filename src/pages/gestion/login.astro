@@ -1,0 +1,14 @@
+---
+import { sitePath } from '../../core/site-path';
+import LoginForm from '../../components/admin/LoginForm';
+import AdminLayout from '../../layouts/admin/AdminLayout.astro';
+import { readAdminSession } from '../../server/auth/session';
+
+if (readAdminSession(Astro.cookies)) {
+  return Astro.redirect(sitePath('/gestion'));
+}
+---
+
+<AdminLayout title="Acceso administrativo">
+  <LoginForm client:load />
+</AdminLayout>

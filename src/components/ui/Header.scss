@@ -35,7 +35,8 @@
 .header-top__contact {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 22px;
+  flex-wrap: wrap;
 
   a {
     display: inline-flex;
@@ -369,7 +370,7 @@
     transform: translateX(14px);
     transition: opacity 0.24s ease, transform 0.3s ease;
 
-    @for $i from 1 through 5 {
+    @for $i from 1 through 6 {
       &:nth-child(#{$i}) { transition-delay: #{0.04s + ($i * 0.035s)}; }
     }
   }
@@ -455,7 +456,17 @@
 /* ===============================
    RESPONSIVE
 ================================ */
+@include respond-to(1120px) {
+  .header-top__contact a {
+    font-size: 0.76rem;
+  }
+}
+
 @include respond-to(980px) {
+  .header-top__contact a:last-child {
+    display: none;
+  }
+
   .main-nav__inner {
     grid-template-columns: auto 1fr auto;
     gap: 24px;
