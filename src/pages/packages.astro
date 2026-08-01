@@ -5,6 +5,8 @@ import { getToursUseCase } from '../infrastructure/di';
 import { sitePath } from '../core/site-path';
 import './_packages.scss';
 
+export const prerender = true;
+
 const url = Astro.url;
 
 const selectedStyle = url.searchParams.get('style') || '';

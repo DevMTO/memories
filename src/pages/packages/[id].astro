@@ -5,6 +5,16 @@ import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_package-detail.scss';
 
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const packages = await getToursUseCase.executePackages();
+
+  return (packages || [])
+    .filter((pkg) => pkg?.isActive !== false)
+    .map((pkg) => ({ params: { id: pkg.slug || pkg.id } }));
+}
+
 const { id } = Astro.params;
 
 const pkg =

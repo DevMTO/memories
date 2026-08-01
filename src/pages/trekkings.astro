@@ -5,6 +5,8 @@ import { getToursUseCase } from '../infrastructure/di';
 import { sitePath } from '../core/site-path';
 import './_tours.scss';
 
+export const prerender = true;
+
 const allTours = await getToursUseCase.executeAll();
 const trekkings = allTours.filter((tour) => tour.isActive !== false && tour.kind === 'trekking');
 const durations = [

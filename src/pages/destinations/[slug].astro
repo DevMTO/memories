@@ -6,6 +6,14 @@ import { sitePath } from '../../core/site-path';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_destination-detail.scss';
 
+export const prerender = true;
+
+export function getStaticPaths() {
+  return ['cusco', 'lima', 'ica', 'puno', 'arequipa'].map((slug) => ({
+    params: { slug },
+  }));
+}
+
 const { slug } = Astro.params;
 
 const normalizeSlug = (value = '') =>

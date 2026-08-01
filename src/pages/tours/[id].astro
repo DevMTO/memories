@@ -5,6 +5,16 @@ import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
 import { getToursUseCase } from '../../infrastructure/di';
 import './_detail.scss';
 
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const tours = await getToursUseCase.executeAll();
+
+  return (tours || [])
+    .filter((tour) => tour?.isActive !== false)
+    .map((tour) => ({ params: { id: tour.slug || tour.id } }));
+}
+
 const { id } = Astro.params;
 
 const tour =

@@ -5,6 +5,8 @@ import { getToursUseCase } from '../../infrastructure/di';
 import { sitePath } from '../../core/site-path';
 import '../_tours.scss';
 
+export const prerender = true;
+
 const allToursRaw = await getToursUseCase.executeAll();
 
 const activeTours = (allToursRaw || []).filter((tour) => tour?.isActive !== false && tour.kind === 'tour');
