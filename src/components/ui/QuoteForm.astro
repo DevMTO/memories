@@ -3,69 +3,139 @@ import './QuoteForm.scss';
 import { SITE_CONTACT } from '../../config/site';
 ---
 
-<section class="quote-section" id="quote" aria-labelledby="quote-title">
-  <div class="container">
-    <div class="quote-box">
-      <div class="quote-header text-center">
-        <span class="quote-eyebrow" data-i18n="quote.eyebrow">Diseña tu viaje</span>
-        <h2 class="quote-title" id="quote-title" data-i18n="quote.title">Solicitar cotización</h2>
-        <p class="quote-desc" data-i18n="quote.description">Comparte tus planes con nosotros. Un especialista en viajes preparará una propuesta exclusiva adaptada a tus preferencias.</p>
-      </div>
+<dialog
+  class="quote-modal"
+  id="quote-modal"
+  aria-labelledby="quote-title"
+  aria-describedby="quote-description"
+>
+  <div class="quote-modal__panel">
+    <button
+      type="button"
+      class="quote-modal__close"
+      data-close-quote
+      aria-label="Cerrar formulario de cotización"
+      title="Cerrar"
+    >
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="m6.5 6.5 11 11m0-11-11 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
 
+    <header class="quote-header">
+      <span class="quote-eyebrow" data-i18n="quote.eyebrow">Diseña tu viaje</span>
+      <h2 class="quote-title" id="quote-title" data-i18n="quote.title">Solicitar cotización</h2>
+      <p class="quote-desc" id="quote-description" data-i18n="quote.description">
+        Cuéntanos tu idea y prepararemos una propuesta personalizada para tu viaje por Perú.
+      </p>
+    </header>
+
+    <div class="quote-modal__body">
       <form class="quote-form" id="quote-form" data-whatsapp={SITE_CONTACT.whatsappNumber}>
-        <div class="quote-grid quote-grid--three">
+        <div class="quote-grid quote-grid--primary">
           <label class="form-group form-group--name">
             <span class="form-label" data-i18n="quote.name">Nombre completo</span>
-            <input name="name" type="text" class="form-control" autocomplete="name" minlength="2" maxlength="80" required data-i18n-placeholder="quote.namePlaceholder" placeholder="Ej. Ana Pérez" />
+            <input
+              name="name"
+              type="text"
+              class="form-control"
+              autocomplete="name"
+              minlength="2"
+              maxlength="80"
+              required
+              data-i18n-placeholder="quote.namePlaceholder"
+              placeholder="Ej. Ana Pérez"
+            />
           </label>
+
           <label class="form-group form-group--travelers">
             <span class="form-label" data-i18n="quote.travelers">Viajeros</span>
             <input name="travelers" type="number" min="1" max="99" value="2" class="form-control text-center" required />
           </label>
+
           <label class="form-group form-group--date">
             <span class="form-label" data-i18n="quote.date">Fecha estimada</span>
-            <input name="date" type="date" class="form-control text-center" required />
+            <input name="date" type="date" class="form-control" required />
           </label>
         </div>
 
-        <div class="quote-grid quote-grid--contact">
+        <div class="quote-grid quote-grid--secondary">
           <label class="form-group">
             <span class="form-label" data-i18n="quote.phone">Teléfono de contacto</span>
-            <input name="phone" type="tel" class="form-control" autocomplete="tel" inputmode="tel" pattern="[-0-9 ()+]{7,20}" maxlength="20" title="Ingresa un teléfono válido con código de país" required data-i18n-placeholder="quote.phonePlaceholder" placeholder="+51 999 999 999" />
+            <input
+              name="phone"
+              type="tel"
+              class="form-control"
+              autocomplete="tel"
+              inputmode="tel"
+              pattern="[-0-9 ()+]{7,20}"
+              maxlength="20"
+              title="Ingresa un teléfono válido con código de país"
+              required
+              data-i18n-placeholder="quote.phonePlaceholder"
+              placeholder="+51 999 999 999"
+            />
           </label>
+
           <label class="form-group">
             <span class="form-label" data-i18n="quote.destination">Destino de interés</span>
             <select name="destination" class="form-control" required>
               <option value="" selected disabled data-i18n="quote.selectDestination">Selecciona un destino</option>
-              <option class="notranslate" translate="no">Cusco</option><option class="notranslate" translate="no">Lima</option><option class="notranslate" translate="no">Arequipa</option><option class="notranslate" translate="no">Ica</option><option class="notranslate" translate="no">Puno</option><option class="notranslate" translate="no">Machu Picchu</option>
+              <option class="notranslate" translate="no">Cusco</option>
+              <option class="notranslate" translate="no">Lima</option>
+              <option class="notranslate" translate="no">Arequipa</option>
+              <option class="notranslate" translate="no">Ica</option>
+              <option class="notranslate" translate="no">Puno</option>
+              <option class="notranslate" translate="no">Machu Picchu</option>
             </select>
           </label>
-          <div class="form-group form-group--experience">
-            <span class="form-label" data-i18n="quote.experience">Tipo de experiencia</span>
-            <div class="experience-options">
-              <label class="experience-pill"><input type="radio" name="experience" value="Lujo" checked /><span class="experience-pill__box"></span><span data-i18n="quote.luxury">Lujo</span></label>
-              <label class="experience-pill"><input type="radio" name="experience" value="Aventura" /><span class="experience-pill__box"></span><span data-i18n="quote.adventure">Aventura</span></label>
-              <label class="experience-pill"><input type="radio" name="experience" value="Cultural" /><span class="experience-pill__box"></span><span data-i18n="quote.cultural">Cultural</span></label>
-            </div>
-          </div>
         </div>
 
+        <fieldset class="form-group form-group--experience">
+          <legend class="form-label" data-i18n="quote.experience">Tipo de experiencia</legend>
+          <div class="experience-options">
+            <label class="experience-pill">
+              <input type="radio" name="experience" value="Lujo" checked />
+              <span class="experience-pill__box" aria-hidden="true"></span>
+              <span data-i18n="quote.luxury">Lujo</span>
+            </label>
+            <label class="experience-pill">
+              <input type="radio" name="experience" value="Aventura" />
+              <span class="experience-pill__box" aria-hidden="true"></span>
+              <span data-i18n="quote.adventure">Aventura</span>
+            </label>
+            <label class="experience-pill">
+              <input type="radio" name="experience" value="Cultural" />
+              <span class="experience-pill__box" aria-hidden="true"></span>
+              <span data-i18n="quote.cultural">Cultural</span>
+            </label>
+          </div>
+        </fieldset>
+
         <label class="form-group form-group--full">
-          <span class="form-label form-label--center" data-i18n="quote.message">Cuéntanos qué te gustaría vivir</span>
-          <textarea name="message" class="form-control form-control--textarea" rows="3" maxlength="1200" data-i18n-placeholder="quote.messagePlaceholder" placeholder="Intereses, fechas flexibles o alguna necesidad especial…"></textarea>
+          <span class="form-label" data-i18n="quote.message">Cuéntanos qué te gustaría vivir</span>
+          <textarea
+            name="message"
+            class="form-control form-control--textarea"
+            rows="3"
+            maxlength="1200"
+            data-i18n-placeholder="quote.messagePlaceholder"
+            placeholder="Intereses, fechas flexibles o alguna necesidad especial…"
+          ></textarea>
         </label>
 
-        <div class="quote-submit text-center">
-          <div class="quote-submit__actions">
-            <button type="submit" class="quote-btn quote-btn--whatsapp">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12.04 2.8a9.1 9.1 0 0 0-7.77 13.84L3 21.2l4.68-1.23a9.1 9.1 0 1 0 4.36-17.17Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
-                <path d="M8.55 7.75c.2-.45.4-.46.62-.47h.53c.17 0 .44.06.67.56.23.5.78 1.9.85 2.04.07.13.12.29.02.46-.1.18-.15.29-.29.45-.14.16-.3.35-.42.47-.14.14-.29.29-.13.57.16.29.72 1.18 1.54 1.91 1.06.94 1.95 1.24 2.23 1.38.28.14.44.12.6-.07.17-.19.7-.81.89-1.09.18-.27.37-.23.62-.14.26.09 1.59.74 1.86.88.28.13.46.2.53.31.07.12.07.68-.16 1.3-.22.62-1.3 1.18-1.8 1.23-.47.05-1.06.07-1.7-.1-.39-.1-.9-.27-1.54-.55-2.71-1.15-4.47-3.82-4.6-4-.14-.18-1.1-1.43-1.1-2.72 0-1.29.7-1.93.94-2.18Z" fill="currentColor" />
-              </svg>
-              <span>Enviar solicitud por WhatsApp</span>
-            </button>
-          </div>
+        <div class="quote-submit">
+          <button type="submit" class="quote-btn quote-btn--whatsapp">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12.04 2.8a9.1 9.1 0 0 0-7.77 13.84L3 21.2l4.68-1.23a9.1 9.1 0 1 0 4.36-17.17Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+              <path d="M8.55 7.75c.2-.45.4-.46.62-.47h.53c.17 0 .44.06.67.56.23.5.78 1.9.85 2.04.07.13.12.29.02.46-.1.18-.15.29-.29.45-.14.16-.3.35-.42.47-.14.14-.29.29-.13.57.16.29.72 1.18 1.54 1.91 1.06.94 1.95 1.24 2.23 1.38.28.14.44.12.6-.07.17-.19.7-.81.89-1.09.18-.27.37-.23.62-.14.26.09 1.59.74 1.86.88.28.13.46.2.53.31.07.12.07.68-.16 1.3-.22.62-1.3 1.18-1.8 1.23-.47.05-1.06.07-1.7-.1-.39-.1-.9-.27-1.54-.55-2.71-1.15-4.47-3.82-4.6-4-.14-.18-1.1-1.43-1.1-2.72 0-1.29.7-1.93.94-2.18Z" fill="currentColor" />
+            </svg>
+            <span>Enviar por WhatsApp</span>
+          </button>
+
+          <span class="quote-submit__note">Respuesta personalizada por nuestro equipo local.</span>
           <span data-source-label hidden>Página de origen</span>
+
           <div class="quote-form__status" role="status" aria-live="polite">
             <p data-status="whatsapp" hidden>Tu solicitud está lista en WhatsApp. Solo falta confirmar el envío.</p>
             <p data-status="whatsapp-fallback" hidden>WhatsApp se abrirá en esta ventana para asegurar el envío.</p>
@@ -74,18 +144,69 @@ import { SITE_CONTACT } from '../../config/site';
       </form>
     </div>
   </div>
-</section>
+</dialog>
 
 <script>
-  const form = document.querySelector<HTMLFormElement>('#quote-form');
+  const dialog = document.querySelector<HTMLDialogElement>('#quote-modal');
+  const form = dialog?.querySelector<HTMLFormElement>('#quote-form');
   const dateInput = form?.querySelector<HTMLInputElement>('input[name="date"]');
   const statusMessages = form?.querySelectorAll<HTMLElement>('[data-status]');
+  let lastTrigger: HTMLElement | null = null;
 
   if (dateInput) {
     const today = new Date();
     const offset = today.getTimezoneOffset();
     dateInput.min = new Date(today.getTime() - offset * 60_000).toISOString().slice(0, 10);
   }
+
+  const openQuoteModal = (trigger?: HTMLElement | null) => {
+    if (!dialog || dialog.open) return;
+    lastTrigger = trigger || null;
+    statusMessages?.forEach((message) => { message.hidden = true; });
+    document.body.classList.add('is-quote-modal-open');
+
+    if (typeof dialog.showModal === 'function') {
+      dialog.showModal();
+    } else {
+      dialog.setAttribute('open', '');
+    }
+
+    window.requestAnimationFrame(() => {
+      form?.querySelector<HTMLInputElement>('input[name="name"]')?.focus({ preventScroll: true });
+    });
+  };
+
+  const closeQuoteModal = () => {
+    if (!dialog?.open) return;
+    dialog.close();
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const trigger = target.closest<HTMLElement>('[data-open-quote]');
+    if (trigger) {
+      event.preventDefault();
+      openQuoteModal(trigger);
+      return;
+    }
+
+    if (target.closest('[data-close-quote]')) {
+      event.preventDefault();
+      closeQuoteModal();
+    }
+  });
+
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) closeQuoteModal();
+  });
+
+  dialog?.addEventListener('close', () => {
+    document.body.classList.remove('is-quote-modal-open');
+    lastTrigger?.focus({ preventScroll: true });
+    lastTrigger = null;
+  });
 
   const fieldLabel = (name: string, fallback: string) => {
     const field = form?.querySelector<HTMLElement>(`[name="${name}"]`);
@@ -128,7 +249,6 @@ import { SITE_CONTACT } from '../../config/site';
     const sourceLabel = form.querySelector<HTMLElement>('[data-source-label]')?.textContent?.trim() || 'Página de origen';
 
     return {
-      title,
       whatsappText: [
         `*${title}*`,
         '',

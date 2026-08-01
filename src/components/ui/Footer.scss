@@ -138,7 +138,7 @@
 ================================ */
 .footer-contact-list {
   display: grid;
-  gap: 10px;
+  gap: 15px;
 }
 
 .footer-contact-item {
@@ -147,16 +147,17 @@
   align-items: center;
   gap: 11px;
   min-width: 0;
-  padding: 11px 12px;
-  border: 1px solid rgba($color-white, .13);
-  border-radius: 12px;
-  background: rgba($color-white, .055);
-  color: rgba($color-white, .92) !important;
+  padding: 1px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba($color-white, 0.92) !important;
   text-decoration: none;
+  transition: transform 0.22s ease, color 0.22s ease;
 
-  &:hover {
-    border-color: rgba($color-accent, .65);
-    background: rgba($color-accent, .1);
+  &:is(a):hover {
+    color: $color-accent !important;
+    transform: translateX(4px);
   }
 
   small,
@@ -165,24 +166,20 @@
 
   small {
     margin-bottom: 2px;
-    color: rgba($color-white, .58);
-    font-size: .6rem;
+    color: rgba($color-white, 0.54);
+    font-size: 0.6rem;
     font-weight: 800;
-    letter-spacing: .1em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
   strong,
   > div > span {
-    color: $color-white;
-    font-size: .82rem;
+    color: inherit;
+    font-size: 0.82rem;
     line-height: 1.45;
     overflow-wrap: anywhere;
   }
-}
-
-.footer-contact-item--emergency {
-  border-color: rgba($color-accent, .34);
 }
 
 .footer-contact-icon {
@@ -191,10 +188,16 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: rgba($color-accent, .15);
+  background: rgba($color-accent, 0.13);
   color: $color-accent;
-  font-size: .86rem;
+  font-size: 0.86rem;
   font-weight: 900;
+  transition: background 0.22s ease, transform 0.22s ease;
+}
+
+.footer-contact-item:is(a):hover .footer-contact-icon {
+  background: rgba($color-accent, 0.22);
+  transform: scale(1.04);
 }
 
 /* ===============================
@@ -316,8 +319,8 @@
 }
 
 @include respond-to($bp-mobile) {
-  .footer-contact-list { gap: 8px; }
-  .footer-contact-item { padding: 10px; grid-template-columns: 31px minmax(0, 1fr); gap: 9px; }
+  .footer-contact-list { gap: 13px; }
+  .footer-contact-item { padding: 1px 0; grid-template-columns: 31px minmax(0, 1fr); gap: 9px; }
   .footer-contact-icon { width: 31px; height: 31px; }
   .footer-contact-item strong,
   .footer-contact-item > div > span { font-size: .76rem; }

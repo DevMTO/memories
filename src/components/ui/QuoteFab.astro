@@ -2,49 +2,18 @@
 import './QuoteFab.scss';
 ---
 
-<button type="button" class="quote-fab" aria-label="Ir a solicitar cotización" title="Solicitar cotización">
+<button
+  type="button"
+  class="quote-fab"
+  data-open-quote
+  aria-label="Abrir formulario para diseñar tu viaje"
+  aria-haspopup="dialog"
+  aria-controls="quote-modal"
+  title="Diseña tu viaje"
+>
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path d="M20 11.2a7.8 7.8 0 0 1-8 7.6 8.6 8.6 0 0 1-3.7-.9L4 19.5l1.4-4a7.5 7.5 0 0 1-1.2-4.1 7.8 7.8 0 0 1 8-7.6 7.8 7.8 0 0 1 7.8 7.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
     <path d="m9.2 11.5 1.8 1.7 3.8-3.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
   <span data-i18n="nav.designTrip">Diseña tu viaje</span>
 </button>
-
-<script>
-  const fab = document.querySelector<HTMLButtonElement>('.quote-fab');
-  const quoteSection = document.getElementById('quote');
-  const footer = document.querySelector<HTMLElement>('.footer');
-
-  if (fab && quoteSection) {
-    let isQuoteVisible = false;
-    let isFooterVisible = false;
-
-    const syncVisibility = () => {
-      const shouldHide = isQuoteVisible || isFooterVisible;
-      fab.classList.toggle('is-hidden', shouldHide);
-      fab.tabIndex = shouldHide ? -1 : 0;
-      fab.setAttribute('aria-hidden', String(shouldHide));
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.target === quoteSection) isQuoteVisible = entry.isIntersecting;
-          if (entry.target === footer) isFooterVisible = entry.isIntersecting;
-        });
-        syncVisibility();
-      },
-      { threshold: 0.08 },
-    );
-
-    observer.observe(quoteSection);
-    if (footer) observer.observe(footer);
-
-    fab.addEventListener('click', () => {
-      quoteSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      window.setTimeout(() => {
-        quoteSection.querySelector<HTMLInputElement>('input[name="name"]')?.focus({ preventScroll: true });
-      }, 550);
-    });
-  }
-</script>

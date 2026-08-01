@@ -3,8 +3,12 @@
 .terms-main { background: #f4fbfa; }
 
 .terms-hero {
-  padding: 210px 0 92px;
-  background: linear-gradient(125deg, $color-primary-dark, $color-primary);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(88px, 10vw, 132px) 0 82px;
+  background:
+    radial-gradient(circle at 84% 8%, rgba($color-accent, .22), transparent 34%),
+    linear-gradient(125deg, $color-primary-dark, $color-primary 72%, #0a8d89);
   color: $color-white;
 
   .container { max-width: 940px; }
@@ -44,7 +48,7 @@
 .flight-info__actions a:hover { background: $color-accent; color: $color-primary-dark; }
 
 @media (max-width: 768px) {
-  .terms-hero { padding: 132px 0 58px; }
+  .terms-hero { padding: 64px 0 54px; }
   .terms-hero h1 { font-size: clamp(2.4rem, 12vw, 3.4rem); }
   .terms-hero p { font-size: .84rem; line-height: 1.7; }
   .terms-content { padding: 48px 0 62px; }

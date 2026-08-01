@@ -10,26 +10,44 @@
 ================================ */
 .destination-hero {
   position: relative;
-  min-height: 560px;
+  min-height: clamp(560px, 66svh, 700px);
   display: flex;
   align-items: flex-end;
   background-size: cover;
-  background-position: center;
+  background-position: center 46%;
   color: $color-white;
   isolation: isolate;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent 5%, rgba($color-accent, 0.8), transparent 95%);
+    box-shadow: 0 -24px 80px rgba($color-accent, 0.16);
+  }
 }
 
 .destination-hero__overlay {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba($color-primary-dark, 0.76), rgba($color-primary-dark, 0.24)),
-    linear-gradient(180deg, rgba($color-primary-dark, 0.1), rgba($color-primary-dark, 0.82));
+    radial-gradient(circle at 82% 18%, rgba($color-accent, 0.15), transparent 34%),
+    linear-gradient(102deg, rgba($color-primary-dark, 0.62) 0%, rgba($color-primary-dark, 0.38) 48%, rgba($color-primary-dark, 0.07) 100%),
+    linear-gradient(180deg, rgba($color-primary-dark, 0.03) 34%, rgba($color-primary-dark, 0.57) 100%);
   z-index: -1;
 }
 
 .destination-hero__content {
-  padding-bottom: 82px;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: clamp(64px, 8vh, 96px) 0 88px;
 
   span {
     display: block;
@@ -46,21 +64,25 @@
     margin: 0 0 14px;
     color: $color-white;
     font-family: $font-serif;
-    font-size: clamp(4rem, 8vw, 7rem);
-    line-height: 0.9;
-    letter-spacing: -0.06em;
+    font-size: clamp(3.4rem, 7vw, 6.4rem);
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
     text-transform: uppercase;
+    text-shadow: 0 8px 34px rgba(#001f1c, 0.28);
   }
 
   p {
     max-width: 780px;
     margin: 0;
-    color: rgba($color-white, 0.9);
-    font-size: 0.86rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    color: rgba($color-white, 0.92);
+    font-size: clamp(0.82rem, 1.05vw, 0.96rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
     line-height: 1.75;
-    text-transform: uppercase;
+    text-transform: none;
+    text-shadow: 0 5px 20px rgba(#001f1c, 0.24);
   }
 }
 
@@ -70,25 +92,55 @@
 .destination-info-wrapper {
   position: relative;
   z-index: 20;
-  margin-top: -58px;
+  margin-top: -46px;
 }
 
 .destination-info-bar {
-  max-width: 1060px;
-  min-height: 112px;
+  position: relative;
+  max-width: 1100px;
+  min-height: 132px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 22px 34px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  align-items: center;
-  border-radius: 14px;
-  background: $color-white;
-  box-shadow: 0 10px 28px rgba($color-primary-dark, 0.16);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid rgba($color-primary-dark, 0.1);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 96% 0%, rgba($color-accent, 0.12), transparent 34%),
+    rgba($color-white, 0.97);
+  box-shadow: 0 24px 70px rgba($color-primary-dark, 0.14);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 9%;
+    right: 9%;
+    height: 3px;
+    border-radius: 0 0 999px 999px;
+    background: linear-gradient(90deg, transparent, $color-accent, transparent);
+  }
 
   div {
+    position: relative;
+    min-width: 0;
+    padding: 14px 20px;
     text-align: center;
     display: grid;
+    align-content: center;
     gap: 8px;
+
+    &:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 18%;
+      right: 0;
+      bottom: 18%;
+      width: 1px;
+      background: linear-gradient(transparent, rgba($color-primary-dark, 0.14), transparent);
+    }
   }
 
   span {
@@ -277,6 +329,10 @@
   .destination-tips-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  .destination-info-bar div:nth-child(2)::after {
+    display: none;
+  }
 }
 
 @include respond-to($bp-mobile) {
@@ -285,7 +341,7 @@
   }
 
   .destination-hero__content {
-    padding-bottom: 70px;
+    padding: 58px 0 70px;
   }
 
   .destination-info-wrapper {
@@ -323,11 +379,11 @@
 }
 
 @include respond-to($bp-mobile) {
-  .destination-hero { min-height: 430px; }
-  .destination-hero__content { padding: 108px 0 54px; }
+  .destination-hero { min-height: 500px; background-position: center 44%; }
+  .destination-hero__content { padding: 46px 0 68px; }
   .destination-hero__content span { margin-bottom: 10px; font-size: .62rem; }
   .destination-hero__content h1 { font-size: clamp(2.9rem, 14vw, 4.2rem); line-height: .95; }
-  .destination-hero__content p { font-size: .64rem; letter-spacing: .07em; }
+  .destination-hero__content p { font-size: .76rem; letter-spacing: .015em; line-height: 1.65; }
 
   .destination-info-wrapper { margin-top: -34px; }
   .destination-info-bar {
@@ -336,7 +392,8 @@
     gap: 8px;
     padding: 14px;
   }
-  .destination-info-bar div { gap: 5px; padding: 9px 5px; }
+  .destination-info-bar div { gap: 5px; padding: 11px 6px; }
+  .destination-info-bar div::after { display: none; }
   .destination-info-bar span { font-size: .54rem; letter-spacing: .11em; }
   .destination-info-bar strong { font-size: .75rem; line-height: 1.35; }
 

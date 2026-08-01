@@ -33,7 +33,7 @@
   inset: 0;
   z-index: -2;
   background:
-    linear-gradient(rgba($color-primary-dark, 0.44), rgba($color-primary-dark, 0.56)),
+    linear-gradient(rgba($color-primary-dark, 0.18), rgba($color-primary-dark, 0.26)),
     var(--about-hero-image) center/cover no-repeat;
   animation: aboutHeroBgZoom 26s ease-in-out infinite alternate;
 }
@@ -42,15 +42,16 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba($color-primary-dark, 0.34), rgba($color-primary-dark, 0.14)),
-    linear-gradient(180deg, rgba($color-primary-dark, 0.12), rgba($color-primary-dark, 0.72));
+    radial-gradient(circle at 80% 18%, rgba($color-accent, 0.16), transparent 34%),
+    linear-gradient(98deg, rgba($color-primary-dark, 0.52), rgba($color-primary-dark, 0.18) 66%, rgba($color-primary-dark, 0.04)),
+    linear-gradient(180deg, rgba($color-primary-dark, 0.02), rgba($color-primary-dark, 0.48));
   z-index: -1;
 }
 
 .about-hero__content {
   max-width: 780px;
   text-align: center;
-  padding-top: 80px;
+  padding: 56px 0;
 
   h1 {
     margin: 16px 0 12px;
@@ -584,7 +585,7 @@
   }
 
   .about-hero__content {
-    padding-top: 72px;
+    padding: 44px 0;
   }
 
   .about-hero__content h1 {

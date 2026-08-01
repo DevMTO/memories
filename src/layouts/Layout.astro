@@ -11,7 +11,6 @@ interface Props {
   title: string;
   mainClass?: string;
   description?: string;
-  showQuoteForm?: boolean;
   preloadImage?: string;
   socialImage?: string;
 }
@@ -20,7 +19,6 @@ const {
   title,
   mainClass,
   description = 'Memories Travel Perú: tours, trekkings y paquetes personalizados con atención local desde Cusco.',
-  showQuoteForm = true,
   preloadImage,
   socialImage,
 } = Astro.props;
@@ -53,16 +51,20 @@ const absoluteSocialImage = socialImage
   </head>
 
   <body>
-    <Header />
+    <a class="skip-link" href="#main-content">Saltar al contenido</a>
 
-    <main class={mainClass}>
-      <slot />
-    </main>
+    <div class="site-shell">
+      <Header />
 
-    {showQuoteForm && <QuoteForm />}
-    {showQuoteForm && <QuoteFab />}
+      <main id="main-content" class:list={["site-content", mainClass]}>
+        <slot />
+      </main>
+
+      <Footer />
+    </div>
+
+    <QuoteForm />
+    <QuoteFab />
     <WhatsAppFab />
-
-    <Footer />
   </body>
 </html>

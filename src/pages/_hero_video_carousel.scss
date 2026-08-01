@@ -6,6 +6,9 @@
  */
 
 .home-hero {
+  height: calc(100svh - var(--site-header-height));
+  min-height: 620px;
+
   @include respond-to($bp-tablet) {
     min-height: 650px;
     padding-bottom: 80px;
@@ -13,9 +16,9 @@
 
   @include respond-to($bp-mobile) {
     height: auto;
-    min-height: max(600px, 100svh);
+    min-height: max(560px, calc(100svh - var(--site-header-height)));
     align-items: center;
-    padding: 104px 0 46px;
+    padding: 54px 0 46px;
   }
 }
 
@@ -58,14 +61,14 @@
     radial-gradient(circle at 78% 24%, rgba($color-accent, 0.09), transparent 38%),
     linear-gradient(
       106deg,
-      rgba($color-primary-dark, 0.76) 0%,
-      rgba($color-primary-dark, 0.58) 37%,
-      rgba($color-primary-dark, 0.24) 67%,
+      rgba($color-primary-dark, 0.68) 0%,
+      rgba($color-primary-dark, 0.46) 37%,
+      rgba($color-primary-dark, 0.18) 67%,
       rgba($color-primary-dark, 0.06) 100%
     ),
     linear-gradient(
       to top,
-      rgba($color-primary-dark, 0.36) 0%,
+      rgba($color-primary-dark, 0.28) 0%,
       transparent 52%
     );
   transition: opacity 0.5s ease;
@@ -318,11 +321,11 @@
     background:
       linear-gradient(
         104deg,
-        rgba($color-primary-dark, 0.74) 0%,
-        rgba($color-primary-dark, 0.54) 48%,
-        rgba($color-primary-dark, 0.16) 100%
+        rgba($color-primary-dark, 0.66) 0%,
+        rgba($color-primary-dark, 0.44) 48%,
+        rgba($color-primary-dark, 0.12) 100%
       ),
-      linear-gradient(to top, rgba($color-primary-dark, 0.34), transparent 54%);
+      linear-gradient(to top, rgba($color-primary-dark, 0.26), transparent 54%);
   }
 
   .experience-gateway__card {
@@ -342,13 +345,13 @@
     background:
       linear-gradient(
         96deg,
-        rgba($color-primary-dark, 0.75) 0%,
-        rgba($color-primary-dark, 0.52) 62%,
-        rgba($color-primary-dark, 0.22) 100%
+        rgba($color-primary-dark, 0.68) 0%,
+        rgba($color-primary-dark, 0.45) 62%,
+        rgba($color-primary-dark, 0.16) 100%
       ),
       linear-gradient(
         to top,
-        rgba($color-primary-dark, 0.38) 0%,
+        rgba($color-primary-dark, 0.3) 0%,
         transparent 48%
       );
   }

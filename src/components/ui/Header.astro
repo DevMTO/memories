@@ -70,14 +70,15 @@ const isActive = (href: string) =>
         ))}
       </ul>
 
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        type="button"
         class="design-trip-btn"
+        data-open-quote
+        aria-haspopup="dialog"
+        aria-controls="quote-modal"
       >
         <span data-i18n="nav.designTrip">Diseña tu viaje</span>
-      </a>
+      </button>
 
       <button
         type="button"
@@ -106,14 +107,15 @@ const isActive = (href: string) =>
       ))}
     </ul>
 
-    <a
-      href={whatsappUrl}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
       class="mobile-menu__cta"
+      data-open-quote
+      aria-haspopup="dialog"
+      aria-controls="quote-modal"
     >
       <span data-i18n="nav.designTrip">Diseña tu viaje</span>
-    </a>
+    </button>
 
     <div class="mobile-language-switcher notranslate" role="group" aria-label="Seleccionar idioma">
       <svg class="language-switcher__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -155,7 +157,7 @@ const isActive = (href: string) =>
   const menu = document.getElementById('mobile-menu');
 
   if (toggle && menu) {
-    const links = menu.querySelectorAll<HTMLAnchorElement>('a');
+    const menuItems = menu.querySelectorAll<HTMLElement>('a, button[data-open-quote]');
 
     const openMenu = () => {
       menu.classList.add('is-open');
@@ -164,7 +166,7 @@ const isActive = (href: string) =>
       toggle.setAttribute('aria-expanded', 'true');
       toggle.setAttribute('aria-label', 'Cerrar menú');
       menu.setAttribute('aria-hidden', 'false');
-      requestAnimationFrame(() => links[0]?.focus());
+      requestAnimationFrame(() => menuItems[0]?.focus());
     };
 
     const closeMenu = (returnFocus = false) => {
@@ -181,7 +183,7 @@ const isActive = (href: string) =>
       menu.classList.contains('is-open') ? closeMenu(true) : openMenu();
     });
 
-    links.forEach((link) => link.addEventListener('click', () => closeMenu(false)));
+    menuItems.forEach((item) => item.addEventListener('click', () => closeMenu(false)));
 
     menu.addEventListener('click', (event) => {
       if (event.target === menu) closeMenu(true);

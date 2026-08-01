@@ -14,26 +14,44 @@
 ================================ */
 .tour-hero {
   position: relative;
-  min-height: 570px;
+  min-height: clamp(570px, 68svh, 720px);
   display: flex;
   align-items: flex-end;
   background-size: cover;
-  background-position: center;
+  background-position: center 44%;
   color: $color-white;
   isolation: isolate;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent 4%, rgba($color-accent, 0.78) 48%, transparent 96%);
+    box-shadow: 0 -24px 80px rgba($color-accent, 0.16);
+  }
 }
 
 .tour-hero__overlay {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba($color-primary-dark, 0.72), rgba($color-primary-dark, 0.25)),
-    linear-gradient(180deg, rgba($color-primary-dark, 0.2), rgba($color-primary-dark, 0.84));
+    radial-gradient(circle at 82% 16%, rgba($color-accent, 0.16), transparent 34%),
+    linear-gradient(102deg, rgba($color-primary-dark, 0.64) 0%, rgba($color-primary-dark, 0.42) 46%, rgba($color-primary-dark, 0.08) 100%),
+    linear-gradient(180deg, rgba($color-primary-dark, 0.04) 34%, rgba($color-primary-dark, 0.6) 100%);
   z-index: -1;
 }
 
 .tour-hero__content {
-  padding: 0 0 78px;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: clamp(64px, 9vh, 104px) 0 86px;
 }
 
 .tour-hero__eyebrow {
@@ -47,25 +65,29 @@
 }
 
 .tour-hero h1 {
-  max-width: 920px;
-  margin: 0 0 10px;
+  max-width: 980px;
+  margin: 0 0 16px;
   color: $color-white;
   font-family: $font-serif;
-  font-size: clamp(3.4rem, 6vw, 5.2rem);
-  line-height: 0.95;
+  font-size: clamp(3rem, 5.35vw, 4.9rem);
+  line-height: 0.94;
   letter-spacing: -0.045em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
+  text-shadow: 0 8px 34px rgba(#001f1c, 0.28);
 }
 
 .tour-hero p {
-  max-width: 780px;
+  max-width: 760px;
   margin: 0;
-  color: rgba($color-white, 0.9);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  color: rgba($color-white, 0.92);
+  font-size: clamp(0.8rem, 1vw, 0.94rem);
+  font-weight: 600;
+  letter-spacing: 0.025em;
   line-height: 1.7;
-  text-transform: uppercase;
+  text-transform: none;
+  text-shadow: 0 5px 20px rgba(#001f1c, 0.24);
 }
 
 /* ===============================
@@ -74,33 +96,67 @@
 .tour-info-wrapper {
   position: relative;
   z-index: 20;
-  margin-top: -64px;
+  margin-top: -48px;
 }
 
 .tour-info-bar {
-  max-width: 1060px;
-  min-height: 134px;
+  position: relative;
+  max-width: 1100px;
+  min-height: 142px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 22px 34px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  align-items: center;
-  border-radius: 12px;
-  background: $color-white;
-  box-shadow: 0 10px 28px rgba($color-primary-dark, 0.18);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid rgba($color-primary-dark, 0.1);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 96% 0%, rgba($color-accent, 0.12), transparent 34%),
+    rgba($color-white, 0.97);
+  box-shadow: 0 24px 70px rgba($color-primary-dark, 0.14);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 9%;
+    right: 9%;
+    height: 3px;
+    border-radius: 0 0 999px 999px;
+    background: linear-gradient(90deg, transparent, $color-accent, transparent);
+  }
 }
 
 .tour-info-item {
+  position: relative;
+  min-width: 0;
+  padding: 14px 20px;
   text-align: center;
   display: grid;
+  align-content: center;
   justify-items: center;
   gap: 9px;
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 18%;
+    right: 0;
+    bottom: 18%;
+    width: 1px;
+    background: linear-gradient(transparent, rgba($color-primary-dark, 0.14), transparent);
+  }
 }
 
 .tour-info-icon {
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
+  padding: 7px;
+  border-radius: 50%;
   color: $color-primary;
+  background: rgba($color-primary, 0.075);
+  box-shadow: inset 0 0 0 1px rgba($color-primary, 0.08);
 }
 
 .tour-info-label {
@@ -423,7 +479,7 @@
   display: grid;
   gap: 24px;
   position: sticky;
-  top: 120px;
+  top: calc(var(--site-header-height) + var(--site-header-gap));
 }
 
 .booking-widget {
@@ -821,6 +877,10 @@
   .tour-service-grid {
     grid-template-columns: 1fr;
   }
+
+  .tour-info-item:nth-child(2)::after {
+    display: none;
+  }
 }
 
 @include respond-to($bp-mobile) {
@@ -829,7 +889,7 @@
   }
 
   .tour-hero__content {
-    padding-bottom: 72px;
+    padding: 58px 0 70px;
   }
 
   .tour-info-wrapper {
@@ -891,11 +951,11 @@
 
 /* Mobile refinement: compact information without losing hierarchy. */
 @include respond-to($bp-mobile) {
-  .tour-hero { min-height: 430px; }
-  .tour-hero__content { padding: 108px 0 54px; }
+  .tour-hero { min-height: 500px; background-position: center 42%; }
+  .tour-hero__content { padding: 46px 0 68px; }
   .tour-hero__eyebrow { margin-bottom: 10px; font-size: .64rem; }
   .tour-hero h1 { font-size: clamp(2.45rem, 12vw, 3.65rem); line-height: .98; }
-  .tour-hero p { font-size: .61rem; letter-spacing: .09em; }
+  .tour-hero p { font-size: .76rem; letter-spacing: .015em; line-height: 1.62; }
 
   .tour-info-wrapper { margin-top: -34px; }
   .tour-info-bar {
@@ -905,8 +965,9 @@
     padding: 14px;
     border-radius: 14px;
   }
-  .tour-info-item { gap: 5px; padding: 8px 4px; }
-  .tour-info-icon { width: 23px; height: 23px; }
+  .tour-info-item { gap: 5px; padding: 10px 6px; }
+  .tour-info-item::after { display: none; }
+  .tour-info-icon { width: 32px; height: 32px; padding: 6px; }
   .tour-info-label { font-size: .56rem; letter-spacing: .11em; }
   .tour-info-value { font-size: .76rem; line-height: 1.35; }
 

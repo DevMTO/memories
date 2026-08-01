@@ -4,16 +4,39 @@
 @use '../../styles/variables' as *;
 
 .site-header {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 1200;
   color: $color-white;
-  background: rgba($color-primary, 0.74);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba($color-white, 0.16);
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 84% -40%, rgba($color-accent, 0.24), transparent 44%),
+    linear-gradient(110deg, rgba($color-primary-dark, 0.97), rgba($color-primary, 0.94) 62%, rgba(#0a8d89, 0.94));
+  backdrop-filter: blur(4px) saturate(1.08);
+  -webkit-backdrop-filter: blur(4px) saturate(1.08);
+  border-bottom: 1px solid rgba($color-white, 0.18);
+  box-shadow: 0 12px 36px rgba(#002f2b, 0.14);
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba($color-accent, 0.72), transparent);
+    opacity: 0.58;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header {
+    background: linear-gradient(110deg, $color-primary-dark, $color-primary 68%, #0a8682);
+  }
 }
 
 /* ===============================
@@ -22,7 +45,7 @@
 .header-top {
   height: 44px;
   border-bottom: 1px solid rgba($color-white, 0.18);
-  background: rgba($color-primary-dark, 0.14);
+  background: rgba($color-primary-dark, 0.2);
 }
 
 .header-top__inner {
@@ -47,7 +70,7 @@
     font-weight: 400;
     text-decoration: none;
     letter-spacing: 0.01em;
-    transition: color 0.25s ease;
+    transition: color 0.25s ease, transform 0.25s ease;
 
     .icon {
       width: 16px;
@@ -59,6 +82,7 @@
 
     &:hover {
       color: $color-white;
+      transform: translateY(-1px);
     }
   }
 }
@@ -122,7 +146,8 @@
 ================================ */
 .main-nav {
   height: 96px;
-  border-bottom: 1px solid rgba($color-white, 0.12);
+  border-bottom: 1px solid rgba($color-white, 0.08);
+  background: linear-gradient(180deg, rgba($color-white, 0.025), rgba($color-primary-dark, 0.04));
 }
 
 .main-nav__inner {
@@ -203,7 +228,10 @@
   align-items: center;
   justify-content: center;
   border: 1.5px solid $color-accent;
+  background: transparent;
   color: $color-white;
+  font-family: $font-sans;
+  cursor: pointer;
   font-size: 0.66rem;
   font-weight: 900;
   letter-spacing: 0.06em;
@@ -406,11 +434,14 @@
   min-height: 44px;
   padding: 0 22px;
   margin-bottom: 16px;
+  border: 0;
   border-radius: 999px;
   background: $color-accent;
   color: $color-primary-dark;
+  font-family: $font-sans;
   font-size: 0.72rem;
   font-weight: 900;
+  cursor: pointer;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
@@ -504,6 +535,14 @@
       min-height: 28px;
       color: rgba($color-white, 0.82);
     }
+  }
+
+  .site-header {
+    background:
+      radial-gradient(circle at 78% -20%, rgba($color-accent, 0.2), transparent 44%),
+      linear-gradient(112deg, rgba($color-primary-dark, 0.98), rgba($color-primary, 0.96));
+    backdrop-filter: blur(3px) saturate(1.05);
+    -webkit-backdrop-filter: blur(3px) saturate(1.05);
   }
 
   .main-nav {

@@ -40,7 +40,8 @@
   .whatsapp-fab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 }
 
-body.is-mobile-menu-open .whatsapp-fab {
+body.is-mobile-menu-open .whatsapp-fab,
+body.is-quote-modal-open .whatsapp-fab {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;

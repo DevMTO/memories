@@ -20,7 +20,12 @@ from pathlib import Path
 SOURCE_DEFINITIONS = (
     ("cusco", "Cusco", ("cusco",)),
     ("laguna_humantay", "Laguna Humantay", ("laguna_humantay",)),
-    ("machu_picchu_2", "Machu Picchu", ("machupicchu2", "machu_picchu_2")),
+    ("machu_picchu", "Machu Picchu", ("machupicchu", "machu_picchu")),
+    (
+        "machu_picchu_ciudadela",
+        "Ciudadela de Machu Picchu",
+        ("machupicchu_ciudadela", "machu_picchu_ciudadela"),
+    ),
     ("maras_moray", "Maras y Moray", ("maras_moray",)),
     ("montana_colores", "Montaña de 7 Colores", ("montana_de_colores", "montana_colores")),
     ("paracas", "Paracas", ("paracas",)),

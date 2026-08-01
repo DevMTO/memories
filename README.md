@@ -98,7 +98,7 @@ src/server/auth/                         sesión firmada
 
 El hero utiliza un único archivo optimizado `public/videos/hero/hero_reel.mp4` de 720p, 24 fps, sin audio y con `faststart`. Se mantiene en H.264/MP4 porque ofrece la compatibilidad de autoplay más amplia —incluido Safari— y evita duplicar un reel de aproximadamente dos minutos con una segunda descarga WebM.
 
-Los videos originales no se publican. Para regenerar el reel, extrae `carrusel.zip` en una carpeta local y ejecuta:
+Los videos originales no se publican. El conjunto local debe incluir `machupicchu.mp4` y `machupicchu-ciudadela.mp4`; `machupicchu2.mp4` ya no forma parte del carrusel. Para regenerar el reel, extrae los videos en una carpeta local y ejecuta:
 
 ```bash
 npm run build:hero_reel -- --input ./carrusel
