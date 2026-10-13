@@ -15,16 +15,16 @@
     "build:hero_reel": "python3 scripts/build_hero_reel.py"
   },
   "dependencies": {
-    "@astrojs/node": "^7.0.4",
-    "@astrojs/react": "^4.4.2",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "astro": "4.16.19",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "translate": "^3.0.1"
+    "@astrojs/node": "^11.1.7",
+    "@astrojs/react": "^7.0.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.3.8",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "translate": "^3.1.0"
   },
   "devDependencies": {
-    "sass": "^1.99.0"
+    "sass": "^1.105.1"
   }
 }
