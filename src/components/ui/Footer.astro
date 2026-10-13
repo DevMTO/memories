@@ -1,7 +1,7 @@
 ---
 import './Footer.scss';
 import { sitePath } from '../../core/site-path';
-import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
+import { SITE_CONTACT, SITE_DEVELOPER, buildWhatsAppUrl } from '../../config/site';
 
 const whatsappUrl = buildWhatsAppUrl('Hola, quisiera recibir información sobre sus tours y paquetes.');
 ---
@@ -64,5 +64,11 @@ const whatsappUrl = buildWhatsAppUrl('Hola, quisiera recibir información sobre 
     </div>
   </div>
 
-  <div class="footer-bottom"><p>© 2026 Memories Travel Perú</p></div>
+  <div class="footer-bottom">
+    <p>© 2026 Memories Travel Perú</p>
+    <a class="footer-credit" href={SITE_DEVELOPER.url} target="_blank" rel="noopener noreferrer">
+      <span>Desarrollado por</span>
+      <img src={sitePath('/images/logo-turix.webp')} alt={SITE_DEVELOPER.name} class="footer-credit-logo" width="400" height="97" loading="lazy" />
+    </a>
+  </div>
 </footer>

@@ -11,3 +11,8 @@ export const buildWhatsAppUrl = (message?: string) => {
   const base = `https://wa.me/${SITE_CONTACT.whatsappNumber}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 };
+
+export const SITE_DEVELOPER = {
+  name: 'Turix',
+  url: 'https://turix.tech/',
+} as const;
