@@ -1,65 +1,113 @@
 # Memories Travel Perú
 
-Sitio web de Memories Travel Perú desarrollado con Astro: un sitio estático cuyo catálogo
-sale de `src/data/catalog.seed.json`.
+Sitio estático en Astro (es/en/pt) cuyo contenido (tours, trekkings, paquetes, destinos y
+datos de contacto) vive en PocketBase y se edita desde `/admin`. El build lee PocketBase,
+traduce y genera HTML; los visitantes nunca consultan PocketBase. El formulario de
+cotización abre WhatsApp con la solicitud armada.
 
-## Funcionalidades principales
+El editor, PocketBase, el traductor y la publicación son los de `kit/` (ver
+`kit/README.md`); aquí está lo propio del sitio.
 
-- Contacto centralizado con WhatsApp **+51 954 669 589** y emergencias **+51 926 301 932**.
-- Botón flotante de WhatsApp y formulario de cotización adaptados a móvil.
-- Catálogo público separado en **Tours**, **Trekking** y **Paquetes**.
-- Fichas completas con descripción, itinerario por día, incluye, no incluye, qué llevar, información importante, galería y SEO.
+## Desarrollo local
 
-## Requisitos
+Requisitos: Node 22.12 o superior y `unzip` (para PocketBase). PocketBase no se instala en
+el sistema: `npm run pb` (y los demás `pb:*`) descarga en `pocketbase/bin/` la versión de
+`pocketbase/version`.
 
-- Node.js 22.12 o superior.
-- npm 10 o superior.
+### Solo el sitio (estilos, plantillas)
 
-## Instalación local
-
-```bash
+```sh
 npm ci
 cp .env.example .env
-npm run dev
+npm run dev    # http://localhost:4321
 ```
 
-Sitio: `http://localhost:4321`
+`npm run dev` lee el contenido inicial (`src/lib/seed.ts`: `src/data/*.seed.json` y las
+imágenes de `public/images/`), sin PocketBase. Los cambios al seed se ven al reiniciar.
+`/admin` no funciona en este modo. La primera vez traduce todos los textos (unos minutos);
+después usa `.cache/i18n/`.
 
-## Catálogo
+### Con PocketBase (editor, build)
 
-Las páginas leen el catálogo solo a través de `src/lib/services/catalog.ts`, que publica lo
-activo de `src/data/catalog.seed.json` ordenado por `sortOrder` y título.
+Primera vez:
+
+1. En `.env`, completar `SITE_URL=http://localhost:4321`,
+   `PUBLIC_POCKETBASE_URL=http://127.0.0.1:8090` y las cuentas locales (pueden ser datos
+   inventados, p. ej. `admin@local.test`):
+   - `POCKETBASE_SUPERUSER_EMAIL` / `POCKETBASE_SUPERUSER_PASSWORD`: dashboard de PocketBase.
+   - `EDITOR_EMAIL` / `EDITOR_PASSWORD`: inicio de sesión de `/admin`.
+2. Superusuario (no necesita el servidor encendido): `npm run pb:superuser`.
+3. En una terminal, PocketBase (aplica las migraciones y crea el editor): `npm run pb`.
+4. En otra terminal, el contenido inicial: `npm run pb:import`. Se puede repetir: solo crea
+   lo que falta y completa campos e imágenes vacíos, sin tocar lo que se cambió en
+   `/admin`. `npm run pb:import -- --overwrite` devuelve el contenido importado a los
+   valores del seed.
+
+Día a día, dos terminales:
+
+```sh
+npm run pb       # terminal 1: PocketBase en http://127.0.0.1:8090
+npm run dev:pb   # terminal 2: sitio en http://localhost:4321
+```
+
+PocketBase tiene que estar encendido **antes** de `npm run dev:pb`: Astro lee el contenido
+al arrancar. Lo que se cambia en `/admin` se ve en el sitio al reiniciar `npm run dev:pb`
+(en producción, con el botón "Publicar"). Solo aparece lo publicado, no los borradores.
+
+| Qué | Dónde | Cuenta |
+|---|---|---|
+| Sitio | http://localhost:4321 | — |
+| Editor | http://localhost:4321/admin/ | `EDITOR_EMAIL` |
+| Dashboard de PocketBase | http://127.0.0.1:8090/_/ | `POCKETBASE_SUPERUSER_EMAIL` |
 
 ## Comandos
 
-```bash
-npm run dev           # desarrollo
-npm run check:catalog # valida contenido, cantidades e imágenes del catálogo
-npm run build         # sitio estático en dist/
-npm run preview       # sirve dist/
-```
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | `astro dev` con el contenido inicial (sin PocketBase) |
+| `npm run dev:pb` | `astro dev` con el PocketBase local (necesita `npm run pb`) |
+| `npm run pb` | PocketBase local con las variables de `.env` |
+| `npm run pb:superuser` | Crea/actualiza el superusuario local |
+| `npm run pb:import` | Importa el contenido inicial al PocketBase local |
+| `npm run pb:import:prod` | Lo mismo contra producción (`.env.production`) |
+| `npm run pb:install` | Solo descarga el binario de PocketBase |
+| `npm run pb:schema` | Regenera `src/lib/pocketbase-types.ts` desde las migraciones |
+| `npm run build` | Build de producción (`.env.production`); lo corre el VPS |
+| `npm run build:local` | Build contra el PocketBase local (`.env`) |
+| `npm run build:static` | Build con el contenido inicial (sin PocketBase) |
+| `npm run preview` | Sirve `dist/` |
+| `npm run translate` | Llena la caché de traducciones sin hacer build |
+| `npm run check:catalog` | Valida `src/data/catalog.seed.json` (textos, listas e imágenes) |
+| `npm run build:hero_reel` | Regenera el video del hero (abajo) |
 
-## Despliegue
-
-`npm run build` genera un sitio estático en `dist/`. El workflow `.github/workflows/deploy.yml`
-lo publica en GitHub Pages en cada push a `main`, con `BASE_PATH` y `SITE_URL` que entrega
-Pages.
-
-## Estructura relevante
+## Dónde está cada cosa
 
 ```text
-src/config/site.ts                       contacto único del sitio
-src/data/catalog.seed.json               catálogo de 25 experiencias
-src/lib/services/catalog.ts              lectura del catálogo para las páginas
-src/lib/types.ts                         tipos del catálogo
-src/lib/site-path.ts                     rutas internas con BASE_PATH
+pocketbase/pb_migrations/   colecciones del sitio (products, destinations, settings)
+src/lib/seed.ts             contenido inicial, con src/data/*.seed.json
+src/content.config.ts       colecciones de Astro: leen PocketBase o el seed
+src/lib/services/           lo que leen las páginas (catálogo, destinos, contacto)
+src/pages/[...lang]/        páginas, una por idioma (español en la raíz)
+src/i18n/                   textos de interfaz y qué campos se traducen
+src/admin/                  configuración de /admin (secciones, campos, itinerario)
+deploy/                     servicios de systemd, Caddyfile y nginx.conf del VPS
 ```
+
+Los textos de interfaz se escriben en español dentro de `t('…')` (ver `src/i18n/i18n.ts`);
+el traductor del kit los encuentra en el código y los traduce en el build.
+
+## Documentación
+
+- `kit/README.md`: lo compartido con otros sitios (editor, PocketBase, traductor,
+  publicación) y cómo actualizarlo con `kit/sync.sh`.
+- `docs/despliegue.md`: VPS, build automático, DNS y backups.
+- `kit/deploy/cpanel.md`: el sitio público en el hosting con cPanel.
 
 ## Carrusel de video del hero
 
 El hero utiliza un único archivo optimizado `public/videos/hero/hero_reel.mp4` de 720p, 24 fps, sin audio y con `faststart`. Se mantiene en H.264/MP4 porque ofrece la compatibilidad de autoplay más amplia —incluido Safari— y evita duplicar un reel de aproximadamente dos minutos con una segunda descarga WebM.
 
-Los videos originales no se publican. El conjunto local debe incluir `machupicchu.mp4` y `machupicchu-ciudadela.mp4`; `machupicchu2.mp4` ya no forma parte del carrusel. Para regenerar el reel, extrae los videos en una carpeta local y ejecuta:
+Los videos originales no se publican. El conjunto local debe incluir `machupicchu.mp4` y `machupicchu-ciudadela.mp4`. Para regenerar el reel, extrae los videos en una carpeta local y ejecuta:
 
 ```bash
 npm run build:hero_reel -- --input ./carrusel
