@@ -15,7 +15,11 @@
     "pb": "node --env-file=.env kit/pocketbase/scripts/pocketbase.ts serve",
     "pb:superuser": "node --env-file=.env kit/pocketbase/scripts/pocketbase.ts superuser",
     "pb:install": "node kit/pocketbase/scripts/pocketbase.ts install",
-    "pb:schema": "node kit/pocketbase/scripts/pocketbase.ts schema src/lib/pocketbase-types.ts"
+    "pb:schema": "node kit/pocketbase/scripts/pocketbase.ts schema src/lib/pocketbase-types.ts",
+    "dev:pb": "astro dev --mode pocketbase",
+    "build:static": "astro build --mode seed",
+    "pb:import": "node --env-file=.env scripts/pb-import.ts",
+    "pb:import:prod": "node --env-file=.env.production scripts/pb-import.ts"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.1",

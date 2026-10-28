@@ -2,7 +2,10 @@
 import './Header.scss';
 import LanguageSwitcher from './LanguageSwitcher';
 import { sitePath } from '../../lib/site-path';
-import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
+import { buildWhatsAppUrl } from '../../config/site';
+import { getContact } from '../../lib/services/site';
+
+const SITE_CONTACT = await getContact();
 
 const navItems = [
   { href: sitePath('/packages'), label: 'Paquetes', key: 'nav.packages' },
@@ -13,7 +16,7 @@ const navItems = [
   { href: sitePath('/blogs'), label: 'Blog', key: 'nav.blogs' },
 ];
 
-const whatsappUrl = buildWhatsAppUrl('Hola, quiero diseñar un viaje con Memories Travel Perú.');
+const whatsappUrl = buildWhatsAppUrl(SITE_CONTACT.whatsappNumber, 'Hola, quiero diseñar un viaje con Memories Travel Perú.');
 
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>

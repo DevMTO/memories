@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "cusco",
+    "name": "Cusco",
+    "eyebrow": "Capital histórica del Perú",
+    "title": "Cusco, la puerta de entrada a los Andes",
+    "description": "Cusco reúne historia, cultura viva, paisajes andinos y rutas inolvidables hacia Machu Picchu, el Valle Sagrado, montañas de colores y antiguas ciudades incas.",
+    "altitude": "3,399 msnm",
+    "climate": "Templado andino",
+    "best_season": "Abril a octubre",
+    "image": "/images/cusco/cusco.png",
+    "sort_order": 10
+  },
+  {
+    "slug": "lima",
+    "name": "Lima",
+    "eyebrow": "Capital gastronómica y cultural",
+    "title": "Lima, historia, mar y gastronomía",
+    "description": "Lima combina arquitectura colonial, costa del Pacífico, barrios modernos y una de las escenas gastronómicas más reconocidas de Sudamérica.",
+    "altitude": "154 msnm",
+    "climate": "Costero húmedo",
+    "best_season": "Todo el año",
+    "image": "/images/lima/lima.png",
+    "sort_order": 20
+  },
+  {
+    "slug": "ica",
+    "name": "Ica",
+    "eyebrow": "Desierto, aventura y costa",
+    "title": "Ica, Paracas y Huacachina",
+    "description": "Ica es ideal para vivir el desierto, navegar hacia Islas Ballestas, conocer viñedos, disfrutar Huacachina y conectar con la costa peruana.",
+    "altitude": "406 msnm",
+    "climate": "Cálido seco",
+    "best_season": "Todo el año",
+    "image": "/images/ica/ica.png",
+    "sort_order": 30
+  },
+  {
+    "slug": "puno",
+    "name": "Puno",
+    "eyebrow": "Cultura viva del Titicaca",
+    "title": "Puno y el Lago Titicaca",
+    "description": "Puno invita a descubrir comunidades, islas flotantes, tradiciones textiles y la inmensidad del lago navegable más alto del mundo.",
+    "altitude": "3,827 msnm",
+    "climate": "Frío andino",
+    "best_season": "Abril a octubre",
+    "image": "/images/puno/puno.png",
+    "sort_order": 40
+  },
+  {
+    "slug": "arequipa",
+    "name": "Arequipa",
+    "eyebrow": "Ciudad blanca y paisajes volcánicos",
+    "title": "Arequipa, Colca y arquitectura viva",
+    "description": "Arequipa combina arquitectura colonial, gastronomía regional, volcanes imponentes y rutas hacia el Cañón del Colca.",
+    "altitude": "2,335 msnm",
+    "climate": "Templado seco",
+    "best_season": "Abril a noviembre",
+    "image": "/images/arequipa/arequipa.webp",
+    "sort_order": 50
+  }
+]

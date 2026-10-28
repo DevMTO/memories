@@ -1,9 +1,12 @@
 ---
 import './Footer.scss';
 import { sitePath } from '../../lib/site-path';
-import { SITE_CONTACT, SITE_DEVELOPER, buildWhatsAppUrl } from '../../config/site';
+import { SITE_DEVELOPER, buildWhatsAppUrl } from '../../config/site';
+import { getContact } from '../../lib/services/site';
 
-const whatsappUrl = buildWhatsAppUrl('Hola, quisiera recibir información sobre sus tours y paquetes.');
+const SITE_CONTACT = await getContact();
+
+const whatsappUrl = buildWhatsAppUrl(SITE_CONTACT.whatsappNumber, 'Hola, quisiera recibir información sobre sus tours y paquetes.');
 ---
 
 <footer class="footer">

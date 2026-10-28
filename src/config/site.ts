@@ -1,14 +1,8 @@
-export const SITE_CONTACT = {
-  whatsappNumber: '51954669589',
-  whatsappDisplay: '+51 954 669 589',
-  emergencyNumber: '51926301932',
-  emergencyDisplay: '+51 926 301 932',
-  email: 'reservas@memoriestravel.com',
-  address: 'Luis Vallejo Santoni C-2, Santiago - Cusco',
-} as const;
+// El contacto del sitio (WhatsApp, correo, dirección) se edita en /admin: ver
+// src/lib/services/site.ts (getContact).
 
-export const buildWhatsAppUrl = (message?: string) => {
-  const base = `https://wa.me/${SITE_CONTACT.whatsappNumber}`;
+export const buildWhatsAppUrl = (whatsappNumber: string, message?: string) => {
+  const base = `https://wa.me/${whatsappNumber}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 };
 

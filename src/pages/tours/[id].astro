@@ -1,9 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { sitePath } from '../../lib/site-path';
-import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
+import { buildWhatsAppUrl } from '../../config/site';
+import { getContact } from '../../lib/services/site';
 import { getAll, getById, getBySlug } from '../../lib/services/catalog';
 import './_detail.scss';
+
+const SITE_CONTACT = await getContact();
 
 
 export async function getStaticPaths() {
@@ -56,7 +59,7 @@ const heroDuration = durationNights
 const destinationName = tour.destinationName || tour.location || 'Perú';
 
 const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`;
-const whatsappUrl = buildWhatsAppUrl(whatsappMessage);
+const whatsappUrl = buildWhatsAppUrl(SITE_CONTACT.whatsappNumber, whatsappMessage);
 
 const galleryImages = (
   gallery.length > 0

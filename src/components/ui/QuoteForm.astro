@@ -1,6 +1,8 @@
 ---
 import './QuoteForm.scss';
-import { SITE_CONTACT } from '../../config/site';
+import { getContact } from '../../lib/services/site';
+
+const SITE_CONTACT = await getContact();
 ---
 
 <dialog

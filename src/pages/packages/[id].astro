@@ -1,9 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { sitePath } from '../../lib/site-path';
-import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
+import { buildWhatsAppUrl } from '../../config/site';
+import { getContact } from '../../lib/services/site';
 import { getPackageById, getPackageBySlug, getPackages } from '../../lib/services/catalog';
 import './_package-detail.scss';
+
+const SITE_CONTACT = await getContact();
 
 
 export async function getStaticPaths() {
@@ -60,7 +63,7 @@ const destinationText =
     : 'Perú';
 
 const whatsappMessage = `Hola, quiero información sobre el paquete: ${pkg.title}`;
-const whatsappUrl = buildWhatsAppUrl(whatsappMessage);
+const whatsappUrl = buildWhatsAppUrl(SITE_CONTACT.whatsappNumber, whatsappMessage);
 
 const galleryImages = (
   gallery.length > 0

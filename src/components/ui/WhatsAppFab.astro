@@ -1,8 +1,11 @@
 ---
 import './WhatsAppFab.scss';
 import { buildWhatsAppUrl } from '../../config/site';
+import { getContact } from '../../lib/services/site';
 
-const href = buildWhatsAppUrl('Hola, quisiera información para planificar mi viaje a Perú.');
+const SITE_CONTACT = await getContact();
+
+const href = buildWhatsAppUrl(SITE_CONTACT.whatsappNumber, 'Hola, quisiera información para planificar mi viaje a Perú.');
 ---
 
 <a class="whatsapp-fab" href={href} target="_blank" rel="noopener noreferrer" aria-label="Conversar por WhatsApp">

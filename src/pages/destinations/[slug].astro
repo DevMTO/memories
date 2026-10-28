@@ -4,13 +4,12 @@ import PackageCard from '../../components/PackageCard.astro';
 import TourCard from '../../components/TourCard.astro';
 import { sitePath } from '../../lib/site-path';
 import { getAll, getPackages } from '../../lib/services/catalog';
+import { getDestinationPage, getDestinationPages } from '../../lib/services/destinations';
 import './_destination-detail.scss';
 
 
-export function getStaticPaths() {
-  return ['cusco', 'lima', 'ica', 'puno', 'arequipa'].map((slug) => ({
-    params: { slug },
-  }));
+export async function getStaticPaths() {
+  return (await getDestinationPages()).map(({ slug }) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
@@ -28,74 +27,7 @@ const normalizeSlug = (value = '') =>
 
 const destinationSlug = normalizeSlug(slug || '');
 
-const destinationData: Record<string, {
-  name: string;
-  imageUrl: string;
-  eyebrow: string;
-  title: string;
-  description: string;
-  altitude?: string;
-  climate?: string;
-  bestSeason?: string;
-}> = {
-  cusco: {
-    name: 'Cusco',
-    imageUrl: '/images/cusco/cusco.png',
-    eyebrow: 'Capital histórica del Perú',
-    title: 'Cusco, la puerta de entrada a los Andes',
-    description:
-      'Cusco reúne historia, cultura viva, paisajes andinos y rutas inolvidables hacia Machu Picchu, el Valle Sagrado, montañas de colores y antiguas ciudades incas.',
-    altitude: '3,399 msnm',
-    climate: 'Templado andino',
-    bestSeason: 'Abril a octubre',
-  },
-  lima: {
-    name: 'Lima',
-    imageUrl: '/images/lima/lima.png',
-    eyebrow: 'Capital gastronómica y cultural',
-    title: 'Lima, historia, mar y gastronomía',
-    description:
-      'Lima combina arquitectura colonial, costa del Pacífico, barrios modernos y una de las escenas gastronómicas más reconocidas de Sudamérica.',
-    altitude: '154 msnm',
-    climate: 'Costero húmedo',
-    bestSeason: 'Todo el año',
-  },
-  ica: {
-    name: 'Ica',
-    imageUrl: '/images/ica/ica.png',
-    eyebrow: 'Desierto, aventura y costa',
-    title: 'Ica, Paracas y Huacachina',
-    description:
-      'Ica es ideal para vivir el desierto, navegar hacia Islas Ballestas, conocer viñedos, disfrutar Huacachina y conectar con la costa peruana.',
-    altitude: '406 msnm',
-    climate: 'Cálido seco',
-    bestSeason: 'Todo el año',
-  },
-  puno: {
-    name: 'Puno',
-    imageUrl: '/images/puno/puno.png',
-    eyebrow: 'Cultura viva del Titicaca',
-    title: 'Puno y el Lago Titicaca',
-    description:
-      'Puno invita a descubrir comunidades, islas flotantes, tradiciones textiles y la inmensidad del lago navegable más alto del mundo.',
-    altitude: '3,827 msnm',
-    climate: 'Frío andino',
-    bestSeason: 'Abril a octubre',
-  },
-  arequipa: {
-    name: 'Arequipa',
-    imageUrl: '/images/arequipa/arequipa.webp',
-    eyebrow: 'Ciudad blanca y paisajes volcánicos',
-    title: 'Arequipa, Colca y arquitectura viva',
-    description:
-      'Arequipa combina arquitectura colonial, gastronomía regional, volcanes imponentes y rutas hacia el Cañón del Colca.',
-    altitude: '2,335 msnm',
-    climate: 'Templado seco',
-    bestSeason: 'Abril a noviembre',
-  },
-};
-
-const destination = destinationData[destinationSlug];
+const destination = await getDestinationPage(destinationSlug);
 
 if (!destination) {
   return Astro.redirect(sitePath('/'));

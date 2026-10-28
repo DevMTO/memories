@@ -1,7 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { SITE_CONTACT } from '../config/site';
+import { getContact } from '../lib/services/site';
 import './_terms.scss';
+
+const SITE_CONTACT = await getContact();
 
 
 const primaryWhatsApp = SITE_CONTACT.whatsappNumber;
