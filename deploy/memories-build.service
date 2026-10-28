@@ -1,0 +1,28 @@
+# Copiar a /etc/systemd/system/. Lo lanza memories-build.path (pedidos);
+# a mano: sudo systemctl start memories-build (log: journalctl -u memories-build).
+[Unit]
+Description=Build y publicación del sitio (memories)
+After=network-online.target memories-pocketbase.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=memories
+Group=memories
+# Ver kit/deploy/build.sh.
+Environment=APP=memories PB_PORT=8091 PB_SERVICE=memories-pocketbase
+# PUBLISH_CALLBACK_SECRET (para reportar el estado a PocketBase).
+EnvironmentFile=/etc/memories/pocketbase.env
+# SITE_URL, ENABLED_LANGS, PUBLIC_POCKETBASE_URL, EDITOR_URL.
+EnvironmentFile=/etc/memories/build.env
+# CF_PAGES_PROJECT, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN (subir el sitio a
+# Cloudflare Pages). Aparte de pocketbase.env para que PocketBase no vea el
+# token; opcional (-).
+EnvironmentFile=-/etc/memories/cloudflare.env
+# CPANEL_FTP_HOST, CPANEL_FTP_USER, CPANEL_FTP_PASSWORD, CPANEL_FTP_DIR (subir el
+# sitio a un hosting compartido con cPanel, kit/deploy/cpanel.md); opcional (-).
+EnvironmentFile=-/etc/memories/cpanel.env
+ExecStart=/srv/memories/repo/kit/deploy/build.sh
+TimeoutStartSec=30min
+# El build no le quita CPU al sitio ni a PocketBase.
+Nice=10

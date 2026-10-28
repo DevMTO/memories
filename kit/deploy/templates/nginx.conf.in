@@ -2,18 +2,21 @@
 # (/admin y la vista previa) y hace de proxy a PocketBase. Copiar a
 # /etc/nginx/conf.d/@APP@.conf y cambiar los dominios; HTTPS lo agrega
 # `certbot --nginx` sobre este archivo. Los visitantes ven el sitio en Cloudflare
-# Pages (example.com); aquí es una copia para el editor, fuera de los buscadores.
+# Pages o en el hosting con cPanel (example.com); aquí es una copia para el
+# editor, fuera de los buscadores.
 
 # Vista previa del editor (kit/deploy/build.sh): las mismas URLs, servidas desde otra
 # carpeta a quien tenga la cookie que pone /admin. CLAVE = PREVIEW_KEY de
 # pocketbase.env. Sin vista previa, dejar solo la línea default.
 # La clave (64 caracteres) no entra en la tabla por defecto de los map de nginx.
-# Tiene que ir antes del primer `map` del bloque http: si nginx.conf ya tiene uno
-# (p. ej. $connection_upgrade), esta línea va en nginx.conf, antes de ese map, y
-# aquí se borra (si no, nginx -t: "map_hash_bucket_size directive is duplicate").
+# Va una sola vez en todo nginx y antes del primer `map` que lea (si no, nginx -t:
+# "map_hash_bucket_size directive is duplicate"). Con un solo sitio, aquí. Si
+# nginx.conf ya tiene un map (p. ej. $connection_upgrade) o hay varios sitios en el
+# VPS, va en el bloque http de nginx.conf, antes de ese map y de los include, y se
+# borra de aquí.
 map_hash_bucket_size 128;
 
-map $cookie_site_preview $site_root {
+map $cookie_site_preview $@NGINX_ID@_root {
   "CLAVE" /srv/@APP@/preview;
   default /srv/@APP@/site;
 }
@@ -21,7 +24,7 @@ map $cookie_site_preview $site_root {
 server {
   listen 80;
   server_name @EDITOR_HOST@;
-  root $site_root;
+  root $@NGINX_ID@_root;
   index index.html;
 
   gzip on;

@@ -8,13 +8,9 @@ import { translationConfig } from '#src/i18n/translation.ts';
 // .env y origen del contenido (seed o PocketBase): ver kit/content/setup.ts.
 setupEnv();
 
-const configuredBase = process.env.BASE_PATH?.trim() || '/';
-const base = configuredBase.endsWith('/') ? configuredBase : `${configuredBase}/`;
-const site = process.env.SITE_URL?.trim() || undefined;
-
 export default defineConfig({
-  site,
-  base,
+  // URL pública del sitio, usada en hreflang y URLs absolutas.
+  site: process.env.SITE_URL?.trim() || undefined,
   image: { domains: pocketbaseImageDomains() },
   integrations: [react(), translations(parseLangs(process.env.ENABLED_LANGS), translationConfig)],
 });

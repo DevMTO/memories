@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:local": "node --env-file=.env node_modules/astro/bin/astro.mjs build",
     "preview": "astro preview",
     "astro": "astro",
     "check:catalog": "node scripts/validate-catalog.mjs",

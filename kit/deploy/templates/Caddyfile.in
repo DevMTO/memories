@@ -1,8 +1,10 @@
 # Caddy en el VPS: sirve el sitio para el editor (/admin y la vista previa) y
 # hace de proxy a PocketBase, con HTTPS automático (Let's Encrypt). Copiar a
-# /etc/caddy/Caddyfile y cambiar los dominios; sus DNS deben apuntar al VPS antes
-# de recargar Caddy. Los visitantes ven el sitio en Cloudflare Pages
-# (example.com); aquí es una copia para el editor, fuera de los buscadores.
+# /etc/caddy/Caddyfile (con varios sitios en el VPS, los bloques de todos van en
+# ese archivo) y cambiar los dominios; sus DNS deben apuntar al VPS antes de
+# recargar Caddy. Los visitantes ven el sitio en Cloudflare Pages o en el hosting
+# con cPanel (example.com); aquí es una copia para el editor, fuera de los
+# buscadores.
 
 @EDITOR_HOST@ {
 	encode zstd gzip

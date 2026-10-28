@@ -25,6 +25,8 @@ done
 : "${vars[APP]:?Falta APP=<nombre>}"
 vars[UNIT]=${vars[UNIT]:-${vars[APP]}}
 vars[USER]=${vars[USER]:-${vars[APP]}}
+# APP como nombre de variable de nginx (cada sitio la suya en el mismo servidor).
+vars[NGINX_ID]=${vars[APP]//[^A-Za-z0-9_]/_}
 
 templates=$(dirname "$0")/templates
 mkdir -p "$out"

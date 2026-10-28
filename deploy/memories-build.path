@@ -1,0 +1,11 @@
+# Copiar a /etc/systemd/system/. Botón "Publicar" y webhook de push a deploy:
+# PocketBase deja un archivo en BUILD_REQUEST_DIR y esto lanza el build.
+[Unit]
+Description=Pedidos de build (memories)
+
+[Path]
+DirectoryNotEmpty=/srv/memories/build/requests
+Unit=memories-build.service
+
+[Install]
+WantedBy=multi-user.target

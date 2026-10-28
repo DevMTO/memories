@@ -1,0 +1,24 @@
+# Copiar a /etc/systemd/system/memories-pocketbase.service.
+# Escucha solo en localhost: desde fuera se entra por Caddy o nginx (pb.example.com).
+[Unit]
+Description=PocketBase (memories)
+After=network.target
+
+[Service]
+User=memories
+Group=memories
+WorkingDirectory=/srv/memories/pocketbase
+# EDITOR_EMAIL, EDITOR_PASSWORD, BUILD_REQUEST_DIR, PUBLISH_CALLBACK_SECRET,
+# DEPLOY_WEBHOOK_SECRET.
+EnvironmentFile=/etc/memories/pocketbase.env
+ExecStart=/srv/memories/pocketbase/bin/pocketbase serve \
+  --http=127.0.0.1:8091 \
+  --dir=/srv/memories/pocketbase/pb_data \
+  --migrationsDir=/srv/memories/pocketbase/pb_migrations \
+  --hooksDir=/srv/memories/pocketbase/pb_hooks
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

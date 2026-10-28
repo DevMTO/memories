@@ -68,4 +68,7 @@ público en otro lado (Pages o cPanel):
 - Los builds son lo pesado. `build.sh` toma un candado común a todo el servidor
   (`/run/lock/kit-build.lock`): si otro sitio está construyendo, espera a que termine, y
   mientras tanto la publicación sigue "en cola" en `/admin`. Conviene igual 1 GB de swap.
-- En Caddy o nginx, un bloque por dominio (los `Caddyfile` de cada sitio se juntan en uno).
+- Un solo servidor web para todos: con Caddy, los bloques del `Caddyfile` de cada sitio
+  van juntos en `/etc/caddy/Caddyfile`; con nginx, un archivo por sitio en `conf.d/` y
+  `map_hash_bucket_size 128;` una sola vez, en el bloque `http` de `nginx.conf` (ver el
+  comentario del `nginx.conf` generado).
