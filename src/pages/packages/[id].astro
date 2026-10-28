@@ -1,14 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { sitePath } from '../../core/site-path';
+import { sitePath } from '../../lib/site-path';
 import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
-import { getToursUseCase } from '../../infrastructure/di';
+import { getPackageById, getPackageBySlug, getPackages } from '../../lib/services/catalog';
 import './_package-detail.scss';
 
-export const prerender = true;
 
 export async function getStaticPaths() {
-  const packages = await getToursUseCase.executePackages();
+  const packages = await getPackages();
 
   return (packages || [])
     .filter((pkg) => pkg?.isActive !== false)
@@ -19,8 +18,8 @@ const { id } = Astro.params;
 
 const pkg =
   id
-    ? (await getToursUseCase.executePackageBySlug(id)) ||
-      (await getToursUseCase.executePackageById(id))
+    ? (await getPackageBySlug(id)) ||
+      (await getPackageById(id))
     : null;
 
 if (!pkg) {

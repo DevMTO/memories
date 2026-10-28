@@ -10,7 +10,6 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "start": "node ./dist/server/entry.mjs",
     "check:catalog": "node scripts/validate-catalog.mjs",
     "build:hero_reel": "python3 scripts/build_hero_reel.py"
   },

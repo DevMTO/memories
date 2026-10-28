@@ -1,11 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PackageCard from '../components/PackageCard.astro';
-import { getToursUseCase } from '../infrastructure/di';
-import { sitePath } from '../core/site-path';
+import { getPackages } from '../lib/services/catalog';
+import { sitePath } from '../lib/site-path';
 import './_packages.scss';
 
-export const prerender = true;
 
 const url = Astro.url;
 
@@ -13,7 +12,7 @@ const selectedStyle = url.searchParams.get('style') || '';
 const selectedDestination = url.searchParams.get('destination') || '';
 const maxPrice = Number(url.searchParams.get('price') || '10000');
 
-const allPackagesRaw = await getToursUseCase.executePackages();
+const allPackagesRaw = await getPackages();
 
 const allPackages = (allPackagesRaw || []).filter((pkg) => pkg?.isActive !== false);
 

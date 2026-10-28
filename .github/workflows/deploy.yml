@@ -43,12 +43,11 @@ jobs:
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
           SITE_URL: ${{ steps.pages.outputs.origin }}
-          SQLITE_PATH: data/ci.sqlite
 
       - name: Upload public site
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./dist/client
+          path: ./dist
 
   deploy:
     if: github.event_name != 'pull_request'

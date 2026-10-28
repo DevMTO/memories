@@ -2,11 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import PackageCard from '../../components/PackageCard.astro';
 import TourCard from '../../components/TourCard.astro';
-import { sitePath } from '../../core/site-path';
-import { getToursUseCase } from '../../infrastructure/di';
+import { sitePath } from '../../lib/site-path';
+import { getAll, getPackages } from '../../lib/services/catalog';
 import './_destination-detail.scss';
 
-export const prerender = true;
 
 export function getStaticPaths() {
   return ['cusco', 'lima', 'ica', 'puno', 'arequipa'].map((slug) => ({
@@ -107,8 +106,8 @@ const destinationTitleSuffix = destination.title.startsWith(destination.name)
   ? destination.title.slice(destination.name.length)
   : destination.title;
 
-const packagesRaw = await getToursUseCase.executePackages();
-const toursRaw = await getToursUseCase.executeAll();
+const packagesRaw = await getPackages();
+const toursRaw = await getAll();
 
 const activePackages = (packagesRaw || []).filter((pkg) => pkg.isActive !== false);
 const activeTours = (toursRaw || []).filter((tour) => tour.isActive !== false);

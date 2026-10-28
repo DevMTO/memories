@@ -1,14 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { sitePath } from '../../core/site-path';
+import { sitePath } from '../../lib/site-path';
 import { SITE_CONTACT, buildWhatsAppUrl } from '../../config/site';
-import { getToursUseCase } from '../../infrastructure/di';
+import { getAll, getById, getBySlug } from '../../lib/services/catalog';
 import './_detail.scss';
 
-export const prerender = true;
 
 export async function getStaticPaths() {
-  const tours = await getToursUseCase.executeAll();
+  const tours = await getAll();
 
   return (tours || [])
     .filter((tour) => tour?.isActive !== false)
@@ -19,8 +18,8 @@ const { id } = Astro.params;
 
 const tour =
   id
-    ? (await getToursUseCase.executeById(id)) ||
-      (await getToursUseCase.executeBySlug(id))
+    ? (await getById(id)) ||
+      (await getBySlug(id))
     : null;
 
 if (!tour) {

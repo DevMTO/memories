@@ -1,16 +1,5 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": [
-    "dist",
-    // Legacy Firebase/react-query code kept for the future hosted-DB
-    // migration; its deps aren't installed, so keep it out of type checking.
-    "seed_pdf_tour.ts",
-    "src/components/admin/AuthContext.tsx",
-    "src/components/admin/ProtectedRoute.tsx",
-    "src/components/admin/ToursCrud.tsx",
-    "src/infrastructure/firebase.ts",
-    "src/infrastructure/firebaseClient.ts",
-    "src/infrastructure/repositories/FirestoreTourRepository.ts"
-  ]
+  "exclude": ["dist"]
 }
