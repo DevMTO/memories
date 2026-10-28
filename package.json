@@ -11,7 +11,11 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:catalog": "node scripts/validate-catalog.mjs",
-    "build:hero_reel": "python3 scripts/build_hero_reel.py"
+    "build:hero_reel": "python3 scripts/build_hero_reel.py",
+    "pb": "node --env-file=.env kit/pocketbase/scripts/pocketbase.ts serve",
+    "pb:superuser": "node --env-file=.env kit/pocketbase/scripts/pocketbase.ts superuser",
+    "pb:install": "node kit/pocketbase/scripts/pocketbase.ts install",
+    "pb:schema": "node kit/pocketbase/scripts/pocketbase.ts schema src/lib/pocketbase-types.ts"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.1",

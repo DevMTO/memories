@@ -1,0 +1,19 @@
+---
+// <link rel="alternate" hreflang> de una página en cada idioma, más x-default.
+// Solo con `site` en astro.config.mjs (hacen falta URLs absolutas) y más de un idioma.
+type Props = {
+  // Ruta de la página en cada idioma (p. ej. { code: 'en', href: '/en/tours/' }).
+  alternates: { code: string; href: string }[];
+  // Ruta en el idioma por defecto.
+  defaultHref: string;
+};
+
+const { alternates, defaultHref } = Astro.props;
+---
+
+{alternates.length > 1 && Astro.site && (
+  <>
+    {alternates.map(({ code, href }) => <link rel="alternate" hreflang={code} href={new URL(href, Astro.site).href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(defaultHref, Astro.site).href} />
+  </>
+)}

@@ -1,0 +1,66 @@
+# nginx en el VPS (alternativa al Caddyfile): sirve el sitio para el editor
+# (/admin y la vista previa) y hace de proxy a PocketBase. Copiar a
+# /etc/nginx/conf.d/@APP@.conf y cambiar los dominios; HTTPS lo agrega
+# `certbot --nginx` sobre este archivo. Los visitantes ven el sitio en Cloudflare
+# Pages (example.com); aquí es una copia para el editor, fuera de los buscadores.
+
+# Vista previa del editor (kit/deploy/build.sh): las mismas URLs, servidas desde otra
+# carpeta a quien tenga la cookie que pone /admin. CLAVE = PREVIEW_KEY de
+# pocketbase.env. Sin vista previa, dejar solo la línea default.
+# La clave (64 caracteres) no entra en la tabla por defecto de los map de nginx.
+# Tiene que ir antes del primer `map` del bloque http: si nginx.conf ya tiene uno
+# (p. ej. $connection_upgrade), esta línea va en nginx.conf, antes de ese map, y
+# aquí se borra (si no, nginx -t: "map_hash_bucket_size directive is duplicate").
+map_hash_bucket_size 128;
+
+map $cookie_site_preview $site_root {
+  "CLAVE" /srv/@APP@/preview;
+  default /srv/@APP@/site;
+}
+
+server {
+  listen 80;
+  server_name @EDITOR_HOST@;
+  root $site_root;
+  index index.html;
+
+  gzip on;
+  gzip_types text/css application/javascript application/json image/svg+xml;
+
+  # Archivos con hash en el nombre: nunca cambian.
+  location /_astro/ {
+    add_header Cache-Control "public, max-age=31536000, immutable";
+    add_header X-Robots-Tag "noindex, nofollow";
+    try_files $uri =404;
+  }
+
+  # HTML y demás: siempre se revalida para ver el contenido recién publicado.
+  location / {
+    add_header Cache-Control "no-cache";
+    add_header Vary Cookie;
+    add_header X-Robots-Tag "noindex, nofollow";
+    try_files $uri $uri/ =404;
+  }
+}
+
+server {
+  listen 80;
+  server_name @PB_HOST@;
+
+  # Imágenes subidas desde /admin.
+  client_max_body_size 20m;
+
+  location / {
+    proxy_pass http://127.0.0.1:@PB_PORT@;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    # PocketBase toma la IP del visitante del final de X-Forwarded-For
+    # (kit/pocketbase/core/migrations/1700000002_kit_app_settings.js).
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    # Realtime (SSE) de /admin: sin buffer y conexiones largas.
+    proxy_set_header Connection '';
+    proxy_buffering off;
+    proxy_read_timeout 360s;
+  }
+}

@@ -1,0 +1,24 @@
+# Copiar a /etc/systemd/system/@PB_SERVICE@.service.
+# Escucha solo en localhost: desde fuera se entra por Caddy o nginx (@PB_HOST@).
+[Unit]
+Description=PocketBase (@APP@)
+After=network.target
+
+[Service]
+User=@USER@
+Group=@USER@
+WorkingDirectory=/srv/@APP@/pocketbase
+# EDITOR_EMAIL, EDITOR_PASSWORD, BUILD_REQUEST_DIR, PUBLISH_CALLBACK_SECRET,
+# DEPLOY_WEBHOOK_SECRET.
+EnvironmentFile=/etc/@APP@/pocketbase.env
+ExecStart=/srv/@APP@/pocketbase/bin/pocketbase serve \
+  --http=127.0.0.1:@PB_PORT@ \
+  --dir=/srv/@APP@/pocketbase/pb_data \
+  --migrationsDir=/srv/@APP@/pocketbase/pb_migrations \
+  --hooksDir=/srv/@APP@/pocketbase/pb_hooks
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

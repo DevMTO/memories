@@ -1,0 +1,26 @@
+---
+// Aviso flotante con "Salir" en la vista previa (solo con PREVIEW=1). Va al
+// principio del <body>; en el <head>, `isPreview()` agrega el noindex.
+import { isPreview } from './preview.ts';
+---
+
+{isPreview() && (
+    <div style="position: fixed; z-index: 9999; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; padding: 6px 8px 6px 14px; border-radius: 999px; background: #8a5a00; color: #fff; font: 600 13px/1.4 system-ui, sans-serif; box-shadow: 0 2px 10px rgb(0 0 0 / 0.3); white-space: nowrap;">
+      Vista previa: no es el sitio publicado
+      <button
+        type="button"
+        id="exit-preview"
+        style="border: 0; border-radius: 999px; padding: 3px 10px; background: #fff; color: #8a5a00; font: inherit; cursor: pointer;"
+      >
+        Salir
+      </button>
+    </div>
+    <script is:inline>
+      // Borra la cookie de /admin (PREVIEW_COOKIE en kit/site/preview.ts) que hace
+      // que el servidor sirva la vista previa.
+      document.getElementById('exit-preview').addEventListener('click', () => {
+        document.cookie = 'site_preview=; path=/; max-age=0';
+        location.reload();
+      });
+    </script>
+)}

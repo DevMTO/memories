@@ -1,0 +1,16 @@
+# Sitio público en un hosting compartido con cPanel (Apache o LiteSpeed). No se
+# copia a mano: kit/deploy/build.sh (deploy_ftp) lo genera en cada publicación
+# con EDITOR_URL y lo sube junto con el sitio (ver kit/deploy/cpanel.md).
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+# /admin vive en el editor, en el mismo origen que la vista previa.
+RewriteEngine On
+RewriteRule ^admin/?$ @EDITOR_URL@/admin/ [R=302,L]
+RewriteRule ^admin/(.+)$ @EDITOR_URL@/admin/$1 [R=302,L]
+
+# HTML y demás: siempre se revalida para ver lo recién publicado. Los archivos
+# con hash en el nombre tienen su propio .htaccess en _astro/.
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache"
+</IfModule>

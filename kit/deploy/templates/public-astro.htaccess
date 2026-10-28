@@ -1,0 +1,5 @@
+# _astro/ del sitio público (ver public.htaccess.in): archivos con hash en el
+# nombre, nunca cambian.
+<IfModule mod_headers.c>
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</IfModule>
