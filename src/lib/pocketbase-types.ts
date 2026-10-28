@@ -11,9 +11,13 @@ export const Collections = {
 	Mfas: "_mfas",
 	Otps: "_otps",
 	Superusers: "_superusers",
+	Destinations: "destinations",
 	Editors: "editors",
+	Products: "products",
 	Publishes: "publishes",
 	Revisions: "revisions",
+	Settings: "settings",
+	TranslationOverrides: "translation_overrides",
 	Users: "users",
 } as const
 export type Collections = typeof Collections[keyof typeof Collections]
@@ -96,6 +100,28 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export const DestinationsStatusOptions = {
+	"draft": "draft",
+	"published": "published",
+} as const
+export type DestinationsStatusOptions = typeof DestinationsStatusOptions[keyof typeof DestinationsStatusOptions]
+export type DestinationsRecord = {
+	altitude?: string
+	best_season?: string
+	climate?: string
+	created: IsoAutoDateString
+	description?: string
+	eyebrow?: string
+	id: string
+	image?: FileNameString
+	name: string
+	slug: string
+	sort_order?: number
+	status: DestinationsStatusOptions
+	title?: string
+	updated: IsoAutoDateString
+}
+
 export type EditorsRecord = {
 	email: string
 	emailVisibility?: boolean
@@ -104,6 +130,51 @@ export type EditorsRecord = {
 	password: string
 	tokenKey: string
 	verified?: boolean
+}
+
+export const ProductsKindOptions = {
+	"tour": "tour",
+	"trekking": "trekking",
+	"package": "package",
+} as const
+export type ProductsKindOptions = typeof ProductsKindOptions[keyof typeof ProductsKindOptions]
+
+export const ProductsStatusOptions = {
+	"draft": "draft",
+	"published": "published",
+} as const
+export type ProductsStatusOptions = typeof ProductsStatusOptions[keyof typeof ProductsStatusOptions]
+export type ProductsRecord<Tcities = unknown, Tdestinations = unknown, Tfeatures = unknown, Thighlights = unknown, Timportant_notes = unknown, Tincludes = unknown, Titinerary = unknown, Tnot_includes = unknown, Twhat_to_bring = unknown> = {
+	cities?: null | Tcities
+	cover?: FileNameString
+	created: IsoAutoDateString
+	description?: string
+	destination_name?: string
+	destination_slug?: string
+	destinations?: null | Tdestinations
+	duration_days?: number
+	duration_nights?: number
+	features?: null | Tfeatures
+	gallery?: FileNameString[]
+	highlights?: null | Thighlights
+	id: string
+	important_notes?: null | Timportant_notes
+	includes?: null | Tincludes
+	is_featured?: boolean
+	itinerary?: null | Titinerary
+	kind: ProductsKindOptions
+	location?: string
+	not_includes?: null | Tnot_includes
+	price?: number
+	seo_description?: string
+	seo_title?: string
+	short_description?: string
+	slug: string
+	sort_order?: number
+	status: ProductsStatusOptions
+	title: string
+	updated: IsoAutoDateString
+	what_to_bring?: null | Twhat_to_bring
 }
 
 export const PublishesStatusOptions = {
@@ -150,6 +221,25 @@ export type RevisionsRecord<Tchanged = unknown, Tdata = unknown> = {
 	record: string
 }
 
+export type SettingsRecord = {
+	address?: string
+	created: IsoAutoDateString
+	email?: string
+	emergency_phone?: string
+	id: string
+	updated: IsoAutoDateString
+	whatsapp?: string
+}
+
+export type TranslationOverridesRecord = {
+	created: IsoAutoDateString
+	id: string
+	lang: string
+	source: string
+	text: string
+	updated: IsoAutoDateString
+}
+
 export type UsersRecord = {
 	avatar?: FileNameString
 	created: IsoAutoDateString
@@ -169,9 +259,13 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
+export type DestinationsResponse<Texpand = unknown> = Required<DestinationsRecord> & BaseSystemFields<Texpand>
 export type EditorsResponse<Texpand = unknown> = Required<EditorsRecord> & AuthSystemFields<Texpand>
+export type ProductsResponse<Tcities = unknown, Tdestinations = unknown, Tfeatures = unknown, Thighlights = unknown, Timportant_notes = unknown, Tincludes = unknown, Titinerary = unknown, Tnot_includes = unknown, Twhat_to_bring = unknown, Texpand = unknown> = Required<ProductsRecord<Tcities, Tdestinations, Tfeatures, Thighlights, Timportant_notes, Tincludes, Titinerary, Tnot_includes, Twhat_to_bring>> & BaseSystemFields<Texpand>
 export type PublishesResponse<Texpand = unknown> = Required<PublishesRecord> & BaseSystemFields<Texpand>
 export type RevisionsResponse<Tchanged = unknown, Tdata = unknown, Texpand = unknown> = Required<RevisionsRecord<Tchanged, Tdata>> & BaseSystemFields<Texpand>
+export type SettingsResponse<Texpand = unknown> = Required<SettingsRecord> & BaseSystemFields<Texpand>
+export type TranslationOverridesResponse<Texpand = unknown> = Required<TranslationOverridesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -182,9 +276,13 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
+	destinations: DestinationsRecord
 	editors: EditorsRecord
+	products: ProductsRecord
 	publishes: PublishesRecord
 	revisions: RevisionsRecord
+	settings: SettingsRecord
+	translation_overrides: TranslationOverridesRecord
 	users: UsersRecord
 }
 
@@ -194,9 +292,13 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
+	destinations: DestinationsResponse
 	editors: EditorsResponse
+	products: ProductsResponse
 	publishes: PublishesResponse
 	revisions: RevisionsResponse
+	settings: SettingsResponse
+	translation_overrides: TranslationOverridesResponse
 	users: UsersResponse
 }
 
