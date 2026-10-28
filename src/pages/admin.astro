@@ -1,0 +1,34 @@
+---
+// Editor de contenido. Página estática fuera de [...lang] (sin traducción ni los
+// estilos del sitio); todo lo hace la isla de React hablando con PocketBase desde
+// el navegador.
+import App from '#src/admin/App.tsx';
+import { defaultLang, translatedLangs } from '#kit/i18n/locales.ts';
+import '#kit/admin/admin.css';
+
+// Con el seed (npm run build:static) el sitio no muestra lo de PocketBase, así
+// que el editor no tendría sentido: solo un aviso.
+const seed = process.env.CONTENT_SOURCE === 'seed';
+const pocketbaseUrl = process.env.PUBLIC_POCKETBASE_URL;
+if (!seed && !pocketbaseUrl) throw new Error('Falta PUBLIC_POCKETBASE_URL (ver .env.example).');
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/webp" href="/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-1.webp" />
+    <title>Editor · Memories Travel Perú</title>
+  </head>
+  <body>
+    {
+      seed || !pocketbaseUrl ? (
+        <p>El editor necesita PocketBase; este sitio se construyó con el contenido del seed.</p>
+      ) : (
+        <App client:only="react" pocketbaseUrl={pocketbaseUrl.replace(/\/$/, '')} langs={translatedLangs} defaultLang={defaultLang} />
+      )
+    }
+  </body>
+</html>

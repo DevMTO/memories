@@ -1,11 +1,12 @@
 // Formulario genérico de un registro, armado a partir de la lista de campos de
 // la configuración. Lo usan las fichas de las colecciones y las de un solo registro.
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
-import { config, fieldsOf, isSection, type Field, type FormItem } from '../config';
+import { config, fieldsOf, isFileField, isSection, type Field, type FormItem } from '../config';
 import { clearDraft, loadDraft, saveDraft, type Draft } from '../lib/drafts';
 import { errorMessage, fieldErrors, fileUrl, pb, type RecordModel } from '../lib/pocketbase';
 import { PreviewButton, useConfirmPublish } from '../lib/publish';
 import { useUnsavedGuard } from '../lib/router';
+import { GalleryField, galleryOrder, galleryPayload, type GalleryItem } from './GalleryField';
 import { ImageField, type ImageChange } from './ImageField';
 import { RelationField } from './RelationField';
 import { Switch } from './Switch';
@@ -54,6 +55,12 @@ export function initialValues(fields: Field[], record: Values | null, defaults: 
     switch (field.type) {
       case 'image':
         break;
+      case 'images':
+        values[field.name] = (Array.isArray(value) ? value : []).map((name: string): GalleryItem => ({ name }));
+        break;
+      case 'lines':
+        values[field.name] = Array.isArray(value) ? value.join('\n') : '';
+        break;
       case 'number':
         // PocketBase guarda 0 en los números vacíos; el sitio los trata como vacíos.
         values[field.name] = value ? String(value) : '';
@@ -63,6 +70,9 @@ export function initialValues(fields: Field[], record: Values | null, defaults: 
         break;
       case 'status':
         values[field.name] = value || 'draft';
+        break;
+      case 'bool':
+        values[field.name] = !!value;
         break;
       case 'custom':
         values[field.name] = field.initial(value);
@@ -79,8 +89,18 @@ export const mainTextField = (fields: Field[]) =>
   (fields.find((f) => f.type === 'text' && f.required) ?? fields.find((f) => f.type === 'text'))?.name;
 
 // Solo los campos de este formulario (una copia local vieja puede traer otros).
-const pick = (fields: Field[], values: Values = {}) =>
-  Object.fromEntries(fields.filter((f) => f.type !== 'image' && f.name in values).map((f) => [f.name, values[f.name]]));
+// Las imágenes no: de una copia local no se pueden recuperar.
+const pick = (fields: Field[], values: Values = {}, files = false) =>
+  Object.fromEntries(
+    fields.filter((f) => (files || !isFileField(f)) && f.name in values).map((f) => [f.name, values[f.name]]),
+  );
+
+// Un ítem por línea, sin líneas vacías.
+const toLines = (text: string) =>
+  text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
 
 const isEmpty = (field: Field, value: unknown) =>
   field.type === 'custom' && field.isEmpty
@@ -126,7 +146,9 @@ function toPayload(fields: Field[], values: Values, images: Record<string, Image
       continue;
     }
     const value = values[field.name];
-    if (field.type === 'number') data[field.name] = value === '' ? null : Number(value);
+    if (field.type === 'images') Object.assign(data, galleryPayload(field.name, value));
+    else if (field.type === 'lines') data[field.name] = toLines(value);
+    else if (field.type === 'number') data[field.name] = value === '' ? null : Number(value);
     else if (field.type === 'custom') data[field.name] = field.clean ? field.clean(value) : value;
     else if (typeof value === 'string') data[field.name] = value.trim();
     else data[field.name] = value;
@@ -137,7 +159,7 @@ function toPayload(fields: Field[], values: Values, images: Record<string, Image
 export function RecordEditor({ collection, items, record, defaults = {}, draftKey, seed, onSaved, actions }: Props) {
   const fields = useMemo(() => fieldsOf(items), [items]);
   const initial = useMemo(() => initialValues(fields, record, defaults), [fields, record]);
-  const [values, setValues] = useState<Values>(() => ({ ...initial, ...pick(fields, seed?.values) }));
+  const [values, setValues] = useState<Values>(() => ({ ...initial, ...pick(fields, seed?.values, true) }));
   const [images, setImages] = useState<Record<string, ImageChange>>(() => seed?.images ?? {});
   const [errors, setErrors] = useState<Record<string, string>>({});
   // `saved`: recién guardado; se ofrece el paso siguiente (vista previa o publicar).
@@ -233,11 +255,19 @@ export function RecordEditor({ collection, items, record, defaults = {}, draftKe
         }
       }
       const data = toPayload(fields, values, images);
-      const saved = record
+      let saved = record
         ? await pb().collection(collection).update(record.id, data)
         : await pb()
             .collection(collection)
             .create({ ...defaults, ...data });
+      // Las imágenes nuevas de una galería quedan al final: se ponen donde iban.
+      const order: Values = {};
+      for (const field of fields) {
+        if (field.type !== 'images') continue;
+        const wanted = galleryOrder(values[field.name], saved[field.name] ?? []);
+        if (wanted.join() !== (saved[field.name] ?? []).join()) order[field.name] = wanted;
+      }
+      if (Object.keys(order).length) saved = await pb().collection(collection).update(saved.id, order);
       clearDraft(draftKey);
       setImages({});
       setValues(initialValues(fields, saved, defaults));
@@ -257,6 +287,28 @@ export function RecordEditor({ collection, items, record, defaults = {}, draftKe
       case 'textarea':
         return (
           <textarea id={id} rows={field.rows ?? 4} value={value} onChange={(e) => set(field.name, e.target.value)} />
+        );
+      case 'bool':
+        return (
+          <Switch id={id} checked={value} onChange={(on) => set(field.name, on)}>
+            {value ? 'Sí' : 'No'}
+          </Switch>
+        );
+      case 'lines':
+        return (
+          <textarea id={id} rows={field.rows ?? 4} value={value} onChange={(e) => set(field.name, e.target.value)} />
+        );
+      case 'images':
+        return (
+          <GalleryField
+            id={id}
+            value={value}
+            urlOf={(name) => (record ? fileUrl(record, name) : '')}
+            max={field.max}
+            minWidth={field.minWidth}
+            onChange={(items) => set(field.name, items)}
+            onError={(text) => setErrors((prev) => ({ ...prev, [field.name]: text }))}
+          />
         );
       case 'number':
         return (

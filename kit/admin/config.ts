@@ -24,12 +24,18 @@ export type Field = Base &
   (
     | { type: 'text' | 'email' | 'url'; max?: number }
     | { type: 'textarea'; max?: number; rows?: number }
+    // Lista de textos cortos (JSON con un arreglo de strings): uno por línea.
+    | { type: 'lines'; rows?: number }
     | { type: 'number'; min?: number; integer?: boolean }
     | { type: 'slug' }
     | { type: 'status' }
+    // Sí / no (campo bool de PocketBase).
+    | { type: 'bool' }
     // minWidth: ancho mínimo recomendado en px (avisa, sin impedir, si es más chica).
     // frames: cómo se recorta en cada lugar del sitio donde aparece.
     | { type: 'image'; minWidth?: number; frames?: Frame[] }
+    // Varias imágenes en orden (campo de archivos con maxSelect > 1).
+    | { type: 'images'; minWidth?: number; max?: number }
     | { type: 'relation'; collection: string; filter?: string; multiple?: boolean }
     | CustomField
   );
@@ -44,6 +50,8 @@ export type FormItem = Field | Section;
 
 export const isSection = (item: FormItem): item is Section => 'section' in item;
 export const fieldsOf = (items: FormItem[]) => items.filter((item): item is Field => !isSection(item));
+// Campos de archivos: no entran en las copias locales ni en el historial.
+export const isFileField = (field: Field) => field.type === 'image' || field.type === 'images';
 
 // Dónde puede estar elegido un registro (aviso al borrar).
 export type UsedIn = { collection: string; fields: string[]; label: string };

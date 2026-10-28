@@ -1,7 +1,7 @@
 // Versiones anteriores de un registro (pocketbase/pb_hooks/revisions.pb.js):
 // qué cambió en cada una y cargarla en el formulario para revisarla y guardarla.
 import { useEffect, useState } from 'react';
-import { fieldsOf, type Field, type FormItem } from '../config';
+import { fieldsOf, isFileField, type Field, type FormItem } from '../config';
 import { errorMessage, pb, type RecordModel } from '../lib/pocketbase';
 import { formatTime, initialValues, type Seed } from './RecordEditor';
 
@@ -15,6 +15,7 @@ type Props = {
 
 function shown(field: Field, value: unknown) {
   if (field.type === 'status') return value === 'published' ? 'Visible' : 'Oculto';
+  if (field.type === 'bool') return value ? 'Sí' : 'No';
   if (field.type === 'relation' || field.type === 'custom') return '(otro valor)';
   const text = String(value ?? '').trim();
   if (!text) return '(vacío)';
@@ -25,7 +26,7 @@ export function History({ collection, record, items, onRestore, onClose }: Props
   const [revisions, setRevisions] = useState<RecordModel[] | null>(null);
   const [error, setError] = useState('');
   const [open, setOpen] = useState<string | null>(null);
-  const fields = fieldsOf(items).filter((f) => f.type !== 'image');
+  const fields = fieldsOf(items).filter((f) => !isFileField(f));
   const current = initialValues(fields, record, {});
 
   useEffect(() => {

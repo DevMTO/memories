@@ -5,7 +5,7 @@ import { localizeRecord } from '#kit/i18n/core.ts';
 import { getTranslate } from '#kit/i18n/runtime.ts';
 import { sourceLang, type Lang } from '#kit/i18n/locales.ts';
 import { destinationFields } from '../../i18n/fields';
-import { IMAGE_WIDTH } from './catalog';
+import { IMAGE_WIDTH } from '../image-sizes';
 
 export type DestinationPage = {
   slug: string;

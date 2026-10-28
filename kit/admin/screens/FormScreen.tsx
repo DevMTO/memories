@@ -2,6 +2,7 @@
 // Rutas: #/<sección>/<id>, #/<sección>/nuevo y #/<sección>/nuevo/<id a copiar>.
 import { useEffect, useState } from 'react';
 import { fieldsOf, type CollectionDef } from '../config';
+import { newGalleryItem, type GalleryItem } from '../components/GalleryField';
 import { History } from '../components/History';
 import { RecordEditor, initialValues, mainTextField, type Seed } from '../components/RecordEditor';
 import { errorMessage, fileUrl, pb, type RecordModel } from '../lib/pocketbase';
@@ -33,17 +34,25 @@ async function duplicateSeed(def: CollectionDef, source: RecordModel): Promise<S
         ...(fields.some((f) => f.type === 'slug') ? { slug: await freeSlug(def.collection, source.slug) } : {}),
         ...(fields.some((f) => f.type === 'status') ? { status: 'draft' } : {}),
       };
+  const download = async (name: string) => {
+    const res = await fetch(fileUrl(source, name));
+    return res.ok ? new File([await res.blob()], name, { type: res.headers.get('content-type') ?? '' }) : null;
+  };
   const images: Record<string, File> = {};
+  const galleries: Record<string, GalleryItem[]> = {};
   await Promise.all(
-    fields
-      .filter((f) => f.type === 'image' && source[f.name])
-      .map(async (f) => {
-        const res = await fetch(fileUrl(source, source[f.name]));
-        if (res.ok) images[f.name] = new File([await res.blob()], source[f.name], { type: res.headers.get('content-type') ?? '' });
-      }),
+    fields.map(async (f) => {
+      if (f.type === 'image' && source[f.name]) {
+        const file = await download(source[f.name]);
+        if (file) images[f.name] = file;
+      } else if (f.type === 'images') {
+        const files = await Promise.all((source[f.name] ?? []).map(download));
+        galleries[f.name] = files.filter((file): file is File => !!file).map(newGalleryItem);
+      }
+    }),
   );
   return {
-    values: { ...initialValues(fields, source, {}), ...overrides },
+    values: { ...initialValues(fields, source, {}), ...galleries, ...overrides },
     images,
     note: `Copia de "${def.label(source)}": revisa y guarda. Queda oculta hasta que la hagas visible.`,
   };

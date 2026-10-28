@@ -7,10 +7,8 @@ import { localizeRecord } from '#kit/i18n/core.ts';
 import { getTranslate } from '#kit/i18n/runtime.ts';
 import { sourceLang, type Lang } from '#kit/i18n/locales.ts';
 import { productFields } from '../../i18n/fields';
+import { IMAGE_WIDTH } from '../image-sizes';
 import type { Package, Tour, TravelProduct } from '../types';
-
-// Ancho al que se optimizan las imágenes del catálogo (portadas y galerías).
-export const IMAGE_WIDTH = 1600;
 
 // Orden por sortOrder y después por título, comparado por código de carácter.
 const byOrder = (a: TravelProduct, b: TravelProduct) =>

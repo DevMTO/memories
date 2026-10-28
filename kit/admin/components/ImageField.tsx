@@ -4,8 +4,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Frame } from '../config';
 
-const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+export const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_BYTES = 5 * 1024 * 1024;
+
+// Por qué no se acepta un archivo, o nada si sirve.
+export function imageProblem(file: File) {
+  if (!IMAGE_TYPES.includes(file.type)) return `${file.name}: solo JPG, PNG o WebP.`;
+  if (file.size > MAX_BYTES) return `${file.name}: pesa más de 5 MB.`;
+}
 
 // `undefined` = sin cambios, `File` = nueva, `null` = quitar la actual.
 export type ImageChange = File | null | undefined;
@@ -50,14 +56,14 @@ export function ImageField({ id, currentUrl, change, minWidth, frames, onChange,
           <input
             id={id}
             type="file"
-            accept={TYPES.join(',')}
+            accept={IMAGE_TYPES.join(',')}
             hidden
             onChange={(e) => {
               const file = e.target.files?.[0];
               e.target.value = '';
               if (!file) return;
-              if (!TYPES.includes(file.type)) return onError('Solo JPG, PNG o WebP.');
-              if (file.size > MAX_BYTES) return onError('La imagen pesa más de 5 MB.');
+              const problem = imageProblem(file);
+              if (problem) return onError(problem);
               onChange(file);
             }}
           />

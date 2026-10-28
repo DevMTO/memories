@@ -228,8 +228,12 @@ Los campos de `fields` van en orden; `{ section: 'Título' }` separa grupos. Tip
 
 - `text`, `email`, `url`, `textarea` (con `max`), `number`, `slug`.
 - `status`: interruptor Visible/Oculto.
+- `bool`: interruptor Sí/No.
+- `lines`: lista de textos cortos (campo JSON con un arreglo de strings), uno por línea.
 - `image`: con `minWidth` y `frames: { label, ratio, overlay?, round? }` para mostrar el
   recorte.
+- `images`: galería (campo de archivos con `maxSelect` > 1, como `images()` de
+  `schema.js`), con `minWidth` y `max`. Las imágenes se agregan, quitan y reordenan.
 - `relation`: `collection`, `filter`, `multiple`.
 - `custom`: lo propio del proyecto:
   ```tsx

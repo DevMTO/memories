@@ -6,6 +6,8 @@ import QuoteFab from '../components/ui/QuoteFab.astro';
 import WhatsAppFab from '../components/ui/WhatsAppFab.astro';
 import { sitePath } from '../lib/site-path';
 import Hreflang from '#kit/site/Hreflang.astro';
+import PreviewRibbon from '#kit/site/PreviewRibbon.astro';
+import { isPreview } from '#kit/site/preview.ts';
 import { defaultLang, enabledLangs, localeHref, pageLang, useT } from '../i18n/i18n';
 import '../styles/global.scss';
 
@@ -53,6 +55,7 @@ const absoluteSocialImage = socialImage
     <meta property="og:type" content="website" />
     {absoluteSocialImage && <meta property="og:image" content={absoluteSocialImage} />}
     <title>{documentTitle}</title>
+    {isPreview() && <meta name="robots" content="noindex, nofollow" />}
     <Hreflang alternates={alternates} defaultHref={localeHref(Astro.url, lang, defaultLang)} />
     {preloadImage && (
       <link rel="preload" as="image" href={sitePath(preloadImage)} fetchpriority="high" />
@@ -60,6 +63,7 @@ const absoluteSocialImage = socialImage
   </head>
 
   <body>
+    <PreviewRibbon />
     <a class="skip-link" href="#main-content">{t('Saltar al contenido')}</a>
 
     <div class="site-shell">

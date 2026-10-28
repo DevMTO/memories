@@ -2,7 +2,7 @@
 // mismo id (los enlaces y las elecciones que apuntaban a él vuelven a servir),
 // ocultos y sin imágenes (PocketBase borra los archivos con el registro).
 import { useEffect, useState } from 'react';
-import { fieldsOf, type CollectionDef } from '../config';
+import { fieldsOf, isFileField, type CollectionDef } from '../config';
 import { formatTime } from '../components/RecordEditor';
 import { errorMessage, pb, type RecordModel } from '../lib/pocketbase';
 import { navigate } from '../lib/router';
@@ -46,7 +46,7 @@ export function TrashScreen({ def }: { def: CollectionDef }) {
   async function restore(rev: RecordModel) {
     const fields = fieldsOf(def.fields);
     const { collectionId, collectionName, created, updated, expand, ...data } = rev.data;
-    for (const field of fields) if (field.type === 'image') delete data[field.name];
+    for (const field of fields) if (isFileField(field)) delete data[field.name];
     if (fields.some((f) => f.type === 'status')) data.status = 'draft';
     try {
       await pb()

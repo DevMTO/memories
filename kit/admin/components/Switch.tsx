@@ -7,12 +7,14 @@ type Props = {
   children: ReactNode;
   disabled?: boolean;
   label?: string; // para lectores de pantalla, si el texto visible no alcanza
+  id?: string;
 };
 
-export function Switch({ checked, onChange, children, disabled, label }: Props) {
+export function Switch({ checked, onChange, children, disabled, label, id }: Props) {
   return (
     <label className={`switch${disabled ? ' is-disabled' : ''}`}>
       <input
+        id={id}
         type="checkbox"
         role="switch"
         checked={checked}
