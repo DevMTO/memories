@@ -21,3 +21,10 @@ node_modules/
 
 # jetbrains setting folder
 .idea/
+
+# kit: PocketBase local (binario, datos y migraciones armadas) y caché de traducciones
+pocketbase/bin/
+pocketbase/pb_data/
+pocketbase/.run/
+.cache/
+dist-preview/

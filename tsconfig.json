@@ -1,5 +1,10 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  // Los .js de PocketBase (migraciones y hooks) los corre PocketBase, no TypeScript.
+  "exclude": ["dist", "dist-preview", "kit/pocketbase/*/migrations", "kit/pocketbase/*/hooks", "pocketbase"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
 }
