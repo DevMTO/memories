@@ -49,6 +49,8 @@ async function load(): Promise<Seed> {
       images: { cover: p.imageUrl, gallery: p.gallery ?? [] },
     })),
     settings: [{ id: 'settings', fields: settings, images: {} }],
+    // Correcciones de traducción: se cargan desde /admin.
+    translation_overrides: [],
   };
 }
 

@@ -15,6 +15,7 @@ await importSeed({
     destinations: (f) => key(f.slug),
     products: (f) => key(f.slug),
     settings: () => '',
+    translation_overrides: (f) => key(f.lang, f.source),
   },
   userAgent: `memories-import/1.0 (${process.env.SITE_URL || 'https://memoriestravel.com'})`,
 }).catch((error) => {

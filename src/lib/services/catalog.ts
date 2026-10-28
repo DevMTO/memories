@@ -1,8 +1,12 @@
 // Catálogo del sitio (tours, trekkings y paquetes). Las páginas leen solo de aquí;
 // sale de la colección `products` (PocketBase o el seed, ver src/content.config.ts):
-// solo lo publicado, ordenado por sortOrder y título.
+// solo lo publicado, ordenado por sortOrder y título, en el idioma pedido.
 import { getCollection } from 'astro:content';
 import { localImage } from '#kit/content/images.ts';
+import { localizeRecord } from '#kit/i18n/core.ts';
+import { getTranslate } from '#kit/i18n/runtime.ts';
+import { sourceLang, type Lang } from '#kit/i18n/locales.ts';
+import { productFields } from '../../i18n/fields';
 import type { Package, Tour, TravelProduct } from '../types';
 
 // Ancho al que se optimizan las imágenes del catálogo (portadas y galerías).
@@ -13,8 +17,9 @@ const byOrder = (a: TravelProduct, b: TravelProduct) =>
   (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || (a.title < b.title ? -1 : a.title > b.title ? 1 : 0);
 
 let products: Promise<TravelProduct[]> | undefined;
+const translated = new Map<Lang, Promise<TravelProduct[]>>();
 
-function load() {
+function loadSource() {
   return (products ??= getCollection('products').then(async (entries) => {
     const list = await Promise.all(
       entries.map(async ({ data }) => {
@@ -36,34 +41,45 @@ function load() {
   }));
 }
 
+function load(lang: Lang) {
+  if (lang === sourceLang) return loadSource();
+  let found = translated.get(lang);
+  if (!found) {
+    const translate = getTranslate(lang);
+    found = loadSource().then((list) => list.map((product) => localizeRecord(product, productFields, translate)));
+    translated.set(lang, found);
+  }
+  return found;
+}
+
 const isTour = (product: TravelProduct): product is Tour => product.kind !== 'package';
 const isPackage = (product: TravelProduct): product is Package => product.kind === 'package';
 
 /** Tours y trekkings. */
-export async function getAll(): Promise<Tour[]> {
-  return (await load()).filter(isTour);
+export async function getAll(lang: Lang = sourceLang): Promise<Tour[]> {
+  return (await load(lang)).filter(isTour);
 }
 
-export async function getById(id: string): Promise<Tour | null> {
-  return (await getAll()).find((tour) => tour.id === id) ?? null;
+export async function getById(id: string, lang: Lang = sourceLang): Promise<Tour | null> {
+  return (await getAll(lang)).find((tour) => tour.id === id) ?? null;
 }
 
-export async function getBySlug(slug: string): Promise<Tour | null> {
-  return (await getAll()).find((tour) => tour.slug === slug) ?? null;
+export async function getBySlug(slug: string, lang: Lang = sourceLang): Promise<Tour | null> {
+  return (await getAll(lang)).find((tour) => tour.slug === slug) ?? null;
 }
 
-export async function getFeatured(): Promise<Tour[]> {
-  return (await getAll()).filter((tour) => tour.isFeatured);
+export async function getFeatured(lang: Lang = sourceLang): Promise<Tour[]> {
+  return (await getAll(lang)).filter((tour) => tour.isFeatured);
 }
 
-export async function getPackages(): Promise<Package[]> {
-  return (await load()).filter(isPackage);
+export async function getPackages(lang: Lang = sourceLang): Promise<Package[]> {
+  return (await load(lang)).filter(isPackage);
 }
 
-export async function getPackageById(id: string): Promise<Package | null> {
-  return (await getPackages()).find((pkg) => pkg.id === id) ?? null;
+export async function getPackageById(id: string, lang: Lang = sourceLang): Promise<Package | null> {
+  return (await getPackages(lang)).find((pkg) => pkg.id === id) ?? null;
 }
 
-export async function getPackageBySlug(slug: string): Promise<Package | null> {
-  return (await getPackages()).find((pkg) => pkg.slug === slug) ?? null;
+export async function getPackageBySlug(slug: string, lang: Lang = sourceLang): Promise<Package | null> {
+  return (await getPackages(lang)).find((pkg) => pkg.slug === slug) ?? null;
 }

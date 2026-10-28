@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
-import { fetchAll, fileUrl, fileUrls, optional } from '#src/lib/pocketbase.ts';
+import { fetchAll } from '#src/lib/pocketbase.ts';
+import { destinationFromRecord, productFromRecord } from '#src/lib/records.ts';
 
 // El contenido vive en PocketBase (o en el seed, con CONTENT_SOURCE=seed) y se lee
 // en el build. Sin sesión, las reglas de PocketBase solo devuelven lo publicado.
@@ -8,39 +9,10 @@ import { fetchAll, fileUrl, fileUrls, optional } from '#src/lib/pocketbase.ts';
 // imágenes salen como URL y los servicios las optimizan (kit/content/images.ts).
 
 const list = () => z.array(z.string()).default([]);
-const lines = (value: unknown) => (Array.isArray(value) ? value.map(String) : []);
 
 const products = defineCollection({
   loader: async () =>
-    (await fetchAll('products')).map((r) => ({
-      id: r.slug,
-      kind: r.kind,
-      title: r.title,
-      slug: r.slug,
-      isFeatured: !!r.is_featured,
-      sortOrder: r.sort_order ?? 0,
-      shortDescription: r.short_description ?? '',
-      description: r.description ?? '',
-      price: r.price ?? 0,
-      durationDays: optional(r.duration_days) ?? 1,
-      durationNights: r.duration_nights ?? 0,
-      destinationName: optional(r.destination_name) ?? 'Perú',
-      destinationSlug: optional(r.destination_slug) ?? 'peru',
-      location: optional(r.location) ?? 'Perú',
-      cities: lines(r.cities),
-      destinations: Array.isArray(r.destinations) ? r.destinations : [],
-      imageUrl: fileUrl(r, r.cover),
-      gallery: fileUrls(r, r.gallery),
-      features: lines(r.features),
-      highlights: lines(r.highlights),
-      itinerary: Array.isArray(r.itinerary) ? r.itinerary : [],
-      includes: lines(r.includes),
-      notIncludes: lines(r.not_includes),
-      whatToBring: lines(r.what_to_bring),
-      importantNotes: lines(r.important_notes),
-      seoTitle: r.seo_title ?? '',
-      seoDescription: r.seo_description ?? '',
-    })),
+    (await fetchAll('products')).map(productFromRecord),
   schema: z.object({
     kind: z.enum(['tour', 'trekking', 'package']),
     title: z.string(),
@@ -85,19 +57,7 @@ const products = defineCollection({
 
 const destinations = defineCollection({
   loader: async () =>
-    (await fetchAll('destinations')).map((r) => ({
-      id: r.slug,
-      slug: r.slug,
-      name: r.name,
-      sortOrder: r.sort_order ?? 0,
-      eyebrow: r.eyebrow ?? '',
-      title: r.title ?? '',
-      description: r.description ?? '',
-      altitude: optional(r.altitude),
-      climate: optional(r.climate),
-      bestSeason: optional(r.best_season),
-      imageUrl: fileUrl(r, r.image),
-    })),
+    (await fetchAll('destinations')).map(destinationFromRecord),
   schema: z.object({
     slug: z.string(),
     name: z.string(),
