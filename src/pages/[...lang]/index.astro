@@ -1,15 +1,21 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { getAll, getFeatured, getPackages } from "../lib/services/catalog";
-import { sitePath } from "../lib/site-path";
-import heroReelManifest from "../data/hero_reel_manifest.json";
+import Layout from "../../layouts/Layout.astro";
+import { getAll, getFeatured, getPackages } from "../../lib/services/catalog";
+import { sitePath } from "../../lib/site-path";
+import heroReelManifest from "../../data/hero_reel_manifest.json";
 import "./_home.scss";
 import "./_hero_video_carousel.scss";
+import { getLangParams, pageLang, pagePath, useT } from '../../i18n/i18n';
+
+export const getStaticPaths = () => getLangParams().map((params) => ({ params }));
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 
-const featuredTours = await getFeatured();
-const allExperiences = await getAll();
-const packages = await getPackages();
+const featuredTours = await getFeatured(lang);
+const allExperiences = await getAll(lang);
+const packages = await getPackages(lang);
 
 const activeExperiences = (allExperiences || []).filter((tour) => tour.isActive !== false);
 const featuredActive = (featuredTours || []).filter((tour) => tour.isActive !== false);
@@ -90,7 +96,7 @@ const displayDestinations = destinationPriority
 ---
 
 <Layout
-  title="Memories Travel Perú | Agencia de viajes en Perú"
+  title={t('Memories Travel Perú | Agencia de viajes en Perú')}
   mainClass="home-main"
   preloadImage={heroReelManifest.video.poster}
   socialImage={heroReelManifest.video.poster}
@@ -124,23 +130,23 @@ const displayDestinations = destinationPriority
     </div>
 
     <div class="container home-hero__content">
-      <span class="home-eyebrow home-eyebrow--light">Agencia de viajes · Tour operador</span>
+      <span class="home-eyebrow home-eyebrow--light">{t('Agencia de viajes · Tour operador')}</span>
 
       <h1 class="hero-title">
-        MEMORIES
-        <em>Travel Perú</em>
+        {t('MEMORIES')}
+        <em>{t('Travel Perú')}</em>
       </h1>
 
       <div class="hero-rule"></div>
 
       <p class="hero-tagline">
-        Experiencias curadas y exclusivas. Conectamos tu espíritu<br />
-        con la esencia viva y eterna del Perú.
+        {t('Experiencias curadas y exclusivas. Conectamos tu espíritu')}<br />
+        {t('con la esencia viva y eterna del Perú.')}
       </p>
 
       <div class="hero-actions">
-        <button type="button" class="home-btn home-btn--primary" data-open-quote aria-haspopup="dialog" aria-controls="quote-modal" data-i18n="nav.designTrip">Diseña tu viaje</button>
-        <a href="#home-tours" class="home-btn home-btn--ghost">Explorar Tours ↓</a>
+        <button type="button" class="home-btn home-btn--primary" data-open-quote aria-haspopup="dialog" aria-controls="quote-modal">{t('Diseña tu viaje')}</button>
+        <a href="#home-tours" class="home-btn home-btn--ghost">{t('Explorar Tours ↓')}</a>
       </div>
     </div>
 
@@ -150,22 +156,22 @@ const displayDestinations = destinationPriority
   <section class="experience-gateway reveal-up" aria-labelledby="experience-gateway-title">
     <div class="container">
       <div class="experience-gateway__header">
-        <span class="home-eyebrow home-eyebrow--dark">Encuentra tu forma de viajar</span>
-        <h2 id="experience-gateway-title">Todo el Perú, <em>a tu ritmo</em></h2>
-        <p>Explora experiencias de un día, rutas de trekking y programas completos con información clara antes de reservar.</p>
+        <span class="home-eyebrow home-eyebrow--dark">{t('Encuentra tu forma de viajar')}</span>
+        <h2 id="experience-gateway-title">{t('Todo el Perú,')} <em>{t('a tu ritmo')}</em></h2>
+        <p>{t('Explora experiencias de un día, rutas de trekking y programas completos con información clara antes de reservar.')}</p>
       </div>
 
       <div class="experience-gateway__grid">
-        <a href={sitePath('/tours')} class="experience-gateway__card">
-          <div><strong>Tours</strong><p>Excursiones culturales, naturaleza y experiencias de uno o varios días.</p></div>
+        <a href={pagePath(lang, '/tours')} class="experience-gateway__card">
+          <div><strong>{t('Tours')}</strong><p>{t('Excursiones culturales, naturaleza y experiencias de uno o varios días.')}</p></div>
           <span class="experience-gateway__arrow" aria-hidden="true">→</span>
         </a>
-        <a href={sitePath('/trekkings')} class="experience-gateway__card">
-          <div><strong>Trekking</strong><p>Caminatas andinas con itinerario, equipo recomendado y servicios detallados.</p></div>
+        <a href={pagePath(lang, '/trekkings')} class="experience-gateway__card">
+          <div><strong>{t('Trekking')}</strong><p>{t('Caminatas andinas con itinerario, equipo recomendado y servicios detallados.')}</p></div>
           <span class="experience-gateway__arrow" aria-hidden="true">→</span>
         </a>
-        <a href={sitePath('/packages')} class="experience-gateway__card">
-          <div><strong>Paquetes</strong><p>Programas integrales para recorrer varios destinos con acompañamiento experto.</p></div>
+        <a href={pagePath(lang, '/packages')} class="experience-gateway__card">
+          <div><strong>{t('Paquetes')}</strong><p>{t('Programas integrales para recorrer varios destinos con acompañamiento experto.')}</p></div>
           <span class="experience-gateway__arrow" aria-hidden="true">→</span>
         </a>
       </div>
@@ -176,14 +182,14 @@ const displayDestinations = destinationPriority
   <section class="home-esnna reveal-up" aria-labelledby="esnna-title">
     <div class="container home-esnna__inner">
       <div class="home-esnna__copy">
-        <span class="home-eyebrow home-eyebrow--dark" data-i18n="esnna.eyebrow">Turismo responsable</span>
-        <h2 id="esnna-title" data-i18n="esnna.title">Protegemos a niñas, niños y adolescentes.</h2>
-        <p data-i18n="esnna.first">En Memories Travel Perú promovemos viajes seguros, respetuosos y libres de toda forma de explotación sexual de niñas, niños y adolescentes.</p>
-        <a href={sitePath('/esnna')} class="home-esnna__link"><span data-i18n="esnna.learn">Conoce nuestro compromiso</span><span aria-hidden="true">→</span></a>
+        <span class="home-eyebrow home-eyebrow--dark">{t('Turismo responsable')}</span>
+        <h2 id="esnna-title">{t('Protegemos a niñas, niños y adolescentes.')}</h2>
+        <p>{t('En Memories Travel Perú promovemos viajes seguros, respetuosos y libres de toda forma de explotación sexual de niñas, niños y adolescentes.')}</p>
+        <a href={pagePath(lang, '/esnna')} class="home-esnna__link"><span>{t('Conoce nuestro compromiso')}</span><span aria-hidden="true">→</span></a>
       </div>
 
-      <a href={sitePath('/esnna')} class="home-esnna__badge" aria-label="Conoce nuestro compromiso ESNNA">
-        <img src={sitePath('/images/esnna-1.png.webp')} alt="Protégeme: turismo responsable para prevenir la explotación sexual de niñas, niños y adolescentes" width="421" height="274" loading="lazy" />
+      <a href={pagePath(lang, '/esnna')} class="home-esnna__badge" aria-label={t('Conoce nuestro compromiso ESNNA')}>
+        <img src={sitePath('/images/esnna-1.png.webp')} alt={t('Protégeme: turismo responsable para prevenir la explotación sexual de niñas, niños y adolescentes')} width="421" height="274" loading="lazy" />
       </a>
     </div>
   </section>
@@ -191,13 +197,13 @@ const displayDestinations = destinationPriority
   <!-- ==================== RECOGNITIONS ==================== -->
   <section class="recognitions-section reveal-up">
     <div class="recognitions-label-wrap container">
-      <span>Reconocidos estratégicamente por</span>
+      <span>{t('Reconocidos estratégicamente por')}</span>
     </div>
     <div class="recognitions-row">
-      <img src={sitePath('/images/mincetur.png')}    alt="Mincetur" />
-      <img src={sitePath('/images/promperu.png')}    alt="PromPerú" />
-      <img src={sitePath('/images/marcaperu.png')}   alt="Marca Perú" />
-      <img src={sitePath('/images/tripadvisor.png')} alt="Tripadvisor" />
+      <img src={sitePath('/images/mincetur.png')}    alt={t('Mincetur')} />
+      <img src={sitePath('/images/promperu.png')}    alt={t('PromPerú')} />
+      <img src={sitePath('/images/marcaperu.png')}   alt={t('Marca Perú')} />
+      <img src={sitePath('/images/tripadvisor.png')} alt={t('Tripadvisor')} />
     </div>
   </section>
 
@@ -207,39 +213,38 @@ const displayDestinations = destinationPriority
       <div class="transform-copy">
         <div class="transform-copy__header">
           <span class="section-num-label">01</span>
-          <span class="home-eyebrow">Experiencias exclusivas</span>
+          <span class="home-eyebrow">{t('Experiencias exclusivas')}</span>
         </div>
 
         <h2>
-          Viajes Que
-          <em>Transforman</em>
+          {t('Viajes Que')}
+          <em>{t('Transforman')}</em>
         </h2>
 
         <p>
-          Somos arquitectos de experiencias. No solo vendemos tours, diseñamos
-          momentos que se convierten en recuerdos imborrables.
+          {t('Somos arquitectos de experiencias. No solo vendemos tours, diseñamos momentos que se convierten en recuerdos imborrables.')}
         </p>
 
         <div class="transform-stats">
           <div class="transform-stat">
-            <strong>Guías Nativos</strong>
-            <span>Certificados y bilingues</span>
+            <strong>{t('Guías Nativos')}</strong>
+            <span>{t('Certificados y bilingues')}</span>
           </div>
           <div class="transform-stat">
-            <strong>A Tu Medida</strong>
-            <span>Personalización total</span>
+            <strong>{t('A Tu Medida')}</strong>
+            <span>{t('Personalización total')}</span>
           </div>
           <div class="transform-stat">
-            <strong>+12 Años</strong>
-            <span>Experiencia probada</span>
+            <strong>{t('+12 Años')}</strong>
+            <span>{t('Experiencia probada')}</span>
           </div>
         </div>
 
-        <a href="#destinations" class="text-link">Ver más destinos →</a>
+        <a href="#destinations" class="text-link">{t('Ver más destinos →')}</a>
       </div>
 
       <div class="transform-image">
-        <img src={sitePath('/images/viajes.png')} alt="Viajes que transforman" />
+        <img src={sitePath('/images/viajes.png')} alt={t('Viajes que transforman')} />
       </div>
     </div>
   </section>
@@ -250,11 +255,11 @@ const displayDestinations = destinationPriority
       <div class="home-section-header">
         <div class="home-section-header__top">
           <span class="section-num-label">02</span>
-          <span class="home-eyebrow home-eyebrow--dark">Experiencias exclusivas</span>
+          <span class="home-eyebrow home-eyebrow--dark">{t('Experiencias exclusivas')}</span>
         </div>
-        <h2>Nuestros <em>Tours</em></h2>
+        <h2>{t('Nuestros')} <em>{t('Tours')}</em></h2>
         <p>
-          Itinerarios diseñados meticulosamente para viajeros que buscan autenticidad.
+          {t('Itinerarios diseñados meticulosamente para viajeros que buscan autenticidad.')}
         </p>
       </div>
 
@@ -277,15 +282,15 @@ const displayDestinations = destinationPriority
             const priceLabel =
               tour.price && tour.price > 0
                 ? `$ ${tour.price.toLocaleString()}`
-                : "A medida";
+                : t('A medida');
 
             const durationLabel = tour.durationNights
               ? `${tour.durationDays}D / ${tour.durationNights}N`
-              : `${tour.durationDays || 1} DÍA${tour.durationDays === 1 ? "" : "S"}`;
+              : `${tour.durationDays || 1} ${tour.durationDays === 1 ? t('DÍA') : t('DÍAS')}`;
 
             return (
               <article class="home-tour-card">
-                <a href={sitePath(`/tours/${tour.slug || tour.id}`)} class="home-tour-card__link">
+                <a href={pagePath(lang, `/tours/${tour.slug || tour.id}`)} class="home-tour-card__link">
                   <figure class="home-tour-card__figure">
                     <img src={sitePath(imageUrl)} alt={tour.title} />
                     <span class="home-tour-card__badge">{durationLabel}</span>
@@ -301,12 +306,12 @@ const displayDestinations = destinationPriority
                     <p>
                       {tour.shortDescription ||
                         tour.description ||
-                        "Descubre Perú con una experiencia diseñada a tu medida."}
+                        t('Descubre Perú con una experiencia diseñada a tu medida.')}
                     </p>
 
                     <div class="home-tour-card__footer">
                       <div class="home-tour-card__price">
-                        <span>{tour.price && tour.price > 0 ? "Desde" : "Consultar"}</span>
+                        <span>{tour.price && tour.price > 0 ? t('Desde') : t('Consultar')}</span>
                         <strong>{priceLabel}</strong>
                       </div>
                       <span class="tour-card-arrow">→</span>
@@ -320,7 +325,7 @@ const displayDestinations = destinationPriority
       </div>
 
       <div class="home-tours-footer">
-        <a href={sitePath('/tours')} class="home-btn home-btn--outline-dark">Ver todos los tours</a>
+        <a href={pagePath(lang, '/tours')} class="home-btn home-btn--outline-dark">{t('Ver todos los tours')}</a>
       </div>
     </div>
   </section>
@@ -332,11 +337,11 @@ const displayDestinations = destinationPriority
         <div>
           <div class="home-section-header__top">
             <span class="section-num-label">03</span>
-            <span class="home-eyebrow home-eyebrow--dark">Colección 2026</span>
+            <span class="home-eyebrow home-eyebrow--dark">{t('Colección 2026')}</span>
           </div>
-          <h2>Destinos <em>Icónicos</em></h2>
+          <h2>{t('Destinos')} <em>{t('Icónicos')}</em></h2>
         </div>
-        <a href="#destinations" class="destinations-link">Ver más destinos →</a>
+        <a href="#destinations" class="destinations-link">{t('Ver más destinos →')}</a>
       </div>
 
       {
@@ -344,7 +349,7 @@ const displayDestinations = destinationPriority
           <div class="home-destinations-grid">
             {displayDestinations.map((destination, index) => (
               <a
-                href={sitePath(`/destinations/${destination.slug}`)}
+                href={pagePath(lang, `/destinations/${destination.slug}`)}
                 class={`destination-card ${
                   index === 0 ? 'destination-card--large' : index === 1 ? 'destination-card--wide' : ''
                 }`}
@@ -360,7 +365,7 @@ const displayDestinations = destinationPriority
           </div>
         ) : (
           <div class="home-destinations-empty">
-            <p>No hay destinos disponibles en los paquetes activos.</p>
+            <p>{t('No hay destinos disponibles en los paquetes activos.')}</p>
           </div>
         )
       }

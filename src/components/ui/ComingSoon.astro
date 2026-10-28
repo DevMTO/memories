@@ -1,5 +1,5 @@
 ---
-import { sitePath } from '../../lib/site-path';
+import { pageLang, pagePath, useT } from '../../i18n/i18n';
 
 interface Props {
   eyebrow: string;
@@ -7,16 +7,16 @@ interface Props {
   message: string;
   ctaLabel?: string;
   ctaHref?: string;
-  i18nPrefix?: string;
 }
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 const {
   eyebrow,
   title,
   message,
-  ctaLabel = 'Explorar tours',
+  ctaLabel = t('Explorar tours'),
   ctaHref = '/tours',
-  i18nPrefix,
 } = Astro.props;
 ---
 
@@ -26,15 +26,15 @@ const {
       <slot name="icon" />
     </div>
 
-    <span class="coming-soon__eyebrow" data-i18n={i18nPrefix ? `${i18nPrefix}.eyebrow` : undefined}>{eyebrow}</span>
+    <span class="coming-soon__eyebrow">{eyebrow}</span>
 
-    <h1 data-i18n={i18nPrefix ? `${i18nPrefix}.title` : undefined}>{title}</h1>
+    <h1>{title}</h1>
 
-    <p data-i18n={i18nPrefix ? `${i18nPrefix}.message` : undefined}>{message}</p>
+    <p>{message}</p>
 
     <div class="coming-soon__actions">
-      <a href={sitePath(ctaHref)} class="coming-soon__btn" data-i18n={i18nPrefix ? `${i18nPrefix}.explore` : undefined}>{ctaLabel}</a>
-      <a href={sitePath('/')} class="coming-soon__link" data-i18n={i18nPrefix ? `${i18nPrefix}.home` : undefined}>Volver al inicio</a>
+      <a href={pagePath(lang, ctaHref)} class="coming-soon__btn">{ctaLabel}</a>
+      <a href={pagePath(lang, '/')} class="coming-soon__link">{t('Volver al inicio')}</a>
     </div>
   </div>
 </section>

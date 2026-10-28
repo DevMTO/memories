@@ -1,35 +1,39 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { sitePath } from '../lib/site-path';
+import Layout from '../../layouts/Layout.astro';
+import { sitePath } from '../../lib/site-path';
 import './_about.scss';
+import { getLangParams, pageLang, pagePath, useT } from '../../i18n/i18n';
+
+export const getStaticPaths = () => getLangParams().map((params) => ({ params }));
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 ---
 
-<Layout title="Acerca de Nosotros | Memories Travel Perú" mainClass="about-main">
+<Layout title={t('Acerca de Nosotros | Memories Travel Perú')} mainClass="about-main">
   <!-- HERO -->
   <section class="about-hero" style={`--about-hero-image: url('${sitePath('/images/about.png')}')`}>
     <div class="about-hero__overlay"></div>
     <div class="container about-hero__content">
-      <span class="about-eyebrow" data-i18n="about.eyebrow">Un equipo consolidado</span>
+      <span class="about-eyebrow">{t('Un equipo consolidado')}</span>
 
-      <h1 data-i18n="about.title">Acerca de Nosotros</h1>
+      <h1>{t('Acerca de Nosotros')}</h1>
 
-      <p data-i18n="about.hero">
-        Experiencias curadas y exclusivas. Conectamos tu espíritu con la esencia
-        viva y eterna del Perú.
+      <p>
+        {t('Experiencias curadas y exclusivas. Conectamos tu espíritu con la esencia viva y eterna del Perú.')}
       </p>
 
-      <button type="button" class="about-hero__btn" data-open-quote aria-haspopup="dialog" aria-controls="quote-modal" data-i18n="nav.designTrip">Diseña tu viaje</button>
+      <button type="button" class="about-hero__btn" data-open-quote aria-haspopup="dialog" aria-controls="quote-modal">{t('Diseña tu viaje')}</button>
     </div>
   </section>
 
   <section class="about-story-section reveal-up">
     <div class="container about-story-copy about-story-copy--centered">
-      <span class="about-eyebrow about-eyebrow--dark" data-i18n="about.storyEyebrow">Nuestra historia</span>
-      <h2 data-i18n="about.storyTitle">Personas que convierten viajes en recuerdos</h2>
-      <p data-i18n="about.storyText">
-        Memories Travel Perú nace de la vocación de compartir nuestro país con
-        cercanía, conocimiento y una atención auténticamente personalizada.
+      <span class="about-eyebrow about-eyebrow--dark">{t('Nuestra historia')}</span>
+      <h2>{t('Personas que convierten viajes en recuerdos')}</h2>
+      <p>
+        {t('Memories Travel Perú nace de la vocación de compartir nuestro país con cercanía, conocimiento y una atención auténticamente personalizada.')}
       </p>
     </div>
   </section>
@@ -37,54 +41,34 @@ import './_about.scss';
   <section class="team-section reveal-up" aria-labelledby="team-title">
     <div class="container">
       <div class="team-section__heading">
-        <span class="about-eyebrow about-eyebrow--dark" data-i18n="about.teamEyebrow">Nuestro equipo</span>
-        <h2 id="team-title" data-i18n="about.teamTitle">Conoce a quienes diseñan tu experiencia</h2>
+        <span class="about-eyebrow about-eyebrow--dark">{t('Nuestro equipo')}</span>
+        <h2 id="team-title">{t('Conoce a quienes diseñan tu experiencia')}</h2>
       </div>
 
       <div class="team-grid">
         <article class="team-card">
           <span class="team-card__index">01</span>
-          <p class="team-card__role" data-i18n="about.luzRole">CEO · Cofundadora</p>
-          <h3>Luzmila</h3>
+          <p class="team-card__role">{t('CEO · Cofundadora')}</p>
+          <h3>{t('Luzmila')}</h3>
           <div class="team-card__rule"></div>
-      <p data-i18n="about.luzFirst">
-            Co fundadora de la agencia Memories Travel Perú, con experiencia en
-            diseño de viajes a nivel nacional y con pleno conocimiento para
-            absolver cualquier duda durante tu viaje en Perú. Vengo trabajando
-            en el rubro de turismo desde el año 2017; poco a poco he comprendido
-            la necesidad de cada viajero en un destino y me he formado durante
-            cinco años en la universidad en la carrera de Turismo.
+      <p>
+            {t('Co fundadora de la agencia Memories Travel Perú, con experiencia en diseño de viajes a nivel nacional y con pleno conocimiento para absolver cualquier duda durante tu viaje en Perú. Vengo trabajando en el rubro de turismo desde el año 2017; poco a poco he comprendido la necesidad de cada viajero en un destino y me he formado durante cinco años en la universidad en la carrera de Turismo.')}
           </p>
-          <p data-i18n="about.luzSecond">
-            Si tienes planeado viajar a Perú, no dudes en contactarme. Estaré
-            ayudándote en cada consulta que tengas; durante tu estadía en Perú
-            te llevarás experiencias y recuerdos inolvidables. Deja a un lado el
-            estrés de organizar tu viaje día por día por tu cuenta: confía en
-            nosotros y haremos de tu viaje una experiencia inolvidable.
+          <p>
+            {t('Si tienes planeado viajar a Perú, no dudes en contactarme. Estaré ayudándote en cada consulta que tengas; durante tu estadía en Perú te llevarás experiencias y recuerdos inolvidables. Deja a un lado el estrés de organizar tu viaje día por día por tu cuenta: confía en nosotros y haremos de tu viaje una experiencia inolvidable.')}
           </p>
         </article>
 
         <article class="team-card team-card--accent">
           <span class="team-card__index">02</span>
-          <p class="team-card__role" data-i18n="about.olgerRole">CEO · Cofundador</p>
-          <h3>Olger</h3>
+          <p class="team-card__role">{t('CEO · Cofundador')}</p>
+          <h3>{t('Olger')}</h3>
           <div class="team-card__rule"></div>
-          <p data-i18n="about.olgerFirst">
-            Nací en un pueblo muy hermoso y paisajístico, considerado el balcón
-            del Valle Sagrado de los Incas. Mi pasión siempre fue compartir mis
-            conocimientos con turistas de otros países. Desde pequeño estuve en
-            contacto con turistas de diferentes nacionalidades al trabajar en un
-            mirador turístico, donde disfrutaba conversar con los extranjeros.
-            Con el tiempo, esto me motivó a estudiar la carrera universitaria de
-            Turismo.
+          <p>
+            {t('Nací en un pueblo muy hermoso y paisajístico, considerado el balcón del Valle Sagrado de los Incas. Mi pasión siempre fue compartir mis conocimientos con turistas de otros países. Desde pequeño estuve en contacto con turistas de diferentes nacionalidades al trabajar en un mirador turístico, donde disfrutaba conversar con los extranjeros. Con el tiempo, esto me motivó a estudiar la carrera universitaria de Turismo.')}
           </p>
-          <p data-i18n="about.olgerSecond">
-            Hoy me dedico a compartir experiencias y a ayudar a descubrir el
-            Perú autóctono a los turistas que visitan Cusco. Si planeas viajar a
-            Perú, no dudes en contar conmigo: al ser oriundo de los Andes y
-            conocedor de la cultura inca podrás vivir una experiencia increíble
-            junto a nosotros. Hablo español, quechua y portugués, así que no
-            dudes en escribirme si tienes alguna consulta sobre tu próximo viaje.
+          <p>
+            {t('Hoy me dedico a compartir experiencias y a ayudar a descubrir el Perú autóctono a los turistas que visitan Cusco. Si planeas viajar a Perú, no dudes en contar conmigo: al ser oriundo de los Andes y conocedor de la cultura inca podrás vivir una experiencia increíble junto a nosotros. Hablo español, quechua y portugués, así que no dudes en escribirme si tienes alguna consulta sobre tu próximo viaje.')}
           </p>
         </article>
       </div>
@@ -106,13 +90,10 @@ import './_about.scss';
           <span class="mission-card__num">01</span>
         </div>
 
-        <h3 data-i18n="about.missionTitle">Nuestra Misión</h3>
+        <h3>{t('Nuestra Misión')}</h3>
 
-        <p data-i18n="about.missionText">
-          Somos una empresa que proporciona un servicio personalizado y
-          especializado, que realmente hace realidad los sueños de nuestros
-          clientes, descubriendo una experiencia única que están buscando en
-          diferentes destinos.
+        <p>
+          {t('Somos una empresa que proporciona un servicio personalizado y especializado, que realmente hace realidad los sueños de nuestros clientes, descubriendo una experiencia única que están buscando en diferentes destinos.')}
         </p>
       </article>
 
@@ -132,13 +113,10 @@ import './_about.scss';
           <span class="mission-card__num">02</span>
         </div>
 
-        <h3 data-i18n="about.visionTitle">Nuestra Visión</h3>
+        <h3>{t('Nuestra Visión')}</h3>
 
-        <p data-i18n="about.visionText">
-          Hacer felices a los viajeros y que disfruten del viaje que siempre
-          soñaron en cada destino. Nuestro principal objetivo es ofrecer una
-          alternativa diferente al turismo de masas, que muchas veces impacta
-          negativamente en las comunidades y el medio ambiente.
+        <p>
+          {t('Hacer felices a los viajeros y que disfruten del viaje que siempre soñaron en cada destino. Nuestro principal objetivo es ofrecer una alternativa diferente al turismo de masas, que muchas veces impacta negativamente en las comunidades y el medio ambiente.')}
         </p>
       </article>
     </div>
@@ -147,7 +125,7 @@ import './_about.scss';
   <!-- WHY US -->
   <section class="why-section reveal-up">
     <div class="container">
-      <h2 data-i18n="about.whyTitle">¿Por qué elegir Memories Travel Perú?</h2>
+      <h2>{t('¿Por qué elegir Memories Travel Perú?')}</h2>
 
       <div class="why-grid">
         <article>
@@ -160,9 +138,9 @@ import './_about.scss';
             </svg>
           </div>
 
-          <span data-i18n="about.support">Atención 24/7</span>
+          <span>{t('Atención 24/7')}</span>
 
-          <p data-i18n="about.supportText">Desde el primer momento de tu viaje estaremos en contacto contigo, resolviendo tus dudas antes, durante y después de tu viaje.</p>
+          <p>{t('Desde el primer momento de tu viaje estaremos en contacto contigo, resolviendo tus dudas antes, durante y después de tu viaje.')}</p>
         </article>
 
         <article>
@@ -178,9 +156,9 @@ import './_about.scss';
             </svg>
           </div>
 
-          <span data-i18n="about.worryFree">Cero preocupaciones</span>
+          <span>{t('Cero preocupaciones')}</span>
 
-          <p data-i18n="about.worryFreeText">Nos encargamos de toda la logística para que tu viaje sea más fácil. Descubre Perú con nosotros y haz de tu viaje un recuerdo inolvidable.</p>
+          <p>{t('Nos encargamos de toda la logística para que tu viaje sea más fácil. Descubre Perú con nosotros y haz de tu viaje un recuerdo inolvidable.')}</p>
         </article>
       </div>
     </div>
@@ -195,13 +173,10 @@ import './_about.scss';
             <path d="m3 18 6-10 4 6 2-3 6 7H3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
           </svg>
         </div>
-        <span>Cusco</span>
-        <h3 data-i18n="about.altitude">Altitud y ubicación</h3>
-        <p data-i18n="about.altitudeText">
-          Cusco se encuentra a una altitud aproximada de 11,120 pies sobre el
-          nivel del mar, rodeado de montañas. En el Valle Sagrado la elevación es
-          menor, alrededor de 9,420 pies, y Machu Picchu se encuentra aún más
-          bajo, a unos 7,972 pies.
+        <span>{t('Cusco')}</span>
+        <h3>{t('Altitud y ubicación')}</h3>
+        <p>
+          {t('Cusco se encuentra a una altitud aproximada de 11,120 pies sobre el nivel del mar, rodeado de montañas. En el Valle Sagrado la elevación es menor, alrededor de 9,420 pies, y Machu Picchu se encuentra aún más bajo, a unos 7,972 pies.')}
         </p>
       </article>
 
@@ -217,12 +192,10 @@ import './_about.scss';
             />
           </svg>
         </div>
-        <span data-i18n="about.climate">Clima</span>
-        <h3 data-i18n="about.andes">Andes peruanos</h3>
-        <p data-i18n="about.climateText">
-          Cusco se ubica en la cordillera de los Andes, por lo que el clima puede
-          ser muy cambiante. Algunos días pueden ser cálidos y las noches frías;
-          también puede presentarse lluvia según la temporada.
+        <span>{t('Clima')}</span>
+        <h3>{t('Andes peruanos')}</h3>
+        <p>
+          {t('Cusco se ubica en la cordillera de los Andes, por lo que el clima puede ser muy cambiante. Algunos días pueden ser cálidos y las noches frías; también puede presentarse lluvia según la temporada.')}
         </p>
       </article>
 
@@ -237,13 +210,10 @@ import './_about.scss';
             />
           </svg>
         </div>
-        <span data-i18n="about.advice">Consejo</span>
-        <h3 data-i18n="about.altitudeSickness">Mal de altura</h3>
-        <p data-i18n="about.altitudeSicknessText">
-          El mal de altura puede afectar a algunos viajeros. Los síntomas pueden
-          incluir dolor de cabeza, fatiga o falta de apetito. Se recomienda
-          hidratarse, descansar al llegar y consultar con un médico antes del
-          viaje si se considera necesario.
+        <span>{t('Consejo')}</span>
+        <h3>{t('Mal de altura')}</h3>
+        <p>
+          {t('El mal de altura puede afectar a algunos viajeros. Los síntomas pueden incluir dolor de cabeza, fatiga o falta de apetito. Se recomienda hidratarse, descansar al llegar y consultar con un médico antes del viaje si se considera necesario.')}
         </p>
       </article>
     </div>

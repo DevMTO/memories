@@ -1,22 +1,25 @@
 ---
 import './Header.scss';
-import LanguageSwitcher from './LanguageSwitcher';
+import LanguageLinks from './LanguageLinks.astro';
 import { sitePath } from '../../lib/site-path';
 import { buildWhatsAppUrl } from '../../config/site';
 import { getContact } from '../../lib/services/site';
+import { pageLang, pagePath, useT } from '../../i18n/i18n';
 
 const SITE_CONTACT = await getContact();
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 const navItems = [
-  { href: sitePath('/packages'), label: 'Paquetes', key: 'nav.packages' },
-  { href: sitePath('/tours'), label: 'Tours', key: 'nav.tours' },
-  { href: sitePath('/trekkings'), label: 'Trekking', key: 'nav.trekking' },
-  { href: sitePath('/flights'), label: 'Vuelos', key: 'nav.flights' },
-  { href: sitePath('/about'), label: 'Nosotros', key: 'nav.about' },
-  { href: sitePath('/blogs'), label: 'Blog', key: 'nav.blogs' },
+  { href: pagePath(lang, '/packages'), label: t('Paquetes') },
+  { href: pagePath(lang, '/tours'), label: t('Tours') },
+  { href: pagePath(lang, '/trekkings'), label: t('Trekking') },
+  { href: pagePath(lang, '/flights'), label: t('Vuelos') },
+  { href: pagePath(lang, '/about'), label: t('Nosotros') },
+  { href: pagePath(lang, '/blogs'), label: t('Blog') },
 ];
 
-const whatsappUrl = buildWhatsAppUrl(SITE_CONTACT.whatsappNumber, 'Hola, quiero diseñar un viaje con Memories Travel Perú.');
+const whatsappUrl = buildWhatsAppUrl(SITE_CONTACT.whatsappNumber, t('Hola, quiero diseñar un viaje con Memories Travel Perú.'));
 
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
@@ -42,31 +45,31 @@ const isActive = (href: string) =>
           {SITE_CONTACT.whatsappDisplay}
         </a>
 
-        <a href={`tel:+${SITE_CONTACT.emergencyNumber}`} aria-label={`Emergencias ${SITE_CONTACT.emergencyDisplay}`}>
+        <a href={`tel:+${SITE_CONTACT.emergencyNumber}`} aria-label={`${t('Emergencias')} ${SITE_CONTACT.emergencyDisplay}`}>
           <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M12 3.2 21 19H3L12 3.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
             <path d="M12 9v4.6M12 17.1v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
           </svg>
-          Emergencias: {SITE_CONTACT.emergencyDisplay}
+          {t('Emergencias')}: {SITE_CONTACT.emergencyDisplay}
         </a>
       </div>
 
       <div class="header-top__actions">
-        <LanguageSwitcher client:load />
+        <LanguageLinks />
       </div>
     </div>
   </div>
 
   <nav class="main-nav">
     <div class="container main-nav__inner">
-      <a href={sitePath('/')} class="logo" aria-label="Memories Travel Perú">
+      <a href={pagePath(lang, '/')} class="logo" aria-label="Memories Travel Perú">
         <img src={sitePath('/images/IMAGOTIPO-MEMORIES-TRAVEL-5.png')} alt="Memories Travel Perú" class="logo-image" width="1080" height="716" />
       </a>
 
       <ul class="nav-links">
         {navItems.map((item) => (
           <li>
-            <a href={item.href} data-i18n={item.key} aria-current={isActive(item.href) ? 'page' : undefined}>
+            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
               {item.label}
             </a>
           </li>
@@ -80,7 +83,7 @@ const isActive = (href: string) =>
         aria-haspopup="dialog"
         aria-controls="quote-modal"
       >
-        <span data-i18n="nav.designTrip">Diseña tu viaje</span>
+        <span>{t('Diseña tu viaje')}</span>
       </button>
 
       <button
@@ -88,7 +91,9 @@ const isActive = (href: string) =>
         class="menu-toggle"
         aria-expanded="false"
         aria-controls="mobile-menu"
-        aria-label="Abrir menú"
+        aria-label={t('Abrir menú')}
+        data-label-open={t('Abrir menú')}
+        data-label-close={t('Cerrar menú')}
       >
         <span class="menu-toggle__bar"></span>
         <span class="menu-toggle__bar"></span>
@@ -98,12 +103,12 @@ const isActive = (href: string) =>
   </nav>
 </header>
 
-<div id="mobile-menu" class="mobile-menu" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Navegación principal">
+<div id="mobile-menu" class="mobile-menu" aria-hidden="true" role="dialog" aria-modal="true" aria-label={t('Navegación principal')}>
   <div class="mobile-menu__inner">
     <ul class="mobile-menu__links">
       {navItems.map((item) => (
         <li>
-          <a href={item.href} data-i18n={item.key} aria-current={isActive(item.href) ? 'page' : undefined}>
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
             {item.label}
           </a>
         </li>
@@ -117,17 +122,10 @@ const isActive = (href: string) =>
       aria-haspopup="dialog"
       aria-controls="quote-modal"
     >
-      <span data-i18n="nav.designTrip">Diseña tu viaje</span>
+      <span>{t('Diseña tu viaje')}</span>
     </button>
 
-    <div class="mobile-language-switcher notranslate" role="group" aria-label="Seleccionar idioma">
-      <svg class="language-switcher__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4 5h9M8.5 3v2m1.8 0c-.6 3-2.2 5.7-4.6 7.7M5.9 9.5c1.1 1.5 2.5 2.7 4.1 3.6M14.5 19l2.8-7 2.8 7m-4.7-2.3h3.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-      <button type="button" class="language-switcher__button" data-language="es" aria-label="Español" aria-pressed="true">ES</button>
-      <button type="button" class="language-switcher__button" data-language="en" aria-label="English" aria-pressed="false">EN</button>
-      <button type="button" class="language-switcher__button" data-language="pt" aria-label="Português" aria-pressed="false">PT</button>
-    </div>
+    <LanguageLinks class="mobile-language-switcher" />
 
     <div class="mobile-menu__contact">
       <a href={`mailto:${SITE_CONTACT.email}`}>
@@ -148,7 +146,7 @@ const isActive = (href: string) =>
           <path d="M12 3.2 21 19H3L12 3.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
           <path d="M12 9v4.6M12 17.1v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
         </svg>
-        Emergencias: {SITE_CONTACT.emergencyDisplay}
+        {t('Emergencias')}: {SITE_CONTACT.emergencyDisplay}
       </a>
     </div>
 
@@ -167,7 +165,7 @@ const isActive = (href: string) =>
       toggle.classList.add('is-open');
       document.body.classList.add('is-mobile-menu-open');
       toggle.setAttribute('aria-expanded', 'true');
-      toggle.setAttribute('aria-label', 'Cerrar menú');
+      toggle.setAttribute('aria-label', toggle.dataset.labelClose ?? '');
       menu.setAttribute('aria-hidden', 'false');
       requestAnimationFrame(() => menuItems[0]?.focus());
     };
@@ -177,7 +175,7 @@ const isActive = (href: string) =>
       toggle.classList.remove('is-open');
       document.body.classList.remove('is-mobile-menu-open');
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Abrir menú');
+      toggle.setAttribute('aria-label', toggle.dataset.labelOpen ?? '');
       menu.setAttribute('aria-hidden', 'true');
       if (returnFocus) toggle.focus();
     };

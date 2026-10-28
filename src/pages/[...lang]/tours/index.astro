@@ -1,12 +1,18 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import TourCard from '../../components/TourCard.astro';
-import { getAll } from '../../lib/services/catalog';
-import { sitePath } from '../../lib/site-path';
+import Layout from '../../../layouts/Layout.astro';
+import TourCard from '../../../components/TourCard.astro';
+import { getAll } from '../../../lib/services/catalog';
+import { sitePath } from '../../../lib/site-path';
 import '../_tours.scss';
+import { getLangParams, pageLang, pagePath, useT } from '../../../i18n/i18n';
+
+export const getStaticPaths = () => getLangParams().map((params) => ({ params }));
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 
-const allToursRaw = await getAll();
+const allToursRaw = await getAll(lang);
 
 const activeTours = (allToursRaw || []).filter((tour) => tour?.isActive !== false && tour.kind === 'tour');
 
@@ -20,19 +26,19 @@ const destinations = Array.from(
 
 const styles = [
   {
-    label: 'Vacaciones',
+    label: t('Vacaciones'),
     value: 'vacaciones viaje experiencia tour turistico turístico',
   },
   {
-    label: 'Honeymoon',
+    label: t('Honeymoon'),
     value: 'honeymoon pareja romantico romántico privado aguas calientes machu picchu',
   },
   {
-    label: 'Family',
+    label: t('Family'),
     value: 'familia family compartido cultural historia city tour',
   },
   {
-    label: 'Tours',
+    label: t('Tours'),
     value: 'tour excursión excursion full day trekking aventura',
   },
 ];
@@ -47,13 +53,13 @@ const fallbackImages = [
 ];
 ---
 
-<Layout title="Nuestros Tours | Memories Travel Perú" mainClass="tours-page">
+<Layout title={t('Nuestros Tours | Memories Travel Perú')} mainClass="tours-page">
   <!-- HERO -->
   <section class="tours-hero" style={`--tours-hero-image: url('${sitePath('/images/hero.webp')}')`}>
     <div class="tours-hero__overlay"></div>
 
     <div class="container tours-hero__content">
-      <h1 data-i18n="listings.tours">Nuestros tours</h1>
+      <h1>{t('Nuestros tours')}</h1>
     </div>
   </section>
 
@@ -66,7 +72,7 @@ const fallbackImages = [
           <svg class="filters-toggle__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M7 14v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
           </svg>
-          <span>Filtrar resultados</span>
+          <span>{t('Filtrar resultados')}</span>
           <svg class="filters-toggle__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
@@ -74,7 +80,7 @@ const fallbackImages = [
 
         <div class="filters-box" id="tours-filters">
           <div class="filter-group">
-            <h3 data-i18n="filters.travelStyles">Estilos de viaje</h3>
+            <h3>{t('Estilos de viaje')}</h3>
 
             <div class="filter-options">
               {styles.map((style) => (
@@ -84,14 +90,14 @@ const fallbackImages = [
                     data-filter="style"
                     value={style.value}
                   />
-                <span data-i18n={style.label === 'Vacaciones' ? 'listings.vacations' : style.label === 'Honeymoon' ? 'listings.honeymoon' : style.label === 'Family' ? 'listings.family' : 'nav.tours'}>{style.label}</span>
+                <span>{style.label}</span>
                 </label>
               ))}
             </div>
           </div>
 
           <div class="filter-group">
-            <h3 data-i18n="filters.country">País</h3>
+            <h3>{t('País')}</h3>
 
             <div class="filter-options">
               {destinations.slice(0, 8).map((destination) => (
@@ -108,28 +114,28 @@ const fallbackImages = [
           </div>
 
           <div class="filter-group">
-            <h3 data-i18n="filters.duration">Duración</h3>
+            <h3>{t('Duración')}</h3>
 
             <div class="filter-options">
               <label class="filter-check">
                 <input type="checkbox" data-filter="duration" value="1" />
-                <span data-i18n="filters.fullDay">Día completo</span>
+                <span>{t('Día completo')}</span>
               </label>
 
               <label class="filter-check">
                 <input type="checkbox" data-filter="duration" value="2" />
-                <span>2 días / 1 noche</span>
+                <span>{t('2 días / 1 noche')}</span>
               </label>
 
               <label class="filter-check">
                 <input type="checkbox" data-filter="durationRange" value="3" />
-                <span data-i18n="filters.moreDays">3 días o más</span>
+                <span>{t('3 días o más')}</span>
               </label>
             </div>
           </div>
 
           <div class="filter-group">
-            <h3 data-i18n="filters.price">Precio</h3>
+            <h3>{t('Precio')}</h3>
 
             <div class="filter-price">
               <input
@@ -150,11 +156,11 @@ const fallbackImages = [
 
           <div class="filter-actions">
             <button type="button" class="filter-btn" id="clearFilters">
-              <span data-i18n="filters.search">Buscar</span>
+              <span>{t('Buscar')}</span>
             </button>
 
             <button type="button" class="filter-reset" id="resetFilters">
-              <span data-i18n="filters.clear">Limpiar filtros</span>
+              <span>{t('Limpiar filtros')}</span>
             </button>
           </div>
         </div>
@@ -204,17 +210,17 @@ const fallbackImages = [
               </div>
 
               <div class="tours-empty tours-empty--hidden" id="toursEmpty">
-                <h3>No encontramos tours con esos filtros</h3>
+                <h3>{t('No encontramos tours con esos filtros')}</h3>
                 <p>
-                  Prueba quitando algún filtro o solicita una propuesta personalizada.
+                  {t('Prueba quitando algún filtro o solicita una propuesta personalizada.')}
                 </p>
               </div>
             </>
           ) : (
             <div class="tours-empty">
-              <h3>No hay tours disponibles</h3>
+              <h3>{t('No hay tours disponibles')}</h3>
               <p>
-                El catálogo no tiene tours publicados por el momento. Puedes gestionarlos desde el panel administrativo.
+                {t('El catálogo no tiene tours publicados por el momento. Puedes gestionarlos desde el panel administrativo.')}
               </p>
             </div>
           )

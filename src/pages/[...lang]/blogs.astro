@@ -1,14 +1,20 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import ComingSoon from "../components/ui/ComingSoon.astro";
+import Layout from "../../layouts/Layout.astro";
+import ComingSoon from "../../components/ui/ComingSoon.astro";
+import { getLangParams, pageLang, pagePath, useT } from '../../i18n/i18n';
+
+export const getStaticPaths = () => getLangParams().map((params) => ({ params }));
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 ---
 
-<Layout title="Blogs">
+<Layout title={t('Blogs')}>
   <ComingSoon
-    eyebrow="Muy pronto"
-    title="Historias que están por contarse"
-    message="Estamos escribiendo relatos de viaje, guías y recomendaciones de expertos para inspirar tu próxima aventura por el Perú. Vuelve pronto."
+    eyebrow={t('Muy pronto')}
+    title={t('Historias que están por contarse')}
+    message={t('Estamos escribiendo relatos de viaje, guías y recomendaciones de expertos para inspirar tu próxima aventura por el Perú. Vuelve pronto.')}
   >
     <svg
       slot="icon"

@@ -18,6 +18,7 @@
     "pb:schema": "node kit/pocketbase/scripts/pocketbase.ts schema src/lib/pocketbase-types.ts",
     "dev:pb": "astro dev --mode pocketbase",
     "build:static": "astro build --mode seed",
+    "translate": "node --env-file-if-exists=.env scripts/translate.ts",
     "pb:import": "node --env-file=.env scripts/pb-import.ts",
     "pb:import:prod": "node --env-file=.env.production scripts/pb-import.ts"
   },
@@ -29,8 +30,7 @@
     "pocketbase": "^0.28.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "sharp": "^0.35.5",
-    "translate": "^3.1.0"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

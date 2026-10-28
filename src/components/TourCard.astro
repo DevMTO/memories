@@ -1,6 +1,7 @@
 ---
 import type { Tour } from '../lib/types';
 import { sitePath } from '../lib/site-path';
+import { pageLang, pagePath, useT } from '../i18n/i18n';
 import './TourCard.scss';
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
 }
 
 const { tour } = Astro.props;
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 const imageUrl =
   tour.imageUrl &&
@@ -23,14 +26,14 @@ const locationLabel = tour.destinationName || tour.location || 'Perú';
 const description =
   tour.shortDescription ||
   tour.description ||
-  'Descubre una experiencia diseñada con detalle, comodidad y autenticidad.';
+  t('Descubre una experiencia diseñada con detalle, comodidad y autenticidad.');
 
 const priceLabel =
   tour.price && tour.price > 0
     ? `$ ${tour.price.toLocaleString()}`
-    : 'A medida';
+    : t('A medida');
 
-const detailUrl = sitePath(`/tours/${tour.slug || tour.id}`);
+const detailUrl = pagePath(lang, `/tours/${tour.slug || tour.id}`);
 const resolvedImageUrl = sitePath(imageUrl);
 ---
 
@@ -39,7 +42,7 @@ const resolvedImageUrl = sitePath(imageUrl);
     <img src={resolvedImageUrl} alt={tour.title} />
 
     <span class="tour-card__badge">
-      <span data-i18n-count="cards.days" data-count={durationDays}>{durationDays} días</span>
+      <span>{durationDays} {t('días')}</span>
     </span>
   </a>
 
@@ -58,14 +61,14 @@ const resolvedImageUrl = sitePath(imageUrl);
 
     <div class="tour-card__footer">
       <div class="tour-card__price">
-        <span data-i18n={tour.price && tour.price > 0 ? 'cards.from' : 'cards.consult'}>{tour.price && tour.price > 0 ? 'Desde' : 'Consultar'}</span>
-        <strong>{tour.price && tour.price > 0 ? priceLabel : <span data-i18n="cards.tailorMade">A medida</span>}</strong>
+        <span>{tour.price && tour.price > 0 ? t('Desde') : t('Consultar')}</span>
+        <strong>{tour.price && tour.price > 0 ? priceLabel : <span>{t('A medida')}</span>}</strong>
       </div>
 
       <a
         href={detailUrl}
         class="tour-card__arrow"
-        aria-label={`Ver ${tour.title}`}
+        aria-label={`${t('Ver')} ${tour.title}`}
       >
         →
       </a>

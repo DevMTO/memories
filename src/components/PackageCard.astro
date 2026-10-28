@@ -1,6 +1,7 @@
 ---
 import type { Package } from '../lib/types';
 import { sitePath } from '../lib/site-path';
+import { pageLang, pagePath, useT } from '../i18n/i18n';
 import './PackageCard.scss';
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
 }
 
 const { pkg } = Astro.props;
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 const imageUrl =
   pkg.imageUrl &&
@@ -25,14 +28,14 @@ const locationLabel =
 const description =
   pkg.shortDescription ||
   pkg.description ||
-  'Descubre una experiencia diseñada con detalle, comodidad y autenticidad.';
+  t('Descubre una experiencia diseñada con detalle, comodidad y autenticidad.');
 
 const priceLabel =
   pkg.price && pkg.price > 0
     ? `$ ${pkg.price.toLocaleString()}`
-    : 'A medida';
+    : t('A medida');
 
-const detailUrl = sitePath(`/packages/${pkg.slug || pkg.id}`);
+const detailUrl = pagePath(lang, `/packages/${pkg.slug || pkg.id}`);
 const resolvedImageUrl = sitePath(imageUrl);
 ---
 
@@ -41,7 +44,7 @@ const resolvedImageUrl = sitePath(imageUrl);
     <img src={resolvedImageUrl} alt={pkg.title} />
 
     <span class="package-card__badge">
-      <span data-i18n-count="cards.days" data-count={durationDays}>{durationDays} días</span>
+      <span>{durationDays} {t('días')}</span>
     </span>
   </a>
 
@@ -60,14 +63,14 @@ const resolvedImageUrl = sitePath(imageUrl);
 
     <div class="package-card__footer">
       <div class="package-card__price">
-        <span data-i18n="cards.from">Desde</span>
-        <strong>{pkg.price && pkg.price > 0 ? priceLabel : <span data-i18n="cards.tailorMade">A medida</span>}</strong>
+        <span>{t('Desde')}</span>
+        <strong>{pkg.price && pkg.price > 0 ? priceLabel : <span>{t('A medida')}</span>}</strong>
       </div>
 
       <a
         href={detailUrl}
         class="package-card__arrow"
-        aria-label={`Ver ${pkg.title}`}
+        aria-label={`${t('Ver')} ${pkg.title}`}
       >
         →
       </a>

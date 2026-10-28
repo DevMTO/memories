@@ -1,10 +1,11 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { sitePath } from '../../lib/site-path';
-import { buildWhatsAppUrl } from '../../config/site';
-import { getContact } from '../../lib/services/site';
-import { getAll, getById, getBySlug } from '../../lib/services/catalog';
+import Layout from '../../../layouts/Layout.astro';
+import { sitePath } from '../../../lib/site-path';
+import { buildWhatsAppUrl } from '../../../config/site';
+import { getContact } from '../../../lib/services/site';
+import { getAll, getById, getBySlug } from '../../../lib/services/catalog';
 import './_detail.scss';
+import { getLangParams, pageLang, pagePath, useT } from '../../../i18n/i18n';
 
 const SITE_CONTACT = await getContact();
 
@@ -14,19 +15,22 @@ export async function getStaticPaths() {
 
   return (tours || [])
     .filter((tour) => tour?.isActive !== false)
-    .map((tour) => ({ params: { id: tour.slug || tour.id } }));
+    .flatMap((tour) => getLangParams().map(({ lang }) => ({ params: { lang, id: tour.slug || tour.id } })));
 }
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 const { id } = Astro.params;
 
 const tour =
   id
-    ? (await getById(id)) ||
-      (await getBySlug(id))
+    ? (await getById(id, lang)) ||
+      (await getBySlug(id, lang))
     : null;
 
 if (!tour) {
-  return Astro.redirect(sitePath('/tours'));
+  return Astro.redirect(pagePath(lang, '/tours'));
 }
 
 const features = tour.features ?? [];
@@ -49,16 +53,16 @@ const durationDays = tour.durationDays || 1;
 const durationNights = tour.durationNights || 0;
 
 const durationText = durationNights
-  ? `${durationDays} días / ${durationNights} noches`
-  : `${durationDays} día${durationDays === 1 ? '' : 's'}`;
+  ? `${durationDays} ${t('días')} / ${durationNights} ${t('noches')}`
+  : `${durationDays} ${durationDays === 1 ? t('día') : t('días')}`;
 
 const heroDuration = durationNights
-  ? `${durationDays} días / ${durationNights} noches`
-  : `${durationDays} día${durationDays === 1 ? '' : 's'}`;
+  ? `${durationDays} ${t('días')} / ${durationNights} ${t('noches')}`
+  : `${durationDays} ${durationDays === 1 ? t('día') : t('días')}`;
 
-const destinationName = tour.destinationName || tour.location || 'Perú';
+const destinationName = tour.destinationName || tour.location || t('Perú');
 
-const whatsappMessage = `Hola, quiero información sobre el tour: ${tour.title}`;
+const whatsappMessage = `${t('Hola, quiero información sobre el tour:')} ${tour.title}`;
 const whatsappUrl = buildWhatsAppUrl(SITE_CONTACT.whatsappNumber, whatsappMessage);
 
 const galleryImages = (
@@ -81,21 +85,21 @@ const getDayImages = (dayIndex: number) => {
 const reviews = [
   {
     name: 'María Fernanda Rojas',
-    location: 'Lima, Perú',
+    location: t('Lima, Perú'),
     rating: 5,
-    text: `El guía fue espectacular, conocía cada rincón de ${destinationName} y la organización fue impecable de principio a fin. Totalmente recomendado.`,
+    text: `${t('El guía fue espectacular, conocía cada rincón de')} ${destinationName} ${t('y la organización fue impecable de principio a fin. Totalmente recomendado.')}`,
   },
   {
     name: 'James Whitfield',
-    location: 'Reino Unido',
+    location: t('Reino Unido'),
     rating: 5,
     text: 'Best trip of my life. Everything was perfectly organized and the views were absolutely breathtaking. Our guide made the experience unforgettable.',
   },
   {
     name: 'Carla Medina',
-    location: 'Arequipa, Perú',
+    location: t('Arequipa, Perú'),
     rating: 4,
-    text: 'Muy buena experiencia, el transporte llegó puntual y el equipo estuvo pendiente de todos los detalles. Repetiría sin dudarlo.',
+    text: t('Muy buena experiencia, el transporte llegó puntual y el equipo estuvo pendiente de todos los detalles. Repetiría sin dudarlo.'),
   },
 ];
 
@@ -106,6 +110,20 @@ const getInitials = (name: string) =>
     .slice(0, 2)
     .join('')
     .toUpperCase();
+
+// Textos del script del cliente (reserva por WhatsApp y visor de fotos).
+const pageText = {
+  locale: lang === 'es' ? 'es-PE' : lang,
+  undefinedDate: t('Por definir'),
+  product: t('experiencia'),
+  kind: t('viaje'),
+  proposal: t('Hola, quiero una propuesta personalizada para el'),
+  travelers: t('Viajeros'),
+  date: t('Fecha estimada'),
+  page: t('Página'),
+  photo: t('Foto'),
+  of: t('de'),
+};
 ---
 
 <Layout
@@ -120,12 +138,12 @@ const getInitials = (name: string) =>
 
     <div class="container tour-hero__content">
       <span class="tour-hero__eyebrow">
-        {tour.kind === 'trekking' ? 'TREKKING' : 'TOUR'} · {heroDuration.toUpperCase()} {durationNights ? '(PRIVADO O GRUPO PEQUEÑO)' : '(EXPERIENCIA PERSONALIZADA)'}
+        {tour.kind === 'trekking' ? 'TREKKING' : 'TOUR'} · {heroDuration.toUpperCase()} {durationNights ? t('(PRIVADO O GRUPO PEQUEÑO)') : t('(EXPERIENCIA PERSONALIZADA)')}
       </span>
 
       <h1>{tour.title}</h1>
 
-      <p>{tour.shortDescription || 'Experiencias curadas y exclusivas. Conectamos tu espíritu con la esencia viva y eterna del Perú.'}</p>
+      <p>{tour.shortDescription || t('Experiencias curadas y exclusivas. Conectamos tu espíritu con la esencia viva y eterna del Perú.')}</p>
     </div>
   </section>
 
@@ -137,7 +155,7 @@ const getInitials = (name: string) =>
           <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
           <path d="M12 7.5v4.8l3.2 1.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        <span class="tour-info-label">Duración</span>
+        <span class="tour-info-label">{t('Duración')}</span>
         <span class="tour-info-value">{durationText}</span>
       </div>
 
@@ -146,7 +164,7 @@ const getInitials = (name: string) =>
           <path d="M12 21s7-6.4 7-12a7 7 0 1 0-14 0c0 5.6 7 12 7 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
           <circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.6" />
         </svg>
-        <span class="tour-info-label">Destino</span>
+        <span class="tour-info-label">{t('Destino')}</span>
         <span class="tour-info-value notranslate" translate="no">{destinationName}</span>
       </div>
 
@@ -157,8 +175,8 @@ const getInitials = (name: string) =>
           <circle cx="16.6" cy="8.6" r="2.1" stroke="currentColor" stroke-width="1.5" />
           <path d="M14.9 14.9c2.1.3 3.6 1.9 3.6 4.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
         </svg>
-        <span class="tour-info-label">Servicio</span>
-        <span class="tour-info-value">{features[0] || 'Tour guiado'}</span>
+        <span class="tour-info-label">{t('Servicio')}</span>
+        <span class="tour-info-value">{features[0] || t('Tour guiado')}</span>
       </div>
 
       <div class="tour-info-item">
@@ -166,9 +184,9 @@ const getInitials = (name: string) =>
           <path d="M11.4 3.3 20 11.9l-8.1 8.1-8.6-8.6V3.3h8.1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
           <circle cx="7.6" cy="7.5" r="1.3" fill="currentColor" />
         </svg>
-        <span class="tour-info-label">Modalidad</span>
+        <span class="tour-info-label">{t('Modalidad')}</span>
         <span class="tour-info-value">
-          {tour.price && tour.price > 0 ? `Desde $ ${tour.price.toLocaleString()}` : 'A medida'}
+          {tour.price && tour.price > 0 ? `${t('Desde')} $ ${tour.price.toLocaleString()}` : t('A medida')}
         </span>
       </div>
     </div>
@@ -179,11 +197,11 @@ const getInitials = (name: string) =>
     <div class="container tour-detail-layout">
       <main class="tour-main-content">
         <section class="tour-copy-block">
-          <h2>Sobre esta experiencia</h2>
+          <h2>{t('Sobre esta experiencia')}</h2>
 
           <p>
             {tour.description ||
-              'Sumérjase en una experiencia cuidadosamente diseñada para descubrir Perú con comodidad, autenticidad y acompañamiento experto.'}
+              t('Sumérjase en una experiencia cuidadosamente diseñada para descubrir Perú con comodidad, autenticidad y acompañamiento experto.')}
           </p>
 
           {
@@ -200,7 +218,7 @@ const getInitials = (name: string) =>
         {
           importantNotes.length > 0 && (
             <section class="tour-notes-block" aria-labelledby="tour-important-title">
-              <h2 id="tour-important-title">Información importante</h2>
+              <h2 id="tour-important-title">{t('Información importante')}</h2>
               <div class="tour-notes-list">
                 {importantNotes.map((note) => <p>{note}</p>)}
               </div>
@@ -211,7 +229,7 @@ const getInitials = (name: string) =>
         {
           itinerary.length > 0 && (
             <section class="tour-itinerary-block">
-              <h2>Itinerario Detallado</h2>
+              <h2>{t('Itinerario Detallado')}</h2>
 
               <div class="tour-timeline">
                 {itinerary.map((day, dayIndex) => {
@@ -247,10 +265,10 @@ const getInitials = (name: string) =>
                           ((day.includes?.length || 0) > 0 || (day.notIncludes?.length || 0) > 0) && (
                             <div class="timeline-services">
                               {(day.includes?.length || 0) > 0 && (
-                                <div><strong>Incluye este día</strong><ul>{day.includes?.map((item) => <li>{item}</li>)}</ul></div>
+                                <div><strong>{t('Incluye este día')}</strong><ul>{day.includes?.map((item) => <li>{item}</li>)}</ul></div>
                               )}
                               {(day.notIncludes?.length || 0) > 0 && (
-                                <div><strong>No incluye este día</strong><ul>{day.notIncludes?.map((item) => <li>{item}</li>)}</ul></div>
+                                <div><strong>{t('No incluye este día')}</strong><ul>{day.notIncludes?.map((item) => <li>{item}</li>)}</ul></div>
                               )}
                             </div>
                           )
@@ -266,7 +284,7 @@ const getInitials = (name: string) =>
                                     type="button"
                                     class="timeline-gallery__item lightbox-trigger"
                                     data-gallery-index={galleryIndex}
-                                    aria-label={`Ampliar foto del día ${day.day}`}
+                                    aria-label={`${t('Ampliar foto del día')} ${day.day}`}
                                   >
                                     <img src={src} alt={`${day.title} - foto`} loading="lazy" />
                                   </button>
@@ -287,13 +305,13 @@ const getInitials = (name: string) =>
         {
           includes.length > 0 || notIncludes.length > 0 ? (
             <section class="tour-service-block">
-              <h2>Información del servicio</h2>
+              <h2>{t('Información del servicio')}</h2>
 
               <div class="tour-service-grid">
                 {
                   includes.length > 0 && (
                     <article>
-                      <h3>Incluye</h3>
+                      <h3>{t('Incluye')}</h3>
                       <ul>
                         {includes.map((item) => (
                           <li>{item}</li>
@@ -306,7 +324,7 @@ const getInitials = (name: string) =>
                 {
                   notIncludes.length > 0 && (
                     <article>
-                      <h3>No incluye</h3>
+                      <h3>{t('No incluye')}</h3>
                       <ul>
                         {notIncludes.map((item) => (
                           <li>{item}</li>
@@ -323,7 +341,7 @@ const getInitials = (name: string) =>
         {
           whatToBring.length > 0 && (
             <section class="tour-bring-block">
-              <h2>Qué llevar</h2>
+              <h2>{t('Qué llevar')}</h2>
 
               <div class="tour-bring-list">
                 {whatToBring.map((item) => (
@@ -335,14 +353,14 @@ const getInitials = (name: string) =>
         }
 
         <section class="tour-gallery-block">
-          <h2>Highlights del Recorrido</h2>
+          <h2>{t('Highlights del Recorrido')}</h2>
 
           <div class="tour-gallery">
             <button
               type="button"
               class="tour-gallery__large lightbox-trigger"
               data-gallery-index="0"
-              aria-label="Ampliar foto 1"
+              aria-label={t('Ampliar foto 1')}
             >
               <img src={galleryImages[0] || heroImage} alt={tour.title} loading="lazy" />
             </button>
@@ -372,17 +390,17 @@ const getInitials = (name: string) =>
 
       <aside class="tour-sidebar">
         <div class="booking-widget">
-          <h3>Diseñe Su Viaje</h3>
-          <p>Consultoría Gratuita Experta</p>
+          <h3>{t('Diseñe Su Viaje')}</h3>
+          <p>{t('Consultoría Gratuita Experta')}</p>
 
           <form
             class="booking-form js-booking-form"
             data-whatsapp={SITE_CONTACT.whatsappNumber}
             data-product={tour.title}
-            data-kind={tour.kind === 'trekking' ? 'trekking' : 'tour'}
+            data-kind={tour.kind === 'trekking' ? t('trekking') : t('tour')}
           >
             <div class="booking-field">
-              <label for="booking-travelers">N° DE VIAJEROS</label>
+              <label for="booking-travelers">{t('N° DE VIAJEROS')}</label>
               <input
                 id="booking-travelers"
                 name="travelers"
@@ -396,25 +414,25 @@ const getInitials = (name: string) =>
             </div>
 
             <div class="booking-field">
-              <label for="booking-date">FECHA DE VIAJE</label>
+              <label for="booking-date">{t('FECHA DE VIAJE')}</label>
               <input id="booking-date" name="travelDate" type="date" required />
             </div>
 
             <button type="submit" class="booking-btn">
-              Solicitar mi propuesta personalizada
+              {t('Solicitar mi propuesta personalizada')}
             </button>
 
-            <span>La consulta se enviará por WhatsApp. Sin cargos ocultos.</span>
+            <span>{t('La consulta se enviará por WhatsApp. Sin cargos ocultos.')}</span>
           </form>
         </div>
 
         <div class="help-card">
           <div class="help-card__icon">□</div>
 
-          <h3>¿Necesita ayuda?</h3>
+          <h3>{t('¿Necesita ayuda?')}</h3>
 
           <p>
-            Nuestros expertos en Cusco están listos para personalizar su itinerario.
+            {t('Nuestros expertos en Cusco están listos para personalizar su itinerario.')}
           </p>
 
           <a
@@ -422,7 +440,7 @@ const getInitials = (name: string) =>
             target="_blank"
             rel="noopener noreferrer"
           >
-            Contactar asesor
+            {t('Contactar asesor')}
           </a>
         </div>
       </aside>
@@ -433,14 +451,14 @@ const getInitials = (name: string) =>
   <section class="tour-reviews-section">
     <div class="container">
       <div class="tour-reviews-header">
-        <span class="tour-reviews-eyebrow">Testimonios</span>
-        <h2>Lo que dicen nuestros viajeros</h2>
+        <span class="tour-reviews-eyebrow">{t('Testimonios')}</span>
+        <h2>{t('Lo que dicen nuestros viajeros')}</h2>
       </div>
 
       <div class="tour-reviews-grid">
         {reviews.map((review) => (
           <article class="review-card">
-            <div class="review-card__stars" aria-label={`${review.rating} de 5 estrellas`}>
+            <div class="review-card__stars" aria-label={`${review.rating} ${t('de 5 estrellas')}`}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <svg
                   viewBox="0 0 24 24"
@@ -468,16 +486,18 @@ const getInitials = (name: string) =>
   </section>
 
   <div id="lightbox" class="lightbox" aria-hidden="true">
-    <button type="button" class="lightbox__close" aria-label="Cerrar">✕</button>
-    <button type="button" class="lightbox__nav lightbox__nav--prev" aria-label="Foto anterior">‹</button>
+    <button type="button" class="lightbox__close" aria-label={t('Cerrar')}>✕</button>
+    <button type="button" class="lightbox__nav lightbox__nav--prev" aria-label={t('Foto anterior')}>‹</button>
     <img class="lightbox__image" src="" alt="" />
-    <button type="button" class="lightbox__nav lightbox__nav--next" aria-label="Siguiente foto">›</button>
+    <button type="button" class="lightbox__nav lightbox__nav--next" aria-label={t('Siguiente foto')}>›</button>
   </div>
 
   <script type="application/json" id="gallery-data" set:html={JSON.stringify(galleryImages)} />
+  <script type="application/json" id="page-text" set:html={JSON.stringify(pageText)} />
 </Layout>
 
 <script>
+  const text = JSON.parse(document.getElementById('page-text')?.textContent || '{}');
   const bookingForm = document.querySelector<HTMLFormElement>('.js-booking-form');
 
   if (bookingForm) {
@@ -496,20 +516,20 @@ const getInitials = (name: string) =>
       const travelers = String(data.get('travelers') || '2');
       const rawDate = String(data.get('travelDate') || '');
       const travelDate = rawDate
-        ? new Intl.DateTimeFormat('es-PE', { dateStyle: 'long', timeZone: 'UTC' }).format(
+        ? new Intl.DateTimeFormat(text.locale, { dateStyle: 'long', timeZone: 'UTC' }).format(
             new Date(`${rawDate}T00:00:00Z`),
           )
-        : 'Por definir';
-      const product = bookingForm.dataset.product || 'experiencia';
-      const kind = bookingForm.dataset.kind || 'viaje';
+        : text.undefinedDate;
+      const product = bookingForm.dataset.product || text.product;
+      const kind = bookingForm.dataset.kind || text.kind;
       const whatsapp = bookingForm.dataset.whatsapp;
       if (!whatsapp) return;
 
       const message = [
-        `Hola, quiero una propuesta personalizada para el ${kind}: ${product}.`,
-        `Viajeros: ${travelers}.`,
-        `Fecha estimada: ${travelDate}.`,
-        `Página: ${window.location.href}`,
+        `${text.proposal} ${kind}: ${product}.`,
+        `${text.travelers}: ${travelers}.`,
+        `${text.date}: ${travelDate}.`,
+        `${text.page}: ${window.location.href}`,
       ].join('\n');
 
       window.open(
@@ -537,7 +557,7 @@ const getInitials = (name: string) =>
     const show = (index: number) => {
       currentIndex = (index + images.length) % images.length;
       lightboxImg.src = images[currentIndex];
-      lightboxImg.alt = `Foto ${currentIndex + 1} de ${images.length}`;
+      lightboxImg.alt = `${text.photo} ${currentIndex + 1} ${text.of} ${images.length}`;
     };
 
     const open = (index: number) => {

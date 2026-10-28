@@ -5,6 +5,8 @@ import QuoteForm from '../components/ui/QuoteForm.astro';
 import QuoteFab from '../components/ui/QuoteFab.astro';
 import WhatsAppFab from '../components/ui/WhatsAppFab.astro';
 import { sitePath } from '../lib/site-path';
+import Hreflang from '#kit/site/Hreflang.astro';
+import { defaultLang, enabledLangs, localeHref, pageLang, useT } from '../i18n/i18n';
 import '../styles/global.scss';
 
 interface Props {
@@ -15,10 +17,13 @@ interface Props {
   socialImage?: string;
 }
 
+const lang = pageLang(Astro.params);
+const t = useT(lang);
+
 const {
   title,
   mainClass,
-  description = 'Memories Travel Perú: tours, trekkings y paquetes personalizados con atención local desde Cusco.',
+  description = t('Memories Travel Perú: tours, trekkings y paquetes personalizados con atención local desde Cusco.'),
   preloadImage,
   socialImage,
 } = Astro.props;
@@ -27,13 +32,16 @@ const documentTitle = /memories travel/i.test(title)
   ? title
   : `${title} | Memories Travel Perú`;
 const metaDescription = description.trim().replace(/\s+/g, ' ').slice(0, 160);
+// La misma página en cada idioma (hreflang).
+const alternates = enabledLangs.map((code) => ({ code, href: localeHref(Astro.url, lang, code) }));
+
 const absoluteSocialImage = socialImage
   ? new URL(sitePath(socialImage), Astro.url).toString()
   : undefined;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={metaDescription} />
@@ -45,13 +53,14 @@ const absoluteSocialImage = socialImage
     <meta property="og:type" content="website" />
     {absoluteSocialImage && <meta property="og:image" content={absoluteSocialImage} />}
     <title>{documentTitle}</title>
+    <Hreflang alternates={alternates} defaultHref={localeHref(Astro.url, lang, defaultLang)} />
     {preloadImage && (
       <link rel="preload" as="image" href={sitePath(preloadImage)} fetchpriority="high" />
     )}
   </head>
 
   <body>
-    <a class="skip-link" href="#main-content">Saltar al contenido</a>
+    <a class="skip-link" href="#main-content">{t('Saltar al contenido')}</a>
 
     <div class="site-shell">
       <Header />

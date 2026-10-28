@@ -129,7 +129,12 @@
   font-weight: 800;
   letter-spacing: 0.04em;
 
-  &[aria-pressed='true'],
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+
+  &[aria-current='true'],
   &:hover {
     border-color: rgba($color-accent, 0.76);
     background: rgba($color-accent, 0.16);

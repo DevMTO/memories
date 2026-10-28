@@ -1,26 +1,32 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import TourCard from '../components/TourCard.astro';
-import { getAll } from '../lib/services/catalog';
-import { sitePath } from '../lib/site-path';
+import Layout from '../../layouts/Layout.astro';
+import TourCard from '../../components/TourCard.astro';
+import { getAll } from '../../lib/services/catalog';
+import { sitePath } from '../../lib/site-path';
 import './_tours.scss';
+import { getLangParams, pageLang, pagePath, useT } from '../../i18n/i18n';
+
+export const getStaticPaths = () => getLangParams().map((params) => ({ params }));
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 
-const allTours = await getAll();
+const allTours = await getAll(lang);
 const trekkings = allTours.filter((tour) => tour.isActive !== false && tour.kind === 'trekking');
 const durations = [
-  { label: 'Full day', value: '1' },
-  { label: '2 días', value: '2' },
-  { label: '4 días', value: '4' },
-  { label: '5 días', value: '5' },
+  { label: t('Full day'), value: '1' },
+  { label: `2 ${t('días')}`, value: '2' },
+  { label: `4 ${t('días')}`, value: '4' },
+  { label: `5 ${t('días')}`, value: '5' },
 ];
 ---
 
-<Layout title="Trekkings en Perú | Memories Travel Perú" mainClass="tours-page">
+<Layout title={t('Trekkings en Perú | Memories Travel Perú')} mainClass="tours-page">
   <section class="tours-hero" style={`--tours-hero-image: url('${sitePath('/images/cusco/camino-inka.webp')}')`}>
     <div class="tours-hero__overlay"></div>
     <div class="container tours-hero__content">
-      <h1>Nuestros trekkings</h1>
+      <h1>{t('Nuestros trekkings')}</h1>
     </div>
   </section>
 
@@ -28,11 +34,11 @@ const durations = [
     <div class="container tours-layout">
       <aside class="tours-sidebar">
         <button type="button" class="filters-toggle" id="tours-filter-toggle" aria-controls="tours-filters" aria-expanded="false">
-          <span>Filtrar trekkings</span><span aria-hidden="true">⌄</span>
+          <span>{t('Filtrar trekkings')}</span><span aria-hidden="true">⌄</span>
         </button>
         <div class="filters-box" id="tours-filters">
           <div class="filter-group">
-            <h3>Duración</h3>
+            <h3>{t('Duración')}</h3>
             <div class="filter-options">
               {durations.map((duration) => (
                 <label class="filter-check"><input type="checkbox" data-filter="duration" value={duration.value} /><span>{duration.label}</span></label>
@@ -40,7 +46,7 @@ const durations = [
             </div>
           </div>
           <div class="filter-actions">
-            <button type="button" class="filter-reset" id="resetFilters">Limpiar filtros</button>
+            <button type="button" class="filter-reset" id="resetFilters">{t('Limpiar filtros')}</button>
           </div>
         </div>
       </aside>
@@ -55,12 +61,12 @@ const durations = [
                 </div>
               ))}
             </div>
-            <p id="emptyResults" class="tours-empty" hidden>No encontramos trekkings con los filtros seleccionados.</p>
+            <p id="emptyResults" class="tours-empty" hidden>{t('No encontramos trekkings con los filtros seleccionados.')}</p>
           </>
         ) : (
           <div class="tours-empty">
-            <h3>No hay trekkings publicados</h3>
-            <p>Puedes administrarlos desde la interfaz privada de gestión.</p>
+            <h3>{t('No hay trekkings publicados')}</h3>
+            <p>{t('Puedes administrarlos desde la interfaz privada de gestión.')}</p>
           </div>
         )}
       </div>

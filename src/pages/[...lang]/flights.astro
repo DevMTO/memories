@@ -1,15 +1,20 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import ComingSoon from "../components/ui/ComingSoon.astro";
+import Layout from "../../layouts/Layout.astro";
+import ComingSoon from "../../components/ui/ComingSoon.astro";
+import { getLangParams, pageLang, pagePath, useT } from '../../i18n/i18n';
+
+export const getStaticPaths = () => getLangParams().map((params) => ({ params }));
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 ---
 
-<Layout title="Vuelos">
+<Layout title={t('Vuelos')}>
   <ComingSoon
-    i18nPrefix="flights"
-    eyebrow="Muy pronto"
-    title="Estamos preparando tus vuelos"
-    message="Muy pronto podrás reservar tus vuelos directamente con nosotros. Mientras tanto, nuestro equipo puede ayudarte a cotizarlos a medida."
+    eyebrow={t('Muy pronto')}
+    title={t('Estamos preparando tus vuelos')}
+    message={t('Muy pronto podrás reservar tus vuelos directamente con nosotros. Mientras tanto, nuestro equipo puede ayudarte a cotizarlos a medida.')}
   >
     <svg
       slot="icon"

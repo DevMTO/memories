@@ -1,16 +1,20 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import PackageCard from '../../components/PackageCard.astro';
-import TourCard from '../../components/TourCard.astro';
-import { sitePath } from '../../lib/site-path';
-import { getAll, getPackages } from '../../lib/services/catalog';
-import { getDestinationPage, getDestinationPages } from '../../lib/services/destinations';
+import Layout from '../../../layouts/Layout.astro';
+import PackageCard from '../../../components/PackageCard.astro';
+import TourCard from '../../../components/TourCard.astro';
+import { sitePath } from '../../../lib/site-path';
+import { getAll, getPackages } from '../../../lib/services/catalog';
+import { getDestinationPage, getDestinationPages } from '../../../lib/services/destinations';
 import './_destination-detail.scss';
+import { getLangParams, pageLang, pagePath, useT } from '../../../i18n/i18n';
 
 
 export async function getStaticPaths() {
-  return (await getDestinationPages()).map(({ slug }) => ({ params: { slug } }));
+  return (await getDestinationPages()).flatMap(({ slug }) => getLangParams().map(({ lang }) => ({ params: { lang, slug } })));
 }
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
 
 const { slug } = Astro.params;
 
@@ -27,10 +31,10 @@ const normalizeSlug = (value = '') =>
 
 const destinationSlug = normalizeSlug(slug || '');
 
-const destination = await getDestinationPage(destinationSlug);
+const destination = await getDestinationPage(destinationSlug, lang);
 
 if (!destination) {
-  return Astro.redirect(sitePath('/'));
+  return Astro.redirect(pagePath(lang, '/'));
 }
 
 const destinationImage = sitePath(destination.imageUrl);
@@ -38,8 +42,8 @@ const destinationTitleSuffix = destination.title.startsWith(destination.name)
   ? destination.title.slice(destination.name.length)
   : destination.title;
 
-const packagesRaw = await getPackages();
-const toursRaw = await getAll();
+const packagesRaw = await getPackages(lang);
+const toursRaw = await getAll(lang);
 
 const activePackages = (packagesRaw || []).filter((pkg) => pkg.isActive !== false);
 const activeTours = (toursRaw || []).filter((tour) => tour.isActive !== false);
@@ -104,7 +108,7 @@ const withSafeImage = (item: any, index: number) => ({
 ---
 
 <Layout
-  title={`${destination.name} | Destinos Memories Travel Perú`}
+  title={`${destination.name} | ${t('Destinos')} Memories Travel Perú`}
   mainClass="destination-detail-main"
 >
   <section class="destination-hero" style={`background-image: url('${destinationImage}');`}>
@@ -120,22 +124,22 @@ const withSafeImage = (item: any, index: number) => ({
   <div class="container destination-info-wrapper">
     <div class="destination-info-bar">
       <div>
-        <span>Altitud</span>
-        <strong>{destination.altitude || 'Variable'}</strong>
+        <span>{t('Altitud')}</span>
+        <strong>{destination.altitude || t('Variable')}</strong>
       </div>
 
       <div>
-        <span>Clima</span>
-        <strong>{destination.climate || 'Según temporada'}</strong>
+        <span>{t('Clima')}</span>
+        <strong>{destination.climate || t('Según temporada')}</strong>
       </div>
 
       <div>
-        <span>Mejor temporada</span>
-        <strong>{destination.bestSeason || 'Todo el año'}</strong>
+        <span>{t('Mejor temporada')}</span>
+        <strong>{destination.bestSeason || t('Todo el año')}</strong>
       </div>
 
       <div>
-        <span>Experiencias</span>
+        <span>{t('Experiencias')}</span>
         <strong>{destinationPackages.length + destinationTours.length}</strong>
       </div>
     </div>
@@ -144,7 +148,7 @@ const withSafeImage = (item: any, index: number) => ({
   <section class="destination-intro-section">
     <div class="container destination-intro-grid">
       <div>
-        <span class="destination-eyebrow">Destino destacado</span>
+        <span class="destination-eyebrow">{t('Destino destacado')}</span>
         <h2><span class="notranslate" translate="no">{destination.name}</span>{destinationTitleSuffix}</h2>
       </div>
 
@@ -155,11 +159,10 @@ const withSafeImage = (item: any, index: number) => ({
   <section class="destination-products-section">
     <div class="container">
       <div class="destination-section-header">
-        <span class="destination-eyebrow">Paquetes disponibles</span>
-        <h2>Viajes a <span class="notranslate" translate="no">{destination.name}</span></h2>
+        <span class="destination-eyebrow">{t('Paquetes disponibles')}</span>
+        <h2>{t('Viajes a')} <span class="notranslate" translate="no">{destination.name}</span></h2>
         <p>
-          Programas diseñados para conocer este destino con una operación organizada,
-          rutas cuidadas y acompañamiento profesional.
+          {t('Programas diseñados para conocer este destino con una operación organizada, rutas cuidadas y acompañamiento profesional.')}
         </p>
       </div>
 
@@ -172,9 +175,9 @@ const withSafeImage = (item: any, index: number) => ({
           </div>
         ) : (
           <div class="destination-empty">
-            <h3>No hay paquetes activos para <span class="notranslate" translate="no">{destination.name}</span></h3>
+            <h3>{t('No hay paquetes activos para')} <span class="notranslate" translate="no">{destination.name}</span></h3>
             <p>
-              Puedes solicitar una propuesta personalizada para este destino.
+              {t('Puedes solicitar una propuesta personalizada para este destino.')}
             </p>
           </div>
         )
@@ -187,11 +190,10 @@ const withSafeImage = (item: any, index: number) => ({
       <section class="destination-products-section destination-products-section--tours">
         <div class="container">
           <div class="destination-section-header">
-            <span class="destination-eyebrow">Experiencias seleccionadas</span>
-            <h2>Tours en <span class="notranslate" translate="no">{destination.name}</span></h2>
+            <span class="destination-eyebrow">{t('Experiencias seleccionadas')}</span>
+            <h2>{t('Tours en')} <span class="notranslate" translate="no">{destination.name}</span></h2>
             <p>
-              Actividades y recorridos para complementar tu visita con cultura,
-              paisajes y experiencias locales.
+              {t('Actividades y recorridos para complementar tu visita con cultura, paisajes y experiencias locales.')}
             </p>
           </div>
 
@@ -208,29 +210,26 @@ const withSafeImage = (item: any, index: number) => ({
   <section class="destination-tips-section">
     <div class="container destination-tips-grid">
       <article>
-        <span>Consejo de viaje</span>
-        <h3>Planifica con anticipación</h3>
+        <span>{t('Consejo de viaje')}</span>
+        <h3>{t('Planifica con anticipación')}</h3>
         <p>
-          Algunos ingresos, trenes y horarios pueden tener disponibilidad limitada.
-          Reservar con tiempo ayuda a organizar mejor la ruta.
+          {t('Algunos ingresos, trenes y horarios pueden tener disponibilidad limitada. Reservar con tiempo ayuda a organizar mejor la ruta.')}
         </p>
       </article>
 
       <article>
-        <span>Experiencia local</span>
-        <h3>Viaja con contexto</h3>
+        <span>{t('Experiencia local')}</span>
+        <h3>{t('Viaja con contexto')}</h3>
         <p>
-          Cada destino tiene historia, cultura y particularidades. Un buen guiado
-          hace que la experiencia sea más completa y significativa.
+          {t('Cada destino tiene historia, cultura y particularidades. Un buen guiado hace que la experiencia sea más completa y significativa.')}
         </p>
       </article>
 
       <article>
-        <span>Operación</span>
-        <h3>Logística organizada</h3>
+        <span>{t('Operación')}</span>
+        <h3>{t('Logística organizada')}</h3>
         <p>
-          Traslados, tiempos de ruta, ingresos y coordinación son claves para que
-          el viaje fluya sin preocupaciones.
+          {t('Traslados, tiempos de ruta, ingresos y coordinación son claves para que el viaje fluya sin preocupaciones.')}
         </p>
       </article>
     </div>
