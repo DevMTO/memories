@@ -8,8 +8,8 @@ After=network.target
 User=@USER@
 Group=@USER@
 WorkingDirectory=/srv/@APP@/pocketbase
-# EDITOR_EMAIL, EDITOR_PASSWORD, BUILD_REQUEST_DIR, PUBLISH_CALLBACK_SECRET,
-# DEPLOY_WEBHOOK_SECRET.
+# EDITOR_EMAIL, EDITOR_PASSWORD (solo para crear el editor la primera vez),
+# BUILD_REQUEST_DIR, PUBLISH_CALLBACK_SECRET, DEPLOY_WEBHOOK_SECRET.
 EnvironmentFile=/etc/@APP@/pocketbase.env
 ExecStart=/srv/@APP@/pocketbase/bin/pocketbase serve \
   --http=127.0.0.1:@PB_PORT@ \

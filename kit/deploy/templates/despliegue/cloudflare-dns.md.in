@@ -1,0 +1,2 @@
+En Cloudflare, DNS → Records, con el proxy desactivado (DNS only): los atiende la VM con su
+propio certificado.

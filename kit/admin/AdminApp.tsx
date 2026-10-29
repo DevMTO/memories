@@ -5,6 +5,7 @@ import { setConfig, type AdminConfig, type SectionDef } from './config';
 import { connect, pb } from './lib/pocketbase';
 import { PreviewButton, PublishButton, PublishProvider, PublishStatus } from './lib/publish';
 import { useRoute } from './lib/router';
+import { Account } from './screens/Account';
 import { Dashboard } from './screens/Dashboard';
 import { FormScreen } from './screens/FormScreen';
 import { ListScreen } from './screens/ListScreen';
@@ -98,6 +99,9 @@ function Shell({ config, onLogout }: { config: AdminConfig; onLogout: () => void
           <a className="btn btn-ghost" href={config.siteUrl ?? '/'} target="_blank" rel="noopener">
             Ver sitio ↗
           </a>
+          <a className={`btn btn-ghost${current === ACCOUNT ? ' is-active' : ''}`} href={`#/${ACCOUNT}`}>
+            Mi cuenta
+          </a>
           <button type="button" className="btn btn-ghost" onClick={() => confirm('¿Cerrar sesión?') && onLogout()}>
             Salir
           </button>
@@ -122,9 +126,13 @@ function Shell({ config, onLogout }: { config: AdminConfig; onLogout: () => void
   );
 }
 
+// Pantalla propia del kit, fuera del menú del proyecto (enlace "Mi cuenta" arriba).
+const ACCOUNT = 'cuenta';
+
 function Screen({ section, route }: { section: SectionDef | undefined; route: string[] }) {
   const [key = '', id, extra] = route;
   if (!key) return <Dashboard />;
+  if (key === ACCOUNT && !section) return <Account />;
   switch (section?.kind) {
     case 'collection':
       if (id === 'borrados') return <TrashScreen def={section} />;

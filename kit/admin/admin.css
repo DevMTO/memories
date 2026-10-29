@@ -977,7 +977,7 @@ ul.plain {
   border-top: 1px solid var(--border);
 }
 
-/* ── Bandeja ─────────────────────────────────────────────── */
+/* ── Pestañas, detalles y casillas ───────────────────────── */
 .nav-count {
   float: right;
   min-width: 1.5rem;
@@ -1050,15 +1050,7 @@ ul.plain {
   margin: 0.5rem 0;
 }
 
-.inline-select {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
 
-.inline-select select {
-  width: auto;
-}
 
 /* ── Login ───────────────────────────────────────────────── */
 .login-page {

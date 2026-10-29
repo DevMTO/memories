@@ -212,9 +212,10 @@ build_preview() {
   echo "Vista previa ($(date -Is))"
   report building
   local token
-  token=$(curl -fsS -X POST "$PB_API/collections/editors/auth-with-password" \
-    -H 'Content-Type: application/json' \
-    -d "$(node -e 'process.stdout.write(JSON.stringify({ identity: process.argv[1], password: process.argv[2] }))' "$EDITOR_EMAIL" "$EDITOR_PASSWORD")" |
+  # Token del editor que da PocketBase con el secreto del build (no hace falta su
+  # contraseña, que el editor cambia en /admin).
+  token=$(curl -fsS -X POST "$PB_API/preview/token" \
+    -H "X-Publish-Secret: $PUBLISH_CALLBACK_SECRET" |
     node -e 'let s = ""; process.stdin.on("data", (d) => (s += d)).on("end", () => process.stdout.write(JSON.parse(s).token))')
   local offline=1
   if [ -n "$preview_translate" ]; then offline=0; fi

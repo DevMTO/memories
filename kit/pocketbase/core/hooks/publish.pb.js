@@ -11,6 +11,9 @@
 //   GET  /api/preview/key        (solo editores) → PREVIEW_KEY: con esa cookie el servidor
 //                                                   web sirve la vista previa en las mismas URLs.
 //   POST /api/publish/:id/status (con secreto)   → kit/deploy/build.sh reporta building|done|failed|skipped.
+//   POST /api/preview/token      (con secreto)   → token del editor para que build.sh lea lo
+//                                                   oculto en la vista previa, sin su contraseña
+//                                                   (el editor la cambia en /admin).
 //
 // BUILD_REQUEST_DIR y PUBLISH_CALLBACK_SECRET van en el entorno del servicio de
 // PocketBase en el VPS. Un path unit de systemd (kit/deploy/templates/build.path.in) lanza el
@@ -89,6 +92,19 @@ routerAdd('GET', '/api/preview/key', (e) => {
   const key = $os.getenv('PREVIEW_KEY') || ''
   if (!key) return e.json(404, { message: 'Vista previa sin configurar (PREVIEW_KEY).' })
   return e.json(200, { key: key })
+})
+
+// POST /api/preview/token — solo kit/deploy/build.sh (con PUBLISH_CALLBACK_SECRET): un
+// token del editor, para leer como él (ocultos incluidos) al armar la vista previa.
+routerAdd('POST', '/api/preview/token', (e) => {
+  const secret = $os.getenv('PUBLISH_CALLBACK_SECRET') || ''
+  if (!secret) return e.json(500, { message: 'PUBLISH_CALLBACK_SECRET no definido.' })
+  if (e.request.header.get('X-Publish-Secret') !== secret) {
+    return e.json(401, { message: 'Secreto inválido.' })
+  }
+  const editors = $app.findAllRecords($app.findCollectionByNameOrId('editors'))
+  if (!editors.length) return e.json(404, { message: 'No hay editor.' })
+  return e.json(200, { token: editors[0].newAuthToken() })
 })
 
 // POST /api/publish/:id/status — solo kit/deploy/build.sh (con PUBLISH_CALLBACK_SECRET).

@@ -1,41 +1,45 @@
 <?php
-// Configuración de form.php. Copiar a ~/form-relay/config.php en el hosting
-// (fuera de public_html: tiene la contraseña del SMTP). Ver README.md.
+// Configuración de form.php, una para todos los sitios. Copiar a
+// ~/form-relay/config.php en el hosting del relay (fuera de public_html: tiene la
+// contraseña del SMTP). Ver README.md.
 return [
-    // Orígenes del sitio que pueden enviar (exactos, con https y sin / final).
-    'allowed_origins' => ['https://example.com', 'https://www.example.com'],
-
-    // Adónde llegan los formularios (una dirección o varias).
-    'to' => 'info@example.com',
-
-    // Cuenta de correo del hosting que envía (cPanel → Email Accounts →
-    // Connect Devices). 465 = TLS directo, 587 = STARTTLS.
+    // Cuenta del hosting del relay que envía todos los correos (cPanel → Email
+    // Accounts → Connect Devices). 465 = TLS directo, 587 = STARTTLS. El nombre del
+    // remitente es el del sitio.
     'smtp' => [
-        'host' => 'mail.example.com',
+        'host' => 'mail.relay-domain.com',
         'port' => 465,
-        'user' => 'no-reply@example.com',
+        'user' => 'no-reply@relay-domain.com',
         'pass' => '',
-        'from_name' => 'Sitio web',
     ],
 
-    // Envíos por IP en la ventana (segundos).
+    // Zona horaria de los correlativos (el año del número).
+    'timezone' => 'America/Lima',
+    // Envíos por IP, sitio y formulario en la ventana (segundos). Los formularios con
+    // copia a quien lo envía tienen el suyo, más bajo.
     'rate_limit' => ['max' => 5, 'window' => 600],
-    // true solo si el sitio está detrás de Cloudflare (proxy naranja).
+    'copy_rate_limit' => ['max' => 3, 'window' => 600],
+    // true solo si los sitios están detrás de Cloudflare (proxy naranja).
     'trust_cloudflare' => false,
 
-    // Formularios aceptados: data-collection del <form> → campos (en el orden del
-    // correo). Los campos que no estén aquí se ignoran.
-    'forms' => [
-        'leads' => [
-            'subject' => 'Nueva solicitud de contacto',
-            'fields' => [
-                'name' => ['label' => 'Nombre', 'required' => true, 'max' => 200],
-                'email' => ['label' => 'Correo', 'required' => true, 'type' => 'email', 'max' => 200],
-                'phone' => ['label' => 'Teléfono', 'max' => 50],
-                'interest' => ['label' => 'Interés', 'max' => 200],
-                'lang' => ['label' => 'Idioma', 'max' => 10],
-                'message' => ['label' => 'Mensaje', 'max' => 5000],
-            ],
+    // Dominio del sitio → cómo llegan sus formularios. El dominio vale también para
+    // sus subdominios (www., editor. de la vista previa).
+    //   key     clave del sitio (openssl rand -hex 32), la misma que FORMS_RELAY_KEY en
+    //           el build del sitio: con ella el build firma el buzón elegido en /admin
+    //           ("Datos de la empresa") y el relay solo envía a una dirección firmada.
+    //   to      buzón (o lista) para los envíos sin firma (sitio sin clave, o sin correo
+    //           en /admin). Opcional si el sitio tiene `key`.
+    //   name    remitente y encabezado del correo (si no, el dominio).
+    //   copy    formularios que envían copia a quien los llenó (al correo que escribió).
+    //   number  formularios con número correlativo por año ({code}: 2026-00001…).
+    'sites' => [
+        'example.com' => ['key' => '', 'to' => 'info@example.com', 'name' => 'Mi Sitio'],
+        'otro-ejemplo.com' => [
+            'key' => '',
+            'to' => 'respaldo@otro-ejemplo.com',
+            'name' => 'Otro Sitio',
+            'copy' => ['claims'],
+            'number' => ['claims'],
         ],
     ],
 ];

@@ -2,8 +2,8 @@
 
 Los visitantes ven el sitio en un hosting compartido con cPanel (se asume Banahosting:
 LiteSpeed, CloudLinux, sin SSH), y el DNS del dominio está en la zona DNS del hosting. El
-VPS (PocketBase, el editor `/admin` con su vista previa y los builds) se instala con la
-guía del servidor del proyecto. Al publicar, el VPS construye el sitio y sube por FTPS a
+VPS (PocketBase, el editor `/admin` con su vista previa y los builds) se instala con
+`kit/deploy/vps.md`. Al publicar, el VPS construye el sitio y sube por FTPS a
 `public_html` solo los archivos que cambiaron.
 
 La otra opción para el sitio público es Cloudflare Pages (`cloudflare-pages.md`).
@@ -12,7 +12,7 @@ La otra opción para el sitio público es Cloudflare Pages (`cloudflare-pages.md
 |---|---|---|
 | Sitio para los visitantes | Hosting compartido (`example.com`, carpeta `public_html`), subido por el build por FTPS | `kit/deploy/build.sh` (`deploy_ftp`), `kit/deploy/templates/public*.htaccess*` |
 | Sitio para el editor (`/admin`) y vista previa | VPS, `editor.example.com` | `deploy/Caddyfile` o `deploy/nginx.conf` |
-| PocketBase | VPS, `pb.example.com` | `pocketbase/`, `deploy/pocketbase.service` |
+| PocketBase | VPS, `pb.example.com` | `pocketbase/`, `deploy/<PB_SERVICE>.service` |
 | Build (botón "Publicar", push a `deploy`, vista previa) | VPS, `<unit>-build.service` | `kit/deploy/build.sh`, `deploy/<unit>-build.*` |
 | Credenciales de FTP | VPS, `/etc/<app>/cpanel.env` | — |
 | HTTPS del sitio público | AutoSSL de cPanel | — |
@@ -26,87 +26,42 @@ La otra opción para el sitio público es Cloudflare Pages (`cloudflare-pages.md
   VM (1 GB al mes gratis en Google Cloud) lo gastan el editor y las subidas. Por eso cada
   publicación sube solo lo que cambió: una corrección de texto son unas pocas páginas
   HTML, no el sitio entero.
-- El sitio sigue en línea aunque el VPS esté caído; solo dejan de funcionar `/admin`, los
-  formularios y la publicación.
+- El sitio sigue en línea aunque el VPS esté caído; solo dejan de funcionar `/admin` y la
+  publicación (los formularios van por el relay, no por el VPS).
 - El hosting no puede reemplazar al VPS. Un plan compartido no corre PocketBase ni el build:
   - no hay SSH (Banahosting no lo da en compartidos), solo FTP y el panel;
   - no hay procesos permanentes, y PocketBase tiene que estar siempre encendido;
   - CloudLinux limita CPU y memoria por cuenta, y `astro build` (con `sharp` para las
     imágenes) los pasaría.
 
-## Antes del VPS (una vez)
+## Instalarlo
 
-En cPanel:
+Los pasos, con los valores del sitio, están en su `deploy/despliegue.md`: "Antes del VPS",
+el `cpanel.env` en "En la VM" y "Después del primer build". Lo que conviene saber:
 
-1. **DNS:** los nameservers del dominio (en su registrador) son los del hosting
-   (p. ej. `ns1.banahosting.com` y `ns2.banahosting.com`); si el dominio se contrató con el
-   hosting, ya lo son. `example.com`, `www` y los registros del correo ya apuntan al hosting.
-   Faltan los dos del VPS, en **Zone Editor** → el dominio → **Manage**:
-
-   | Type | Name | Record |
-   |---|---|---|
-   | `CNAME` | `editor.example.com.` | `SUBDOMINIO.duckdns.org.` (el nombre fijo de la VM) |
-   | `CNAME` | `pb.example.com.` | ídem |
-
-   Solo registros DNS: no se crean como subdominios en **Domains**, porque los atiende el
-   VPS, no el hosting.
-2. **Cuenta FTP solo para el build:** **FTP Accounts** → crear una cuenta (p. ej.
-   `deploy@example.com`) con contraseña larga y **Directory** = `public_html` (o la carpeta
-   del dominio adicional si el sitio no es el dominio principal). Así el build no puede
-   tocar nada fuera del sitio.
-3. **Servidor FTPS:** en esa cuenta, **Configure FTP Client** muestra el servidor. Usar el
-   nombre del servidor del hosting (p. ej. `server123.banahosting.com`), que es el que
-   figura en el certificado del FTP. `ftp.example.com` apunta al mismo lugar, pero el
-   certificado suele no nombrarlo y entonces la conexión falla. Puerto 21, FTPS explícito
-   (el build lo exige: no envía la contraseña sin cifrar).
-4. **Vaciar `public_html`** del sitio anterior (File Manager), salvo `.well-known` y
-   `cgi-bin`.
-   - El build borra solo archivos que él mismo subió; cualquier otro archivo en
-     `public_html` queda ahí indefinidamente.
-   - Nada propio va en `public_html`. Los relays PHP (`kit/forms/relay/`), por ejemplo, van
-     en un subdominio con su propia carpeta.
-5. Nada que configurar para PHP, bases de datos ni Node.js: el sitio son archivos.
-
-## En el VPS (una vez)
-
-- **Paquetes:** en el paso de paquetes de la guía del servidor, además `lftp`
-  (`apt install lftp`).
-- **Archivos de entorno:** en ese paso, además `/etc/<app>/cpanel.env` (`chmod 600`, dueño
-  root; solo lo lee el build, no PocketBase):
-  ```sh
-  CPANEL_FTP_HOST=server123.banahosting.com
-  CPANEL_FTP_USER=deploy@example.com
-  CPANEL_FTP_PASSWORD=...
-  ```
-  - `CPANEL_FTP_DIR` (opcional, por defecto `/`) es la carpeta dentro de la cuenta FTP. Con
-    la cuenta de arriba, la raíz ya es `public_html`.
-  - Sin este archivo el build no sube nada y el sitio queda solo en el VPS.
-- **`build.env`:**
-  - `SITE_URL=https://example.com`: la dirección del hosting, no la del editor. Con ella se
-    arman los canónicos y `hreflang`.
-  - `EDITOR_URL`: va en la redirección de `/admin`.
-- **Servicio de build:** el `<unit>-build.service` que genera `kit/deploy/render.sh` lee
-  `cpanel.env` si existe.
-
-## Después del primer build (una vez)
-
-Cuando el VPS ya construyó el sitio con contenido (último paso de la guía del servidor):
-
-1. **HTTPS:** cPanel → **SSL/TLS Status**: `example.com` y `www` tienen que tener
-   certificado. AutoSSL lo emite y lo renueva solo; **Run AutoSSL** lo fuerza.
-2. **`www`:** cPanel → **Redirects** → permanente (301) de `www.example.com` a
-   `https://example.com/`.
-3. **Comprobar** desde tu máquina:
-   ```sh
-   curl -I https://example.com/                 # 200, Cache-Control: no-cache
-   curl -I https://example.com/admin/           # 302 a https://editor.example.com/admin/
-   curl -I https://example.com/_astro/<un archivo de dist/_astro>   # Cache-Control: … immutable
-   ```
+- **DNS:** los nameservers del dominio son los del hosting (si el dominio se contrató con el
+  hosting, ya lo son). `editor` y `pb` son solo registros DNS a la VM en el **Zone Editor**:
+  no se crean como subdominios en **Domains**, porque los atiende la VM, no el hosting.
+- **Cuenta FTP limitada a `public_html`** (o a la carpeta del dominio): así el build no puede
+  tocar nada fuera del sitio.
+- **Servidor FTPS:** el nombre del servidor del hosting (el de **Configure FTP Client**, p.
+  ej. `server123.banahosting.com`), que es el que figura en el certificado del FTP.
+  `ftp.<dominio>` apunta al mismo lugar, pero el certificado suele no nombrarlo y la
+  conexión falla. Puerto 21, FTPS explícito: el build no envía la contraseña sin cifrar.
+  `CPANEL_FTP_DIR` (opcional, por defecto `/`) es la carpeta dentro de la cuenta FTP.
+- **`public_html` vacío al empezar** (salvo `.well-known` y `cgi-bin`): el build borra solo
+  lo que él mismo subió. Nada propio va en `public_html`; el relay de formularios, por
+  ejemplo, va en un subdominio con su propia carpeta (`kit/forms/relay/`).
+- Nada que configurar para PHP, bases de datos ni Node.js: el sitio son archivos.
+- **`build.env`:** `SITE_URL` es la dirección del hosting, no la del editor (canónicos y
+  `hreflang`); `EDITOR_URL` va en la redirección de `/admin`.
+- **HTTPS y `www`:** AutoSSL de cPanel emite y renueva el certificado; `www` se redirige con
+  un 301 en **Redirects**.
 
 ## Cómo se reconstruye
 
-La automatización está en el VPS (ver "Cómo se despliega" en la guía del servidor). Al
-final de cada build, `deploy_ftp`:
+La automatización está en el VPS (ver "Cómo se despliega" en `kit/deploy/vps.md`). Al final
+de cada build, `deploy_ftp`:
 
 - **Botón "Publicar"** (cambios de contenido) y **push a `deploy`** (cambios de código):
   construye, copia el sitio al editor y lo sube al hosting. Si el push no toca el sitio, no

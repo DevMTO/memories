@@ -1,0 +1,11 @@
+El build sube el sitio con `wrangler pages deploy` al proyecto de Pages.
+
+| Qué | Configuración |
+|---|---|
+| Dominio | `@SITE_HOST@` en Cloudflare (nameservers del registrador apuntando a Cloudflare), con los registros del correo (`MX`, `mail`, `TXT` de SPF/DKIM) |
+| Proyecto de Pages | `@CF_PAGES_PROJECT@`, rama de producción `main` (`npx wrangler pages project create @CF_PAGES_PROJECT@ --production-branch=main`) |
+| Dominio del proyecto | Custom domain `@SITE_HOST@` (sin otro registro `A` para `@SITE_HOST@`) |
+| `www` | Redirect Rule "Redirect from WWW to root" |
+
+Con el primer build, `https://@SITE_HOST@/` responde 200 y `https://@SITE_HOST@/admin/`
+redirige (302) a `https://@EDITOR_HOST@/admin/`.

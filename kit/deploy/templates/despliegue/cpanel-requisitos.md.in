@@ -1,0 +1,3 @@
+- **El hosting con cPanel:** el dominio `@SITE_HOST@` con sus nameservers en el hosting (si
+  se contrató con el hosting, ya lo están). En el hosting no hay nada que instalar: el sitio
+  son archivos que sube el build.

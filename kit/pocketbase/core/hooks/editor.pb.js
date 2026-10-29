@@ -1,37 +1,36 @@
 /// <reference path="../../../../pocketbase/pb_data/types.d.ts" />
-// El único editor de /admin sale de EDITOR_EMAIL y EDITOR_PASSWORD
-// (/etc/<app>/pocketbase.env en el VPS, .env en local). En cada
-// arranque del servidor (después de las migraciones) se crea o actualiza:
-// cambiar EDITOR_PASSWORD cambia la contraseña. Cualquier otro editor se elimina.
+// El único editor de /admin. La primera vez que arranca el servidor (después de las
+// migraciones) se crea con EDITOR_EMAIL y EDITOR_PASSWORD (/etc/<app>/pocketbase.env
+// en el VPS, .env en local); después la contraseña la cambia el editor desde /admin
+// ("Mi cuenta") y estas variables ya no la pisan. Si hubiera otro editor, se elimina.
+//
+// Contraseña olvidada o cambio de correo: el superusuario lo hace en el dashboard de
+// PocketBase (/_/ → editors).
 
 $app.onServe().bindFunc((e) => {
   e.next();
 
+  const collection = e.app.findCollectionByNameOrId('editors');
+  const editors = e.app.findAllRecords(collection);
   const email = $os.getenv('EDITOR_EMAIL');
-  const password = $os.getenv('EDITOR_PASSWORD');
-  if (!email || !password) {
-    console.warn('EDITOR_EMAIL / EDITOR_PASSWORD no definidos: no hay editor para /admin.');
+
+  if (editors.length === 0) {
+    const password = $os.getenv('EDITOR_PASSWORD');
+    if (!email || !password) {
+      console.warn('EDITOR_EMAIL / EDITOR_PASSWORD no definidos: no hay editor para /admin.');
+      return;
+    }
+    const editor = new Record(collection);
+    editor.setEmail(email);
+    editor.setVerified(true);
+    editor.setPassword(password);
+    e.app.save(editor);
     return;
   }
 
-  const collection = e.app.findCollectionByNameOrId('editors');
-
-  let editor;
-  try {
-    editor = e.app.findAuthRecordByEmail(collection, email);
-  } catch (_) {
-    editor = new Record(collection);
-    editor.setEmail(email);
-    editor.setVerified(true);
-  }
-
-  // Solo se cambia si hace falta: cambiar la contraseña cierra las sesiones abiertas.
-  if (editor.isNew() || !editor.validatePassword(password)) {
-    editor.setPassword(password);
-    e.app.save(editor);
-  }
-
-  for (const other of e.app.findAllRecords(collection)) {
-    if (other.id !== editor.id) e.app.delete(other);
+  // Uno solo: el de EDITOR_EMAIL si existe, si no el más antiguo.
+  const keep = editors.find((r) => r.email() === email) || editors.sort((a, b) => (a.getString('created') < b.getString('created') ? -1 : 1))[0];
+  for (const other of editors) {
+    if (other.id !== keep.id) e.app.delete(other);
   }
 });

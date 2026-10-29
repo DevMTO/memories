@@ -1,5 +1,6 @@
 // Inicio de sesión del editor (colección `editors`). Sin registro ni "olvidé mi
-// contraseña": la contraseña es el secreto EDITOR_PASSWORD.
+// contraseña": el editor la cambia en "Mi cuenta"; si la olvida, el superusuario la
+// cambia en el dashboard de PocketBase (/_/ → editors).
 import { useState, type FormEvent } from 'react';
 import { ClientResponseError } from 'pocketbase';
 import { errorMessage, pb } from '../lib/pocketbase';

@@ -10,8 +10,10 @@ El sitio se construye en el VPS cuando el editor pulsa **Publicar** o **Vista pr
    construye, publica en `/srv/$APP/site` (el sitio del editor) y en la copia pública, y
    le informa a PocketBase el estado. `/admin` lo muestra en vivo.
 
-El paso a paso del servidor (VM, PocketBase, servidor web, SMTP, backups) es de cada
-proyecto; el del sitio público, de su guía (abajo).
+Cómo funciona el VPS y cómo se prepara una vez: `vps.md`. Los comandos de cada sitio, con sus
+valores (instalarlo, el sitio público, backups, el día a día): su `deploy/despliegue.md`,
+generado desde `deploy/site.env` (abajo). Las guías del sitio público explican sus opciones
+(abajo).
 
 ## Dónde ven el sitio los visitantes
 
@@ -38,11 +40,30 @@ En cada build compara las migraciones y hooks instalados con los del repo (kit +
 `pocketbase.ts assemble`). Si difieren, los actualiza y reinicia PocketBase; así también
 repara un PocketBase que haya quedado desactualizado.
 
-## render.sh: archivos de systemd, Caddy y nginx
+## render.sh: archivos de `deploy/` y la guía del sitio
+
+Los valores de cada sitio van en `deploy/site.env` (sintaxis de shell, sin secretos):
 
 ```sh
-kit/deploy/render.sh deploy APP=misitio PB_PORT=8091 PB_SERVICE=misitio-pocketbase \
-  EDITOR_HOST=editor.misitio.com PB_HOST=pb.misitio.com
+SITE_NAME="Mi Sitio"
+APP=misitio
+PB_PORT=8091
+PUBLIC=cpanel                 # cpanel | cloudflare
+SITE_HOST=misitio.com
+EDITOR_HOST=editor.misitio.com
+PB_HOST=pb.misitio.com
+DUCKDNS=mivm                  # nombre de DuckDNS de la VM (mivm.duckdns.org)
+BACKUP_CRON="30 9 * * *"      # backups de PocketBase (UTC), uno distinto por sitio
+ENABLED_LANGS=es,en,pt        # vacío si el sitio fija sus idiomas en código
+DEFAULT_LANG=en
+FORMS=relay                   # none | relay (kit/forms/relay/)
+RELAY_OPTIONS=""              # claves extra de su línea en la tabla del relay
+# CF_PAGES_PROJECT=misitio    # con PUBLIC=cloudflare (por defecto APP)
+```
+
+```sh
+kit/deploy/render.sh deploy                # con los valores de deploy/site.env
+kit/deploy/render.sh deploy PB_PORT=8093   # un valor puntual pisa el de site.env
 ```
 
 Escribe en `deploy/` del proyecto:
@@ -50,9 +71,15 @@ Escribe en `deploy/` del proyecto:
 - `<UNIT>-build.path` y `<UNIT>-build.service`
 - `<PB_SERVICE>.service`
 - `Caddyfile` y `nginx.conf`
+- `despliegue.md`: los comandos para instalar y operar el sitio, con sus valores: DNS y
+  sitio público, la VM (carpetas, deploy key, variables, servicios, servidor web, primer
+  build), contenido, webhook, formularios, backups y el día a día. Solo quedan por escribir
+  cuentas y secretos (`CAMBIAR`).
 
-`UNIT` y `USER` son por defecto `APP`. Se commitean y se copian al VPS como dice cada
-archivo. El comando con los valores de cada sitio va en su documentación de despliegue.
+Por defecto `UNIT` es `APP`, `PB_SERVICE` es `<APP>-pocketbase` y `USER` es `sites` (el
+usuario común de todos los sitios, ver `vps.md`); la lista completa de valores está al
+principio de `render.sh`. Lo generado se commitea y no se edita a mano: para cambiar algo,
+`site.env` (o la plantilla del kit) y volver a correrlo.
 
 ## Varios sitios en un VPS
 
@@ -60,9 +87,10 @@ Un VPS chico (p. ej. la e2-micro gratuita de Google Cloud: el nivel gratuito es 
 por cuenta de facturación) alcanza para varios sitios cuando los visitantes ven el sitio
 público en otro lado (Pages o cPanel):
 
-- Cada sitio con su `APP`, su usuario, su `PB_PORT`, su `PB_SERVICE`
-  (`<app>-pocketbase`) y sus subdominios `editor` y `pb`. Generar sus archivos con
-  `render.sh` y esos valores.
+- Cada sitio con su `APP`, su `PB_PORT`, su `PB_SERVICE` (`<app>-pocketbase`) y sus
+  subdominios `editor` y `pb`. Generar sus archivos con `render.sh` y esos valores. Todos
+  corren con el mismo usuario, `sites`. La VM se prepara con `vps.md`; cada sitio, con su
+  `deploy/despliegue.md`.
 - Un PocketBase por sitio: cada uno es un proceso chico con su propia base (SQLite), y
   mientras nadie edita casi no usa memoria.
 - Los builds son lo pesado. `build.sh` toma un candado común a todo el servidor

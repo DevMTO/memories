@@ -1,0 +1,153 @@
+<!--
+  Generado por kit/deploy/render.sh desde deploy/site.env: no editar a mano. Para cambiar
+  un valor, editar site.env y correr `kit/deploy/render.sh deploy`.
+-->
+
+# Despliegue de @SITE_NAME@
+
+Qué necesita este sitio en el VPS y en el hosting: valores, DNS, archivos y su contenido. El
+orden de instalación y el porqué de cada parte están en `kit/deploy/vps.md` ("Instalar un
+sitio") y en `kit/deploy/@PUBLIC_GUIDE@`. `CAMBIAR` marca cuentas y secretos, que no van en
+el repo.
+
+## Valores
+
+| Qué | Valor |
+|---|---|
+| Nombre en el VPS | `@APP@` (`/srv/@APP@`, `/etc/@APP@`) |
+| Usuario del sistema | `@USER@` |
+| PocketBase | servicio `@PB_SERVICE@`, en `127.0.0.1:@PB_PORT@` |
+| Build | `@UNIT@-build.service`, lanzado por `@UNIT@-build.path` |
+| Rama que se publica | `deploy` |
+| Sitio público | @PUBLIC_LABEL@, `@SITE_HOST@` |
+| Editor y vista previa | `@EDITOR_HOST@` |
+| API de PocketBase | `@PB_HOST@` |
+| Nombre fijo de la VM | `@DUCKDNS@.duckdns.org` |
+| Backups automáticos | cron `@BACKUP_CRON@` (UTC) |
+
+## Requisitos
+
+- La VM preparada con `kit/deploy/vps.md` (DuckDNS, paquetes, el usuario `@USER@` y el
+  servidor web).
+@PUBLIC_REQUISITOS@
+@FORMS_REQUISITOS@
+
+## DNS
+
+| Registro | Tipo | Apunta a |
+|---|---|---|
+| `@EDITOR_HOST@` | `CNAME` | `@DUCKDNS@.duckdns.org` |
+| `@PB_HOST@` | `CNAME` | `@DUCKDNS@.duckdns.org` |
+
+@PUBLIC_DNS@
+
+## Sitio público
+
+@PUBLIC_SECTION@
+
+## Archivos en el VPS
+
+### Carpetas y repo
+
+| Ruta | Dueño | Qué es |
+|---|---|---|
+| `/srv/@APP@/repo` | `@USER@` | Clon del repo, rama `deploy` |
+| `/srv/@APP@/site` | `@USER@` | Sitio del editor (lo que sirve `@EDITOR_HOST@`) |
+| `/srv/@APP@/preview` | `@USER@` | Vista previa |
+| `/srv/@APP@/build/requests` | `@USER@` | Pedidos de build |
+| `/srv/@APP@/pocketbase/pb_data` | `@USER@` | Base y archivos de PocketBase |
+| `/etc/@APP@/` | root | Variables (abajo) |
+
+El repo se clona con una deploy key propia (solo lectura), `/home/@USER@/.ssh/@APP@`, y un
+nombre de host en `/home/@USER@/.ssh/config`:
+
+```
+Host github-@APP@
+  HostName github.com
+  IdentityFile ~/.ssh/@APP@
+  IdentitiesOnly yes
+```
+
+Origen del clon: `git@github-@APP@:DUEÑO/REPO.git` (el repo del sitio).
+
+### `/etc/@APP@/pocketbase.env`
+
+Dueño root, permisos `600` (systemd lo lee antes de pasar a `@USER@`). Lo leen PocketBase y
+el build. Sin comentarios al final de una línea: systemd toma el valor entero.
+
+```sh
+EDITOR_EMAIL=CAMBIAR
+EDITOR_PASSWORD=CAMBIAR
+BUILD_REQUEST_DIR=/srv/@APP@/build/requests
+PUBLISH_CALLBACK_SECRET=CAMBIAR
+DEPLOY_WEBHOOK_SECRET=CAMBIAR
+PREVIEW_KEY=CAMBIAR
+```
+
+| Variable | Qué es |
+|---|---|
+| `EDITOR_EMAIL`, `EDITOR_PASSWORD` | Acceso inicial a `/admin`; después la contraseña se cambia en Mi cuenta |
+| `BUILD_REQUEST_DIR` | Carpeta donde PocketBase deja los pedidos de build |
+| `PUBLISH_CALLBACK_SECRET` | Secreto entre el build y PocketBase (`openssl rand -hex 32`) |
+| `DEPLOY_WEBHOOK_SECRET` | Secreto del webhook de GitHub (`openssl rand -hex 32`) |
+| `PREVIEW_KEY` | Clave de la vista previa (`openssl rand -hex 32`); va también en el `Caddyfile` / `nginx.conf` en lugar de `CLAVE`. Opcional |
+
+### `/etc/@APP@/build.env`
+
+Dueño root, permisos `600`. Lo lee el build; sus valores quedan dentro del sitio.
+
+```sh
+@BUILD_ENV@
+```
+
+@LANGS_NOTE@
+
+@PUBLIC_ENV@
+
+### Servicios y servidor web
+
+| En el repo (`deploy/`) | En el VPS |
+|---|---|
+| `@PB_SERVICE@.service` | `/etc/systemd/system/`, habilitado |
+| `@UNIT@-build.service` | `/etc/systemd/system/` |
+| `@UNIT@-build.path` | `/etc/systemd/system/`, habilitado y arrancado |
+| `Caddyfile` | sus bloques en `/etc/caddy/Caddyfile` (con Caddy) |
+| `nginx.conf` | `/etc/nginx/conf.d/@APP@.conf`, sin su línea `map_hash_bucket_size` (con nginx; certificados de `certbot --nginx` para `@EDITOR_HOST@` y `@PB_HOST@`) |
+
+En el `Caddyfile` / `nginx.conf`, `CLAVE` es el `PREVIEW_KEY` de `pocketbase.env`.
+
+`/etc/sudoers.d/@USER@` (permisos `440`) deja al build reiniciar este PocketBase:
+
+```
+@USER@ ALL=(root) NOPASSWD: /usr/bin/systemctl restart @PB_SERVICE@
+```
+
+## Webhook de GitHub
+
+En el repo del sitio, Settings → Webhooks:
+
+| Campo | Valor |
+|---|---|
+| Payload URL | `https://@PB_HOST@/api/deploy-hook` |
+| Content type | `application/json` |
+| Secret | `DEPLOY_WEBHOOK_SECRET` de `pocketbase.env` |
+| Events | Just the push event |
+
+## Formularios
+
+@FORMS_SECTION@
+
+## Operación
+
+| Para qué | Comando |
+|---|---|
+| Pasar el código a producción (en tu máquina) | `git push origin main:deploy` |
+| Reconstruir a mano | `sudo -u @USER@ touch /srv/@APP@/build/requests/manual` |
+| Log del build | `journalctl -u @UNIT@-build` |
+| Aplicar un cambio de `pocketbase.env` | `systemctl restart @PB_SERVICE@` |
+| Aplicar un cambio de `build.env` | reconstruir |
+| Superusuario del dashboard (`https://@PB_HOST@/_/`) | `sudo -u @USER@ /srv/@APP@/pocketbase/bin/pocketbase superuser upsert CORREO CONTRASEÑA --dir=/srv/@APP@/pocketbase/pb_data` |
+| Importar el contenido inicial (en tu máquina, con `PUBLIC_POCKETBASE_URL=https://@PB_HOST@` y el superusuario en `.env.production`) | `npm run pb:import:prod` |
+
+Backups: en `https://@PB_HOST@/_/` → Settings → Backups, con el cron de arriba (ver "Backups"
+en `kit/deploy/vps.md`). Lo que se respalda es `/srv/@APP@/pocketbase/pb_data`.

@@ -11,7 +11,7 @@ User=@USER@
 Group=@USER@
 # Ver kit/deploy/build.sh.
 Environment=APP=@APP@ PB_PORT=@PB_PORT@ PB_SERVICE=@PB_SERVICE@
-# PUBLISH_CALLBACK_SECRET (para reportar el estado a PocketBase).
+# PUBLISH_CALLBACK_SECRET (para reportar el estado a PocketBase y armar la vista previa).
 EnvironmentFile=/etc/@APP@/pocketbase.env
 # SITE_URL, ENABLED_LANGS, PUBLIC_POCKETBASE_URL, EDITOR_URL.
 EnvironmentFile=/etc/@APP@/build.env

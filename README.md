@@ -35,7 +35,8 @@ Primera vez:
    `PUBLIC_POCKETBASE_URL=http://127.0.0.1:8090` y las cuentas locales (pueden ser datos
    inventados, p. ej. `admin@local.test`):
    - `POCKETBASE_SUPERUSER_EMAIL` / `POCKETBASE_SUPERUSER_PASSWORD`: dashboard de PocketBase.
-   - `EDITOR_EMAIL` / `EDITOR_PASSWORD`: inicio de sesión de `/admin`.
+   - `EDITOR_EMAIL` / `EDITOR_PASSWORD`: inicio de sesión de `/admin` (el acceso inicial;
+     después la contraseña se cambia en `/admin` → Mi cuenta).
 2. Superusuario (no necesita el servidor encendido): `npm run pb:superuser`.
 3. En una terminal, PocketBase (aplica las migraciones y crea el editor): `npm run pb`.
 4. En otra terminal, el contenido inicial: `npm run pb:import`. Se puede repetir: solo crea

@@ -160,8 +160,11 @@ Como root:
      PREVIEW_KEY=...
      ```
      Cada secreto con `openssl rand -hex 32` (el valor solo, sin comentarios en la línea).
-     `PREVIEW_KEY` es opcional (ver "Vista previa"). El hook aplica `EDITOR_EMAIL` /
-     `EDITOR_PASSWORD` en cada arranque: cambiarlas cambia la contraseña del editor.
+     `PREVIEW_KEY` es opcional (ver "Vista previa"). `EDITOR_EMAIL` /
+     `EDITOR_PASSWORD` son el acceso inicial: el hook crea el editor con ellas la primera
+     vez. Después el editor cambia su contraseña en `/admin` → Mi cuenta, y estas variables
+     ya no la pisan. Contraseña olvidada o cambio de correo: en el dashboard de PocketBase
+     (`/_/` → editors), con el superusuario.
    - `/etc/memories/build.env`:
      ```sh
      SITE_URL=https://example.com

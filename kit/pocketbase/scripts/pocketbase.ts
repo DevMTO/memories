@@ -71,7 +71,7 @@ async function install() {
 }
 
 // Módulos del kit que usa el proyecto: core (editor, publicaciones, historial)
-// siempre; i18n (correcciones de traducción) y forms (leads) si los pide.
+// siempre; i18n (correcciones de traducción) si lo pide.
 async function modules(): Promise<string[]> {
   const file = join(PB_DIR, 'kit.json');
   const wanted: string[] = existsSync(file) ? JSON.parse(await readFile(file, 'utf8')).modules ?? [] : [];

@@ -1,8 +1,8 @@
 # Sitio público en Cloudflare Pages
 
 Los visitantes ven el sitio en Cloudflare Pages, y el DNS del dominio está en Cloudflare.
-El VPS (PocketBase, el editor `/admin` con su vista previa y los builds) se instala con la
-guía del servidor del proyecto. Al publicar, el VPS construye el sitio y lo sube a Pages
+El VPS (PocketBase, el editor `/admin` con su vista previa y los builds) se instala con
+`kit/deploy/vps.md`. Al publicar, el VPS construye el sitio y lo sube a Pages
 con `wrangler`.
 
 La otra opción para el sitio público es un hosting compartido con cPanel (`cpanel.md`).
@@ -11,7 +11,7 @@ La otra opción para el sitio público es un hosting compartido con cPanel (`cpa
 |---|---|---|
 | Sitio para los visitantes | Cloudflare Pages (`example.com`), subido por el build con `wrangler` | `kit/deploy/build.sh` (`deploy_pages`), `public/_headers` |
 | Sitio para el editor (`/admin`) y vista previa | VPS, `editor.example.com` | `deploy/Caddyfile` o `deploy/nginx.conf` |
-| PocketBase | VPS, `pb.example.com` | `pocketbase/`, `deploy/pocketbase.service` |
+| PocketBase | VPS, `pb.example.com` | `pocketbase/`, `deploy/<PB_SERVICE>.service` |
 | Build (botón "Publicar", push a `deploy`, vista previa) | VPS, `<unit>-build.service` | `kit/deploy/build.sh`, `deploy/<unit>-build.*` |
 | Credenciales de Pages | VPS, `/etc/<app>/cloudflare.env` | — |
 | HTTPS del sitio público | Cloudflare (automático) | — |
@@ -20,88 +20,39 @@ La otra opción para el sitio público es un hosting compartido con cPanel (`cpa
 ## Cuándo conviene
 
 - Las visitas no pasan por el VPS: no gastan su tráfico de salida ni su CPU.
-- El sitio sigue en línea aunque el VPS esté caído; solo dejan de funcionar `/admin`, los
-  formularios y la publicación.
+- El sitio sigue en línea aunque el VPS esté caído; solo dejan de funcionar `/admin` y la
+  publicación. Los formularios van por el relay PHP de un hosting con cPanel
+  (`kit/forms/relay/`), no por el VPS.
 - Gratis: Pages no cobra el tráfico ni los builds subidos.
 - Hace falta una cuenta de Cloudflare con el dominio, que ya es el DNS del sitio.
 
-## Antes del VPS (una vez)
+## Instalarlo
 
-1. **DNS en Cloudflare.** Los subdominios (`editor`, `pb` y los que hagan falta) son
-   registros que se crean gratis y sin límite en Cloudflare → DNS → Records. El dominio en
-   sí se sigue pagando en su registrador. Con los nameservers en Cloudflare, el DNS de
-   cualquier otro panel (p. ej. el **Zone Editor** de cPanel, si el correo está en un
-   hosting) deja de publicar nada: todo registro nuevo, también los del correo, va en
-   Cloudflare.
-   1. En Cloudflare (plan Free), **Add a site** con el dominio. Importa los registros DNS
-      actuales: comprobar que estén los del correo (`MX`, `mail`, los `TXT` de SPF/DKIM)
-      antes de cambiar nada, o el correo deja de llegar. Los de `example.com` y `www` se
-      cambian después del primer build.
-   2. En el registrador del dominio, cambiar los nameservers por los dos que indica
-      Cloudflare. Cloudflare avisa por correo cuando el dominio queda activo (minutos u
-      horas).
-   3. DNS → Records → **Add record**, los dos del VPS, **DNS only** (nube gris):
+Los pasos, con los valores del sitio, están en su `deploy/despliegue.md`: "Antes del VPS",
+el `cloudflare.env` en "En la VM" y "Después del primer build". Lo que conviene saber:
 
-      | Type | Name | Target |
-      |---|---|---|
-      | `CNAME` | `editor` | `SUBDOMINIO.duckdns.org` (el nombre fijo de la VM) |
-      | `CNAME` | `pb` | ídem |
-
-      En **Name** va solo el subdominio: Cloudflare completa `editor.example.com`. Los
-      registros del correo también quedan DNS only.
-2. **El proyecto de Pages**, desde tu máquina (abre el navegador para entrar a Cloudflare):
-   ```sh
-   npx wrangler login
-   npx wrangler pages project create NOMBRE --production-branch=main
-   ```
-   `NOMBRE` (p. ej. el nombre del sitio) es `CF_PAGES_PROJECT`.
-3. **Token para que el build suba el sitio:** My Profile → API Tokens → Create Token →
-   Custom token, permiso **Account → Cloudflare Pages → Edit**, solo para tu cuenta. El
-   Account ID está en Workers & Pages (columna derecha).
-4. **Cabeceras:** el proyecto tiene `public/_headers` con la caché de los archivos con hash:
-   ```
-   /_astro/*
-     Cache-Control: public, max-age=31536000, immutable
-   ```
-   El HTML usa el valor por defecto de Pages, que se revalida siempre.
-
-## En el VPS (una vez)
-
-En el paso de los archivos de entorno de la guía del servidor, además,
-`/etc/<app>/cloudflare.env` (`chmod 600`, dueño root; solo lo lee el build, no PocketBase):
-
-```sh
-CF_PAGES_PROJECT=NOMBRE
-CLOUDFLARE_ACCOUNT_ID=...
-CLOUDFLARE_API_TOKEN=...
-```
-
-- Sin este archivo el build no sube nada y el sitio queda solo en el VPS.
-- `SITE_URL` de `build.env` es la dirección de Pages (`https://example.com`), no la del
-  editor: con ella se arman los canónicos y `hreflang`.
-- `EDITOR_URL` va en la redirección de `/admin`.
-
-## Después del primer build (una vez)
-
-Cuando el VPS ya construyó el sitio con contenido (último paso de la guía del servidor):
-
-1. **Dominio:** Workers & Pages → el proyecto → Custom domains → **Set up a custom domain**
-   → `example.com`. Si existe un registro `A` de `example.com` que apunta a otro lado (el
-   hosting anterior), Cloudflare pide borrarlo. Después crea el registro nuevo y el
-   certificado.
-2. **`www`:** Rules → Redirect Rules → plantilla **Redirect from WWW to root** (pide un
-   registro `www` con proxy; la plantilla explica cuál).
-3. **Comprobar** desde tu máquina:
-   ```sh
-   curl -I https://example.com/                 # 200
-   curl -I https://example.com/admin/           # 302 a https://editor.example.com/admin/
-   curl -I https://example.com/_astro/<un archivo de dist/_astro>   # Cache-Control: … immutable
-   ```
+- **DNS en Cloudflare:** los subdominios son registros gratis y sin límite; el dominio en sí
+  se sigue pagando en su registrador. Con los nameservers en Cloudflare, el DNS de cualquier
+  otro panel (p. ej. el **Zone Editor** de cPanel, si el correo está en un hosting) deja de
+  publicar nada: todo registro, también los del correo, va en Cloudflare. Al agregar el
+  dominio, comprobar que se importaron los del correo (`MX`, `mail`, los `TXT` de SPF/DKIM)
+  antes de cambiar los nameservers, o el correo deja de llegar.
+- **`editor` y `pb` en DNS only** (nube gris): la VM los atiende con su propio certificado.
+  Los del correo también quedan DNS only.
+- **Token del build:** permiso **Account → Cloudflare Pages → Edit**, solo para tu cuenta.
+- **Cabeceras:** el proyecto tiene `public/_headers` con la caché de los archivos con hash
+  (`/_astro/*`: `Cache-Control: public, max-age=31536000, immutable`); el HTML usa el valor
+  por defecto de Pages, que se revalida siempre.
+- **`build.env`:** `SITE_URL` es la dirección de Pages, no la del editor (canónicos y
+  `hreflang`); `EDITOR_URL` va en la redirección de `/admin`.
+- **Dominio:** se conecta en Workers & Pages → el proyecto → Custom domains; si un registro
+  `A` del dominio apunta a otro lado, Cloudflare pide borrarlo y crea el suyo con su
+  certificado. `www` se redirige con la plantilla **Redirect from WWW to root**.
 
 ## Cómo se reconstruye
 
-La automatización está en el VPS (ver "Cómo se despliega" en la guía del servidor). Al
-final de cada build, `deploy_pages`:
+La automatización está en el VPS (ver "Cómo se despliega" en `kit/deploy/vps.md`). Al final
+de cada build, `deploy_pages`:
 
 - **Botón "Publicar"** (cambios de contenido) y **push a `deploy`** (cambios de código):
   construye, copia el sitio al editor y lo sube a Pages. Si el push no toca el sitio, no

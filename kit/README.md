@@ -18,11 +18,10 @@ qué cambió, para llevarlo al origen.
 | `i18n/` | Traducción automática en el build con caché y correcciones manuales | `content/` (lo usa el proyecto para dar los textos) |
 | `admin/` | Editor `/admin` (isla de React) | PocketBase módulo `core` |
 | `admin/i18n/` | Pantalla "Traducciones" de `/admin` | `i18n/`, PocketBase módulo `i18n` |
-| `admin/inbox/` | Bandeja de `/admin` (contactos y pestañas propias) | PocketBase módulo `forms` |
-| `pocketbase/` | Migraciones y hooks por módulo (`core`, `i18n`, `forms`) y scripts (binario, servidor local, tipos, importar el seed) | — |
+| `pocketbase/` | Migraciones y hooks por módulo (`core`, `i18n`) y scripts (binario, servidor local, tipos, importar el seed) | — |
 | `site/` | Componentes del sitio: hreflang y aviso de vista previa | — |
-| `forms/` | Envío de formularios del sitio (`forms.ts`) y relays PHP para hostings con cPanel | PocketBase módulo `forms`, o `forms/relay/` |
-| `deploy/` | Build y publicación en el VPS (`build.sh`) y plantillas de systemd, Caddy y nginx | todo lo anterior |
+| `forms/` | Formularios del sitio (`forms.ts`) por correo, con el relay PHP del hosting (`forms/relay/`) | — |
+| `deploy/` | Guía del VPS (`vps.md`), build y publicación (`build.sh`) y plantillas de systemd, Caddy y nginx | todo lo anterior |
 
 Requisitos: Astro 7, Node 22+ (corre `.ts` directamente), `react`/`react-dom` y
 `@astrojs/react` (para `/admin`), `pocketbase` (SDK), `sharp` y `pocketbase-typegen`
@@ -41,13 +40,15 @@ Requisitos: Astro 7, Node 22+ (corre `.ts` directamente), `react`/`react-dom` y
      "dev": "astro dev",
      "dev:pb": "astro dev --mode pocketbase",
      "build": "astro build",
+     "build:local": "node --env-file=.env node_modules/astro/bin/astro.mjs build",
      "build:static": "astro build --mode seed",
      "translate": "node --env-file-if-exists=.env scripts/translate.ts",
      "pb": "node --env-file=.env kit/pocketbase/scripts/pocketbase.ts serve",
      "pb:superuser": "node --env-file=.env kit/pocketbase/scripts/pocketbase.ts superuser",
      "pb:install": "node kit/pocketbase/scripts/pocketbase.ts install",
      "pb:schema": "node kit/pocketbase/scripts/pocketbase.ts schema src/lib/pocketbase-types.ts",
-     "pb:import": "node --env-file=.env scripts/pb-import.ts"
+     "pb:import": "node --env-file=.env scripts/pb-import.ts",
+     "pb:import:prod": "node --env-file=.env.production scripts/pb-import.ts"
      ```
 3. `tsconfig.json`: los `.js` de PocketBase no son del proyecto TypeScript (su referencia
    a `pb_data/types.d.ts` falla si PocketBase nunca corrió):
@@ -81,7 +82,7 @@ El proyecto arma su lector una vez (`src/lib/pocketbase.ts`) y su seed (`src/lib
 ```ts
 // src/lib/pocketbase.ts
 import { createContent } from '#kit/content/pocketbase.ts';
-export { fileUrl, formsEndpoint, optional, type PbRecord } from '#kit/content/pocketbase.ts';
+export { fileUrl, optional, type PbRecord } from '#kit/content/pocketbase.ts';
 export const { fetchAll } = createContent({ seed: async () => (await import('#src/lib/seed.ts')).seed });
 
 // src/lib/seed.ts: colección de PocketBase → registros { id, fields, images }
@@ -139,6 +140,9 @@ export const seed = defineSeed({
 
 ## i18n/: traducción automática
 
+Cómo funciona (flujo, caché, archivos, tareas comunes): `kit/i18n/README.md`. Aquí, cómo se
+instala en un proyecto.
+
 El sitio se escribe en español (`sourceLang` en `kit/i18n/locales.ts`). Los idiomas de
 `ENABLED_LANGS` (p. ej. `es,en,pt`) se traducen en el build con el endpoint gratuito de
 Google (`provider.ts`; para otro proveedor se reemplaza solo ese archivo). Lo traducido
@@ -175,6 +179,9 @@ En las páginas: `localizeRecord(record, fields, getTranslate(lang))` y
 `getLang(Astro.params.lang)`. `npm run translate` llena la caché sin build.
 
 ## admin/: el editor
+
+Cómo funciona para quien lo usa (pantallas, edición, vista previa, traducciones):
+`kit/admin/README.md`. Aquí, cómo se configura en un proyecto.
 
 Una página estática con la isla. La configuración tiene funciones (`label`, `Screen`…),
 que no pasan como props de Astro a la isla: se arma dentro de ella.
@@ -221,8 +228,7 @@ Hay tres tipos de sección:
 - **`single`**: colección de un solo registro (lo crea una migración).
 - **`screen`**: pantalla propia. `Screen` recibe el resto de la ruta, `useBadge` pone un
   número en el menú y `content` la suma a "cambios sin publicar". Listas para usar:
-  `translationsScreen(langs)` (`#kit/admin/i18n/index.tsx`) e `inboxScreen([leadsTab,
-  …])` (`#kit/admin/inbox/`).
+  `translationsScreen(langs)` (`#kit/admin/i18n/index.tsx`).
 
 Los campos de `fields` van en orden; `{ section: 'Título' }` separa grupos. Tipos:
 
@@ -261,35 +267,25 @@ Lo que el editor da por hecho de PocketBase:
   - `updated`: autodate, que calcula qué falta publicar.
 
 Las pantallas propias pueden usar `pb()`/`errorMessage` (`lib/pocketbase.ts`),
-`useUnsavedGuard` (`lib/router.ts`), `SortableList` y las clases de `admin.css`. Las
-pestañas propias de la bandeja son un `InboxTab`:
+`useUnsavedGuard` (`lib/router.ts`), `SortableList` y las clases de `admin.css`.
 
-```tsx
-const quotesTab: InboxTab = {
-  key: 'cotizaciones', // #/bandeja/cotizaciones
-  label: 'Cotizaciones',
-  collection: 'quotes',
-  pendingFilter: 'status = "new"', // el número del menú y "Solo nuevas"
-  pendingLabel: 'Solo nuevas',
-  Badge: ({ record }) => <span className="badge">{record.status}</span>,
-  Detail: ({ record, onSaved }) => <QuoteDetail record={record} onSaved={onSaved} />,
-};
-inboxScreen([leadsTab, quotesTab]);
-```
+`/admin` es solo para editar el contenido del sitio: lo que envían los visitantes
+(formularios) no pasa por PocketBase, llega por correo (ver "forms/"). Además de las
+secciones del proyecto, trae **Mi cuenta** (`#/cuenta`): el correo del editor y el cambio
+de su contraseña.
 
 ## pocketbase/: backend
 
 `pocketbase/kit.json` elige los módulos (`core` va siempre):
 
 ```json
-{ "modules": ["core", "i18n", "forms"] }
+{ "modules": ["core", "i18n"] }
 ```
 
 | Módulo | Colecciones | Hooks |
 |---|---|---|
-| `core` | `editors`, `publishes`, `revisions`; API batch, proxy de confianza, límite de `/api/files/` | `publish.pb.js` (`/api/publish`, `/api/preview`), `deploy.pb.js` (webhook de push), `editor.pb.js` (editor único desde `EDITOR_EMAIL`/`EDITOR_PASSWORD`), `revisions.pb.js` |
+| `core` | `editors`, `publishes`, `revisions`; API batch, proxy de confianza, límite de `/api/files/` | `publish.pb.js` (`/api/publish`, `/api/preview`), `deploy.pb.js` (webhook de push), `editor.pb.js` (editor único, creado la primera vez desde `EDITOR_EMAIL`/`EDITOR_PASSWORD`; después cambia su contraseña en "Mi cuenta"), `revisions.pb.js` |
 | `i18n` | `translation_overrides` | — |
-| `forms` | `leads` (+ límite 5 por IP cada 10 min) | `leads.pb.js`: trampa para bots y aviso por correo |
 
 `npm run pb` junta las migraciones y hooks de los módulos con los del proyecto en
 `pocketbase/.run/` y levanta PocketBase. Al cambiar un hook, se reinicia. El VPS hace lo
@@ -303,7 +299,7 @@ Cada proyecto define sus colecciones (catálogo, páginas…) en `pocketbase/pb_
 el kit no impone ninguna. Sí da por hecho:
 
 - **Nombres reservados:** `editors`, `publishes`, `revisions` (módulo `core`),
-  `translation_overrides` (`i18n`) y `leads` (`forms`).
+  `translation_overrides` (`i18n`).
 - **Campos con significado en `/admin`** (en las colecciones que lo usan):
 
   | Campo | Para qué |
@@ -331,26 +327,54 @@ Si los datos del proyecto usan otros nombres (p. ej. `isActive`, `sortOrder`), e
 pasa a estos (`status: data.isActive === false ? 'draft' : 'published'`) y los servicios del
 proyecto devuelven los registros con la forma que esperan las páginas.
 
-Correo de `leads.pb.js`:
-
-- Destinatario: `LEADS_EMAIL` o, si no está y el proyecto tiene una colección `settings`,
-  su campo `email`. Sin ninguno de los dos, el contacto se guarda igual y no se avisa.
-- Envío: por el SMTP de PocketBase (Settings → Mail). Con `MAIL_RELAY_URL` +
-  `MAIL_RELAY_KEY` va por `forms/relay/relay.php`, para servidores que bloquean el SMTP
-  saliente.
-
 ## forms/: formularios del sitio
 
-`<script>import '#kit/forms/forms.ts';</script>` en la página y, en el `<form
-data-collection="leads" data-messages={JSON.stringify(textos)}>`, uno de:
+Los formularios de los visitantes llegan por correo. El sitio arma el correo (asunto,
+textos y filas, en su idioma) y `forms/relay/form.php`, en un hosting con PHP (cPanel), lo
+manda al buzón del sitio: uno solo para todos los sitios, con una tabla dominio → buzón y
+una plantilla HTML en el servidor. No guarda nada (el buzón es el registro) y el VPS no
+recibe tráfico de los visitantes. Ver `forms/relay/README.md`.
 
-- `data-endpoint={formsEndpoint()}`: a PocketBase. Se guarda y aparece en la bandeja.
-- `data-relay="https://relay.dominio.com/form.php"`: sitio sin PocketBase. Solo llega
-  por correo, vía `forms/relay/form.php` en un hosting con PHP (ver
-  `forms/relay/README.md`).
+`<script>import '#kit/forms/forms.ts';</script>` en la página y:
 
-Textos (`data-messages`): `{ sending, sent, invalid, tooMany, failed }`. Trampa para bots:
-un `<input name="website">` oculto.
+```astro
+---
+import { formsRecipient, formsRelay } from '#kit/forms/relay-url.ts';
+---
+<form
+  data-form="contact"
+  data-relay={formsRelay()}
+  {...formsRecipient(settings.email)}
+  data-messages={JSON.stringify(textos)}
+  data-subject="Nueva consulta: {name}"
+  data-page-label="Página"
+>
+```
+
+El correo lo arma `forms.ts` con lo que hay en el formulario:
+
+- **Filas:** cada campo con valor, con su etiqueta visible (`data-label`, su `<label>`, la
+  leyenda del grupo, `aria-label` o `placeholder`) y lo que se ve (el texto de la opción
+  elegida). No van `website`, los ocultos sin `data-label` ni los `data-email="skip"`. Al
+  final, la página de origen (`data-page-label`).
+- `data-subject`: asunto. `{campo}` se llena con lo que escribió el visitante; `{code}` y
+  `{date}` los pone el relay.
+- `data-intro`, `data-outro`: textos antes y después de las filas.
+- `data-rows`: JSON de filas fijas que van primero (p. ej. los datos del proveedor).
+- `data-copy`: JSON `{ subject, intro, outro }` de la copia a quien lo envía (campo
+  `email`). Solo sale si la tabla del relay la permite para este formulario (`copy`).
+- Un dato que va dentro de otro campo: `<input name="travel_date" data-append="message"
+  data-label="Fecha">` agrega "Fecha: …" al mensaje.
+
+`formsRelay()` lee `FORMS_RELAY_URL`; sin ella el formulario avisa que no se pudo enviar.
+`formsRecipient(correo)` agrega el buzón que recibe (p. ej. el de "Datos de la empresa" en
+`/admin`) firmado con `FORMS_RELAY_KEY`, la clave del sitio en la tabla del relay: el relay
+solo envía a una dirección firmada. Sin clave o sin correo no agrega nada y el relay usa el
+buzón de su tabla.
+Textos de estado (`data-messages`): `{ sending, sent, invalid, tooMany, failed }`, en el
+`[data-form-status]` del formulario. Con número (`number` en la tabla), el formulario puede
+mostrarlo: un `[data-form-success]` con `[data-code]` y `[data-emailed]` (si salió la
+copia). Trampa para bots: un `<input name="website">` oculto.
 
 ## site/
 
@@ -360,7 +384,13 @@ un `<input name="website">` oculto.
 
 ## deploy/: VPS
 
-`kit/deploy/README.md`: `build.sh` y sus variables, `render.sh` para los archivos de
-systemd/Caddy/nginx, y varios sitios en un mismo VPS. El sitio público va a Cloudflare
+- `kit/deploy/vps.md`: cómo funciona el VPS y cómo prepararlo una vez (VM, DuckDNS, el
+  usuario `sites`, servidor web), la vista previa, el correo del dominio y los backups.
+- `kit/deploy/README.md`: `build.sh` y sus variables, `render.sh` para los archivos de
+  systemd/Caddy/nginx, y varios sitios en un mismo VPS.
+
+Cada proyecto guarda sus valores (nombre, puerto, repo, dominios, idiomas, formularios) en
+`deploy/site.env`; `kit/deploy/render.sh deploy` genera con ellos sus archivos de `deploy/` y
+su guía, `deploy/despliegue.md`. El sitio público va a Cloudflare
 Pages (`kit/deploy/cloudflare-pages.md`) o a un hosting compartido con cPanel
 (`kit/deploy/cpanel.md`).

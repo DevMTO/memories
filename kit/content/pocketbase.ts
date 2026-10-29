@@ -41,13 +41,6 @@ export function createContent({ seed }: { seed: () => Promise<SeedSource> }) {
   return { fetchAll };
 }
 
-// Destino de los formularios. Con el seed puede no haber PocketBase: entonces
-// los formularios quedan sin destino y avisan que no se pudo enviar.
-export function formsEndpoint() {
-  if (usesSeed() && !process.env.PUBLIC_POCKETBASE_URL) return undefined;
-  return pocketbaseUrl();
-}
-
 // URL pública de un archivo; el build la descarga y la optimiza (ver images.ts).
 // Los registros del seed ya traen la imagen completa: una URL o una ruta del
 // proyecto (/… de public/, src/…), que se devuelve tal cual.

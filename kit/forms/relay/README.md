@@ -1,37 +1,77 @@
-# Relays de correo en un hosting con PHP (cPanel)
+# Relay de formularios para sitios estáticos (cPanel)
 
-Dos scripts PHP para enviar correo por el SMTP del hosting compartido. Usan PHPMailer
-(`composer install` en esta carpeta, o subir `vendor/` ya armado).
+`form.php` envía por correo los formularios de los sitios estáticos. Uno solo sirve para
+todos los sitios: cada sitio es una línea en la tabla.
 
-| Script | Lo llama | Para qué |
-|---|---|---|
-| `form.php` | el navegador (`kit/forms/forms.ts` con `data-relay`) | Formularios de un sitio estático sin PocketBase: llegan por correo y no se guardan |
-| `relay.php` | un servidor (PocketBase con `MAIL_RELAY_URL`) | Servidores que bloquean el SMTP saliente (p. ej. DigitalOcean) |
+- **Cada sitio arma su correo** (`kit/forms/forms.ts`, con los `data-*` del `<form>`):
+  asunto, textos, filas con etiqueta y valor, en su idioma. El relay no tiene textos
+  propios.
+- **El buzón lo elige el sitio, firmado.** El relay busca el dominio del `Origin` en la
+  tabla de sitios (vale para sus subdominios: `www.`, `editor.` de la vista previa). El
+  buzón es el que el sitio eligió (p. ej. "Datos de la empresa" en `/admin`): el build lo
+  escribe en el formulario con una firma (HMAC) hecha con la clave del sitio (`key` en la
+  tabla, `FORMS_RELAY_KEY` en el build), y el relay solo envía a esa dirección si la firma
+  es válida. La clave no sale del build ni del relay, así que nadie puede cambiar el buzón
+  en la página. Sin firma, el buzón de la tabla (`to`); una firma inválida se rechaza.
+  Un cambio del buzón en `/admin` se aplica al publicar.
+- **El HTML es del servidor.** Lo que llega es texto: se escapa y se pone en la plantilla
+  (`email.html`, o `~/form-relay/templates/<dominio>.html` si el sitio tiene la suya).
+  Nadie puede meter su propio HTML ni enlaces en un correo enviado desde aquí.
+- **Copia a quien lo envía** (al correo que escribió) solo en los formularios que la tabla
+  permite (`copy`), con un límite por IP más bajo. Ejemplo: la hoja del libro de
+  reclamaciones.
+- **`{code}`**: número correlativo por año (`2026-00001`…), por sitio y formulario, en los
+  formularios de `number`. **`{date}`**: fecha y hora del envío.
+- Trampa para bots (`website`), límite por IP y límites de tamaño.
+- No guarda nada: **el buzón es el registro.** Así los visitantes nunca le piden nada al
+  VPS.
 
-Los formularios no generan carga que importe: cada envío es una solicitud chica más un
-correo, con trampa para bots y límite por IP. Con PocketBase en el VPS, el correo ya sale
-directo al SMTP del hosting (puertos 465/587); el relay solo hace falta si el proveedor del
-VPS bloquea esos puertos.
+Sirve a sitios estáticos, que envían desde el navegador (sin clave secreta). Un backend con
+servidor propio usa otro tipo de relay, con clave secreta entre servidores: ese puede
+mandar a cualquier destinatario porque la clave nunca sale del servidor.
 
-## Instalación (cPanel)
+## Instalación (cPanel, una vez para todos los sitios)
 
 1. Un subdominio solo para esto (p. ej. `relay.example.com`). Si el dominio principal
    tiene WordPress, sus redirecciones no lo alcanzan. Permisos de la carpeta: **755**.
    PHP 8.1 o más (MultiPHP Manager).
-2. Subir `form.php` y/o `relay.php`, `composer.json` y `vendor/`.
-3. Configuración **fuera de `public_html`** (tiene la contraseña del SMTP):
-   - `form.php`: copiar `form-config.example.php` a `~/form-relay/config.php` y
-     completarlo: orígenes del sitio, destinatario, cuenta SMTP y formularios aceptados.
-   - `relay.php`: copiar `mail-config.example.php` a `~/mail-relay/config.php`, con
-     `RELAY_API_KEY` (`openssl rand -hex 32`). La misma clave va en `MAIL_RELAY_KEY` del
-     servidor que lo llama, con `MAIL_RELAY_URL=https://relay.example.com/relay.php`.
-4. El remitente es la cuenta que se autentica. Si no coincide, SPF/DKIM fallan y el
-   correo termina en spam.
+2. Subir `form.php`, `email.html`, `composer.json` y `vendor/` (`composer install` en esta
+   carpeta, o `vendor/` ya armado).
+3. Una cuenta de correo del hosting del relay para enviar (cPanel → Email Accounts, p. ej.
+   `no-reply@example.com`; los datos en **Connect Devices**). Envía los correos de todos
+   los sitios, con el nombre de cada uno como remitente; la respuesta va a quien llenó el
+   formulario (Reply-To). cPanel → **Email Deliverability**: SPF y DKIM válidos
+   (**Repair** si el DNS está en cPanel), o los correos terminan en spam.
+4. Configuración **fuera de `public_html`** (tiene la contraseña):
+   `form-config.example.php` → `~/form-relay/config.php`, con la cuenta de envío y la
+   tabla de sitios. Los correlativos quedan en `~/form-relay/data/` (o `data_dir`): no
+   borrarlos.
+
+## Agregar un sitio
+
+1. Una clave para el sitio: `openssl rand -hex 32`.
+2. Una línea en `sites` de `~/form-relay/config.php`, con esa clave y un buzón para los
+   envíos sin firma (opcional):
+   ```php
+   'misitio.com' => ['key' => '…', 'to' => 'respaldo@misitio.com', 'name' => 'Mi Sitio'],
+   ```
+   Con `'copy' => ['claims']` y `'number' => ['claims']` si un formulario lo necesita.
+3. En el build del sitio (`build.env` en el VPS, `.env` en local):
+   `FORMS_RELAY_URL=https://relay.example.com/form.php` (la misma URL para todos) y
+   `FORMS_RELAY_KEY=` la misma clave. Publicar.
+4. Opcional: su plantilla en `~/form-relay/templates/misitio.com.html`, a partir de
+   `email.html` (estilos en línea; `{{site}} {{subject}} {{intro}} {{rows}} {{outro}}`).
+
+Cambiar la clave: en la tabla y en `build.env` a la vez, y publicar (las páginas ya
+publicadas con la clave anterior reciben 403 hasta entonces).
 
 ## Probar
 
-- `form.php`: el formulario del sitio, o
-  `curl -H 'Origin: https://example.com' -H 'Content-Type: application/json' -d '{"_form":"leads","name":"Prueba","email":"tu@correo.com"}' https://relay.example.com/form.php`.
+- El formulario del sitio, o
+  `curl -H 'Origin: https://misitio.com' -H 'Content-Type: application/json' -d '{"form":"contact","subject":"Prueba","rows":[["Nombre","Ana"]],"reply_to":"tu@correo.com"}' https://relay.example.com/form.php`.
   Debe responder 201.
-- Si responde 403 desde curl sin `Origin`, es lo esperado. Algunos hostings (ModSecurity)
-  bloquean además el User-Agent de curl: probar con uno de navegador.
+- 403: el dominio del `Origin` no está en la tabla (desde curl sin `Origin`, es lo
+  esperado). Algunos hostings (ModSecurity) bloquean además el User-Agent de curl:
+  probar con uno de navegador.
+- Errores del envío: el `error_log` de la carpeta del relay (o cPanel → Errors), con el
+  dominio y el formulario.

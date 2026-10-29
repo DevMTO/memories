@@ -1,0 +1,10 @@
+### `/etc/@APP@/cpanel.env`
+
+Dueño root, permisos `600`. Los datos de la cuenta FTP ("Sitio público"); sin ellos el build
+no sube nada.
+
+```sh
+CPANEL_FTP_HOST=CAMBIAR
+CPANEL_FTP_USER=CAMBIAR
+CPANEL_FTP_PASSWORD=CAMBIAR
+```

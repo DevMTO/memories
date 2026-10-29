@@ -1,0 +1,3 @@
+- **Cloudflare:** una cuenta (plan Free) y un token de API con permiso **Account →
+  Cloudflare Pages → Edit** (My Profile → API Tokens → Create Token → Custom token); el
+  Account ID está en Workers & Pages. El token se crea una vez y se reutiliza.

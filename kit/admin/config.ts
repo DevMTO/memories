@@ -86,13 +86,13 @@ export type SingleDef = {
   fields: FormItem[];
 };
 
-// Pantalla propia del proyecto (bandeja, traducciones…).
+// Pantalla propia del proyecto (p. ej. traducciones).
 export type ScreenDef = {
   kind: 'screen';
   key: string;
   title: string;
   Screen: ComponentType<{ route: string[] }>;
-  // Número junto al nombre en el menú (p. ej. pendientes de la bandeja).
+  // Número junto al nombre en el menú (p. ej. pendientes).
   useBadge?: () => number;
   // Colección que el build lee y que esta pantalla edita (para "cambios sin publicar").
   content?: { collection: string; label: string };

@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<!--
+  Plantilla de los correos del relay (form.php). {{site}} y {{subject}} vienen
+  escapados; {{intro}}, {{rows}} y {{outro}} ya son HTML armado por el relay con el
+  texto escapado. Un sitio puede tener la suya en ~/form-relay/templates/<dominio>.html
+  (estilos en línea: los clientes de correo ignoran <style> y no cargan CSS externo).
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{subject}}</title>
+</head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;color:#1f2937">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:24px 12px">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border-radius:8px;overflow:hidden">
+          <tr>
+            <td style="background:#1f2937;color:#ffffff;padding:16px 24px;font-size:14px;letter-spacing:0.04em">{{site}}</td>
+          </tr>
+          <tr>
+            <td style="padding:24px">
+              <h1 style="margin:0 0 16px;font-size:20px;line-height:1.3">{{subject}}</h1>
+              <div style="font-size:15px;line-height:1.6">{{intro}}</div>
+              <div style="font-size:15px;line-height:1.5;margin:8px 0 16px">{{rows}}</div>
+              <div style="font-size:13px;line-height:1.6;color:#4b5563">{{outro}}</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

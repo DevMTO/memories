@@ -1,0 +1,2 @@
+En el Zone Editor de cPanel, zona de `@SITE_HOST@` (nombres con punto final). Son solo
+registros DNS: no se crean como subdominios en Domains, los atiende la VM.

@@ -1,7 +1,6 @@
 /// <reference path="../../../../pocketbase/pb_data/types.d.ts" />
 // Ajustes de la app que /admin y el build necesitan: API batch, proxy de
-// confianza y un límite propio para las descargas de archivos. Los límites de
-// los formularios van con sus colecciones (módulo forms o el proyecto).
+// confianza y un límite propio para las descargas de archivos.
 
 const FILES_RULE = '/api/files/';
 

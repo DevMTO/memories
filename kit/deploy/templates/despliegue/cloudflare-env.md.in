@@ -1,0 +1,10 @@
+### `/etc/@APP@/cloudflare.env`
+
+Dueño root, permisos `600`. El Account ID y el token de "Requisitos"; sin ellos el build no
+sube nada.
+
+```sh
+CF_PAGES_PROJECT=@CF_PAGES_PROJECT@
+CLOUDFLARE_ACCOUNT_ID=CAMBIAR
+CLOUDFLARE_API_TOKEN=CAMBIAR
+```
