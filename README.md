@@ -88,7 +88,7 @@ pocketbase/pb_migrations/   colecciones del sitio (products, destinations, setti
 src/lib/seed.ts             contenido inicial, con src/data/*.seed.json
 src/content.config.ts       colecciones de Astro: leen PocketBase o el seed
 src/lib/services/           lo que leen las páginas (catálogo, destinos, contacto)
-src/pages/[...lang]/        páginas, una por idioma (español en la raíz)
+src/pages/[...lang]/        páginas, una por idioma (inglés en la raíz, DEFAULT_LANG)
 src/i18n/                   textos de interfaz y qué campos se traducen
 src/admin/                  configuración de /admin (secciones, campos, itinerario)
 deploy/                     servicios de systemd, Caddyfile y nginx.conf del VPS

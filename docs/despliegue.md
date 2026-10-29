@@ -169,6 +169,7 @@ Como root:
      ```sh
      SITE_URL=https://example.com
      ENABLED_LANGS=es,en,pt
+     DEFAULT_LANG=en
      PUBLIC_POCKETBASE_URL=https://pb.example.com
      EDITOR_URL=https://editor.example.com
      ```
