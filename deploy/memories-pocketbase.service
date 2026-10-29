@@ -5,8 +5,8 @@ Description=PocketBase (memories)
 After=network.target
 
 [Service]
-User=memories
-Group=memories
+User=sites
+Group=sites
 WorkingDirectory=/srv/memories/pocketbase
 # EDITOR_EMAIL, EDITOR_PASSWORD (solo para crear el editor la primera vez),
 # BUILD_REQUEST_DIR, PUBLISH_CALLBACK_SECRET, DEPLOY_WEBHOOK_SECRET.

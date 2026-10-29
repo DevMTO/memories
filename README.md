@@ -99,9 +99,11 @@ el traductor del kit los encuentra en el código y los traduce en el build.
 
 ## Documentación
 
-- `kit/README.md`: lo compartido con otros sitios (editor, PocketBase, traductor,
-  publicación) y cómo actualizarlo con `kit/sync.sh`.
-- `docs/despliegue.md`: VPS, build automático, DNS y backups.
+- `kit/README.md`: el editor, PocketBase, el traductor y la publicación del kit, y cómo
+  actualizarlo con `kit/sync.sh`.
+- `deploy/despliegue.md`: lo que necesita este sitio en el VPS y en el hosting (DNS, archivos
+  y su contenido, webhook), generado desde `deploy/site.env`. La VM se prepara con
+  `kit/deploy/vps.md`.
 - `kit/deploy/cpanel.md`: el sitio público en el hosting con cPanel.
 
 ## Carrusel de video del hero

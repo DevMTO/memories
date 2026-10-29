@@ -7,8 +7,8 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-User=memories
-Group=memories
+User=sites
+Group=sites
 # Ver kit/deploy/build.sh.
 Environment=APP=memories PB_PORT=8091 PB_SERVICE=memories-pocketbase
 # PUBLISH_CALLBACK_SECRET (para reportar el estado a PocketBase y armar la vista previa).
