@@ -91,7 +91,7 @@ src/lib/services/           lo que leen las páginas (catálogo, destinos, conta
 src/pages/[...lang]/        páginas, una por idioma (inglés en la raíz, DEFAULT_LANG)
 src/i18n/                   textos de interfaz y qué campos se traducen
 src/admin/                  configuración de /admin (secciones, campos, itinerario)
-deploy/                     servicios de systemd, Caddyfile y nginx.conf del VPS
+deploy/                     site.env y lo que genera: servicios, Caddyfile, nginx.conf y despliegue.md
 ```
 
 Los textos de interfaz se escriben en español dentro de `t('…')` (ver `src/i18n/i18n.ts`);

@@ -138,7 +138,7 @@ CPANEL_FTP_PASSWORD=CAMBIAR
 | `memories-build.service` | `/etc/systemd/system/` |
 | `memories-build.path` | `/etc/systemd/system/`, habilitado y arrancado |
 | `Caddyfile` | sus bloques en `/etc/caddy/Caddyfile` (con Caddy) |
-| `nginx.conf` | `/etc/nginx/conf.d/memories.conf`, sin su línea `map_hash_bucket_size` (con nginx; certificados de `certbot --nginx` para `editor.example.com` y `pb.example.com`) |
+| `nginx.conf` | `/etc/nginx/conf.d/memories.conf`, sin su línea `map_hash_bucket_size` (con nginx; HTTPS con `certbot --nginx -d editor.example.com -d pb.example.com`, ver "HTTPS" en `kit/deploy/vps.md`) |
 
 En el `Caddyfile` / `nginx.conf`, `CLAVE` es el `PREVIEW_KEY` de `pocketbase.env`.
 
