@@ -5,10 +5,11 @@
 
 # Despliegue de @SITE_NAME@
 
-Qué necesita este sitio en el VPS y en el hosting: valores, DNS, archivos y su contenido. El
-orden de instalación y el porqué de cada parte están en `kit/deploy/vps.md` ("Instalar un
-sitio") y en `kit/deploy/@PUBLIC_GUIDE@`. `CAMBIAR` marca cuentas y secretos, que no van en
-el repo.
+Qué necesita este sitio en el VPS y en el hosting, con sus valores. Lo que no pide ningún
+dato va como comando, listo para copiar (en la VM, como root); lo que hay que completar va
+como contenido, donde `CAMBIAR` marca cuentas y secretos, que no van en el repo. El orden de
+instalación y el porqué de cada parte están en `kit/deploy/vps.md` ("Instalar un sitio") y en
+`kit/deploy/@PUBLIC_GUIDE@`.
 
 ## Valores
 
@@ -41,6 +42,12 @@ el repo.
 
 @PUBLIC_DNS@
 
+Antes del HTTPS, los dos tienen que dar la IP de la VM:
+
+```sh
+dig +short @EDITOR_HOST@ @PB_HOST@
+```
+
 ## Sitio público
 
 @PUBLIC_SECTION@
@@ -58,22 +65,49 @@ el repo.
 | `/srv/@APP@/pocketbase/pb_data` | `@USER@` | Base y archivos de PocketBase |
 | `/etc/@APP@/` | root | Variables (abajo) |
 
-El repo se clona con una deploy key propia (solo lectura), `/home/@USER@/.ssh/@APP@`, y un
-nombre de host en `/home/@USER@/.ssh/config`:
-
+```sh
+mkdir -p /srv/@APP@/{site,preview,build/requests,pocketbase/pb_data} /etc/@APP@
+chown -R @USER@:@USER@ /srv/@APP@
 ```
+
+El repo se clona con una deploy key propia (solo lectura; GitHub no deja repetirla en otro
+repo), `/home/@USER@/.ssh/@APP@`, y un nombre de host en `/home/@USER@/.ssh/config`:
+
+```sh
+sudo -u @USER@ mkdir -p -m 700 /home/@USER@/.ssh
+sudo -u @USER@ ssh-keygen -t ed25519 -N '' -f /home/@USER@/.ssh/@APP@
+sudo -u @USER@ tee -a /home/@USER@/.ssh/config >/dev/null <<'EOF'
 Host github-@APP@
   HostName github.com
   IdentityFile ~/.ssh/@APP@
   IdentitiesOnly yes
+EOF
+cat /home/@USER@/.ssh/@APP@.pub
 ```
 
-Origen del clon: `git@github-@APP@:DUEÑO/REPO.git` (el repo del sitio).
+Esa clave pública va en GitHub, en el repo del sitio: Settings → Deploy keys → **Add deploy
+key**, sin permiso de escritura. Después el clon, con `DUEÑO/REPO` el repo del sitio (la
+primera vez pregunta por la huella de GitHub: `yes`):
+
+```sh
+sudo -u @USER@ git clone -b deploy git@github-@APP@:DUEÑO/REPO.git /srv/@APP@/repo
+```
+
+### Archivos de variables
+
+Se crean vacíos, con dueño root y permisos `600` (systemd los lee antes de pasar a
+`@USER@`), y se completan con el contenido de abajo. Sin comentarios al final de una línea:
+systemd toma el valor entero. Cada secreto se genera con `openssl rand -hex 32`.
+
+```sh
+install -m 600 /dev/null /etc/@APP@/pocketbase.env
+install -m 600 /dev/null /etc/@APP@/build.env
+install -m 600 /dev/null /etc/@APP@/@PUBLIC_ENV@
+```
 
 ### `/etc/@APP@/pocketbase.env`
 
-Dueño root, permisos `600` (systemd lo lee antes de pasar a `@USER@`). Lo leen PocketBase y
-el build. Sin comentarios al final de una línea: systemd toma el valor entero.
+Lo leen PocketBase y el build. Completarlo con:
 
 ```sh
 EDITOR_EMAIL=CAMBIAR
@@ -94,7 +128,7 @@ PREVIEW_KEY=CAMBIAR
 
 ### `/etc/@APP@/build.env`
 
-Dueño root, permisos `600`. Lo lee el build; sus valores quedan dentro del sitio.
+Lo lee el build; sus valores quedan dentro del sitio. Completarlo con:
 
 ```sh
 @BUILD_ENV@
@@ -112,26 +146,57 @@ Dueño root, permisos `600`. Lo lee el build; sus valores quedan dentro del siti
 | `@UNIT@-build.service` | `/etc/systemd/system/` |
 | `@UNIT@-build.path` | `/etc/systemd/system/`, habilitado y arrancado |
 | `Caddyfile` | sus bloques en `/etc/caddy/Caddyfile` (con Caddy) |
-| `nginx.conf` | `/etc/nginx/conf.d/@APP@.conf`, sin su línea `map_hash_bucket_size` (con nginx; HTTPS con `certbot --nginx -d @EDITOR_HOST@ -d @PB_HOST@`, ver "HTTPS" en `kit/deploy/vps.md`) |
+| `nginx.conf` | `/etc/nginx/conf.d/@APP@.conf`, sin su línea `map_hash_bucket_size` (con nginx; HTTPS con certbot, abajo; ver "HTTPS" en `kit/deploy/vps.md`) |
 
-En el `Caddyfile` / `nginx.conf`, `CLAVE` es el `PREVIEW_KEY` de `pocketbase.env`.
+```sh
+cp /srv/@APP@/repo/deploy/{@PB_SERVICE@.service,@UNIT@-build.service,@UNIT@-build.path} /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable @PB_SERVICE@
+systemctl enable --now @UNIT@-build.path
+```
+
+En el `Caddyfile` / `nginx.conf`, `CLAVE` es el `PREVIEW_KEY` de `pocketbase.env`; estos
+comandos la toman de ahí y no hacen nada si falta (sin vista previa, quitar antes su bloque,
+como dice el comentario, y copiar el archivo a mano). Una sola vez: con Caddy, repetirlo
+agrega los bloques otra vez. Con Caddy:
+
+```sh
+key=$(sed -n 's/^PREVIEW_KEY=//p' /etc/@APP@/pocketbase.env)
+[ -n "$key" ] && sed "s/CLAVE/$key/" /srv/@APP@/repo/deploy/Caddyfile >> /etc/caddy/Caddyfile
+caddy validate --config /etc/caddy/Caddyfile && systemctl reload caddy
+```
+
+Con nginx:
+
+```sh
+key=$(sed -n 's/^PREVIEW_KEY=//p' /etc/@APP@/pocketbase.env)
+[ -n "$key" ] && sed -e "s/CLAVE/$key/" -e '/^map_hash_bucket_size/d' /srv/@APP@/repo/deploy/nginx.conf > /etc/nginx/conf.d/@APP@.conf
+nginx -t && systemctl reload nginx
+certbot --nginx -d @EDITOR_HOST@ -d @PB_HOST@
+```
+
+`certbot` agrega el HTTPS a ese archivo; si se reemplaza por un `nginx.conf` nuevo, volver a
+correrlo.
 
 `/etc/sudoers.d/@USER@` (permisos `440`) deja al build reiniciar este PocketBase:
 
-```
-@USER@ ALL=(root) NOPASSWD: /usr/bin/systemctl restart @PB_SERVICE@
+```sh
+echo '@USER@ ALL=(root) NOPASSWD: /usr/bin/systemctl restart @PB_SERVICE@' >> /etc/sudoers.d/@USER@
+chmod 440 /etc/sudoers.d/@USER@ && visudo -c
 ```
 
 ## Webhook de GitHub
 
-En el repo del sitio, Settings → Webhooks:
+En GitHub → el repo del sitio → Settings → Webhooks → **Add webhook**:
 
 | Campo | Valor |
 |---|---|
 | Payload URL | `https://@PB_HOST@/api/deploy-hook` |
 | Content type | `application/json` |
-| Secret | `DEPLOY_WEBHOOK_SECRET` de `pocketbase.env` |
+| Secret | `DEPLOY_WEBHOOK_SECRET` de `pocketbase.env`: `sed -n 's/^DEPLOY_WEBHOOK_SECRET=//p' /etc/@APP@/pocketbase.env` |
 | Events | Just the push event |
+
+En Recent Deliveries, el ping tiene que dar 200.
 
 ## Formularios
 
@@ -141,13 +206,14 @@ En el repo del sitio, Settings → Webhooks:
 
 | Para qué | Comando |
 |---|---|
+| Primer build (instala PocketBase y lo arranca) | `systemctl start @UNIT@-build && journalctl -u @UNIT@-build -n 50` |
 | Pasar el código a producción (en tu máquina) | `git push origin main:deploy` |
 | Reconstruir a mano | `sudo -u @USER@ touch /srv/@APP@/build/requests/manual` |
 | Log del build | `journalctl -u @UNIT@-build` |
 | Aplicar un cambio de `pocketbase.env` | `systemctl restart @PB_SERVICE@` |
 | Aplicar un cambio de `build.env` | reconstruir |
 | Superusuario del dashboard (`https://@PB_HOST@/_/`) | `sudo -u @USER@ /srv/@APP@/pocketbase/bin/pocketbase superuser upsert CORREO CONTRASEÑA --dir=/srv/@APP@/pocketbase/pb_data` |
-| Importar el contenido inicial (en tu máquina, con `PUBLIC_POCKETBASE_URL=https://@PB_HOST@` y el superusuario en `.env.production`) | `npm run pb:import:prod` |
+| Importar el contenido inicial (en tu máquina; en `.env.production`, `PUBLIC_POCKETBASE_URL=https://@PB_HOST@` y `POCKETBASE_SUPERUSER_EMAIL` / `POCKETBASE_SUPERUSER_PASSWORD`, los del superusuario de arriba) | `npm run pb:import:prod` |
 
 Backups: en `https://@PB_HOST@/_/` → Settings → Backups, con el cron de arriba (ver "Backups"
 en `kit/deploy/vps.md`). Lo que se respalda es `/srv/@APP@/pocketbase/pb_data`.

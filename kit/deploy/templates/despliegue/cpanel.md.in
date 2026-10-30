@@ -10,3 +10,6 @@ El build sube el sitio por FTPS a `public_html` y borra solo lo que él mismo su
 
 Con el primer build, `https://@SITE_HOST@/` responde 200 con `Cache-Control: no-cache`, y
 `https://@SITE_HOST@/admin/` redirige (302) a `https://@EDITOR_HOST@/admin/`.
+`/admin` vive en el editor porque tiene que estar en el mismo origen que la vista previa (la
+cookie `site_preview` y el iframe de Traducciones), que solo sirve el VPS: ver "Vista previa"
+en `kit/deploy/vps.md`.

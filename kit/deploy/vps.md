@@ -200,22 +200,19 @@ Los nombres que pide el navegador son `editor.<dominio>` y `pb.<dominio>`: el `C
 dice a qué IP conectarse. El certificado tiene que ser de esos nombres; uno de
 `SUBDOMINIO.duckdns.org` no sirve para ellos.
 
-- **Caddy:** los pide y los renueva solo, al recargar con los bloques del sitio, si el DNS
-  ya apunta a la VM.
-- **nginx:** con certbot, una vez por sitio:
-  1. El DNS ya apunta a la VM: `dig +short editor.<dominio>` y `dig +short pb.<dominio>`
-     dan su IP (Let's Encrypt comprueba el nombre por HTTP, en el puerto 80).
-  2. `/etc/nginx/conf.d/<app>.conf` en su lugar, con `CLAVE` reemplazada, y
-     `nginx -t && systemctl reload nginx` sin errores.
-  3. ```sh
-     certbot --nginx -d editor.<dominio> -d pb.<dominio>
-     ```
-     Pide el certificado y edita ese mismo archivo: agrega `listen 443 ssl`, las rutas del
-     certificado y la redirección de 80 a 443.
+Los comandos, con los nombres de cada sitio, están en su `deploy/despliegue.md` ("Servicios y
+servidor web"), justo después de poner la configuración del sitio. Antes, el DNS tiene que
+apuntar a la VM (`dig +short editor.<dominio> pb.<dominio>` da su IP): Let's Encrypt
+comprueba cada nombre por HTTP, en el puerto 80.
 
-  La renovación es automática (timer de certbot); `certbot renew --dry-run` la prueba. Al
-  reemplazar el archivo por un `nginx.conf` nuevo del repo se pierden esas líneas: volver a
-  correr el paso 3 (reusa el certificado que ya tiene).
+- **Caddy:** los pide y los renueva solo, al recargar con los bloques del sitio.
+- **nginx:** con certbot, una vez por sitio y después de que nginx ya sirva su archivo
+  (`/etc/nginx/conf.d/<app>.conf`, con `CLAVE` reemplazada y `nginx -t` sin errores):
+  `certbot --nginx` pide el certificado y edita ese mismo archivo (agrega `listen 443 ssl`,
+  las rutas del certificado y la redirección de 80 a 443). La renovación es automática
+  (timer de certbot); `certbot renew --dry-run` la prueba. Al reemplazar el archivo por un
+  `nginx.conf` nuevo del repo se pierden esas líneas: volver a correr el mismo
+  `certbot --nginx` (reusa el certificado que ya tiene).
 
 ## Instalar un sitio (una vez por sitio)
 
@@ -224,7 +221,7 @@ Lo que necesita cada sitio (DNS, sitio público, archivos y su contenido, webhoo
 
 1. DNS y sitio público (sección "Sitio público" de la guía).
 2. En la VM: carpetas y clon del repo, archivos de `/etc/<app>/`, servicios, servidor web
-   con HTTPS (arriba), permiso en `sudoers.d`.
+   con HTTPS ("HTTPS", arriba), permiso en `sudoers.d`.
 3. Primer build (`systemctl start <app>-build`) y superusuario.
 4. Contenido desde tu máquina (`npm run pb:import:prod`), webhook de GitHub y reconstruir.
 5. Formularios, si el sitio los usa.

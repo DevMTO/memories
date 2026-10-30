@@ -1,7 +1,6 @@
 ### `/etc/@APP@/cloudflare.env`
 
-Dueño root, permisos `600`. El Account ID y el token de "Requisitos"; sin ellos el build no
-sube nada.
+El Account ID y el token de "Requisitos"; sin ellos el build no sube nada. Completarlo con:
 
 ```sh
 CF_PAGES_PROJECT=@CF_PAGES_PROJECT@

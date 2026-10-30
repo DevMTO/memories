@@ -26,6 +26,9 @@ La otra opción para el sitio público es Cloudflare Pages (`cloudflare-pages.md
   VM (1 GB al mes gratis en Google Cloud) lo gastan el editor y las subidas. Por eso cada
   publicación sube solo lo que cambió: una corrección de texto son unas pocas páginas
   HTML, no el sitio entero.
+- `/admin` queda en el VPS (`editor.<dominio>`), no en el hosting: tiene que estar en el
+  mismo origen que la vista previa, que vive en el VPS. Subir cada vista previa por FTPS
+  para tenerla en el hosting solo sumaría tráfico de salida de la VM.
 - El sitio sigue en línea aunque el VPS esté caído; solo dejan de funcionar `/admin` y la
   publicación (los formularios van por el relay, no por el VPS).
 - El hosting no puede reemplazar al VPS. Un plan compartido no corre PocketBase ni el build:
