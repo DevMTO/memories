@@ -418,9 +418,13 @@ export function PreviewButton({
   className?: string;
   label?: string;
 }) {
-  const { previewEnabled, previewInProgress } = usePublish();
+  const { previewEnabled, previewInProgress, inProgress } = usePublish();
   const requestPreview = useRequestPreview();
   const [open, setOpen] = useState(false);
+  // Durante una publicación no: al terminar, el build ya la rearma.
+  useEffect(() => {
+    if (inProgress) setOpen(false);
+  }, [inProgress]);
   const translations = !!config().translations;
   const [stored, setTranslate] = useState(readTranslate);
   const translate = translations && stored;
@@ -445,7 +449,8 @@ export function PreviewButton({
       <button
         type="button"
         className={className}
-        disabled={previewInProgress}
+        disabled={previewInProgress || inProgress}
+        title={inProgress && !previewInProgress ? 'Se publica ahora: al terminar, la vista previa se rearma sola' : undefined}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
@@ -495,9 +500,11 @@ export function PreviewButton({
 
 // Estado de la vista previa en pocas palabras, para la barra, el tablero y las fichas.
 export function usePreviewStatus() {
-  const { previewEnabled, previewAt, previewBehind, previewInProgress } = usePublish();
+  const { previewEnabled, previewAt, previewBehind, previewInProgress, inProgress } = usePublish();
   if (!previewEnabled) return null;
   if (previewInProgress) return { kind: 'running', text: 'Actualizando…' } as const;
+  // Una publicación (botón o push) rearma la vista previa al terminar.
+  if (inProgress) return { kind: 'running', text: 'Se actualiza al publicar' } as const;
   if (previewAt === undefined) return { kind: 'loading', text: '' } as const;
   if (previewAt === null) return { kind: 'none', text: 'Sin vista previa' } as const;
   if (previewBehind === null) return { kind: 'loading', text: '' } as const;
@@ -533,20 +540,22 @@ export function PreviewControl() {
   const { openPreview } = usePublish();
   const status = usePreviewStatus();
   if (!status) return null;
+  // Un grupo con su nombre, aparte de Publicar: el estado es de la vista previa.
   return (
-    <span className="preview-control">
+    <span className="preview-control" role="group" aria-label="Vista previa">
+      <span className="preview-control-label">Vista previa</span>
+      <PreviewChip />
       <button
         type="button"
-        className="btn btn-ghost"
+        className="btn btn-ghost btn-small"
         disabled={status.kind === 'none'}
-        title="editor.<dominio>: el sitio con todo lo guardado hasta la última actualización (también lo oculto)"
+        title="El sitio con todo lo guardado hasta la última actualización, también lo oculto (solo para ti)"
         onClick={() => openPreview()}
       >
-        Ver vista previa ↗
+        Ver ↗
       </button>
-      <PreviewChip />
       {(status.kind === 'behind' || status.kind === 'none') && (
-        <PreviewButton className="btn btn-ghost" label={status.kind === 'none' ? 'Armar' : 'Actualizar'} />
+        <PreviewButton className="btn btn-ghost btn-small" label={status.kind === 'none' ? 'Armar' : 'Actualizar'} />
       )}
     </span>
   );

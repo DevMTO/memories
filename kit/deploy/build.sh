@@ -79,7 +79,14 @@ report() {
   done
 }
 
+# Un comando que falla sin decir nada (p. ej. con su stderr a /dev/null) dejaría el
+# log sin la causa: se escribe cuál fue y dónde. La pausa deja que tee termine de
+# escribir el log antes de mandarlo a /admin.
 on_error() {
+  echo "Falló en la línea $1 de build.sh: $2" >&2
+  # También salta dentro de $(…): se avisa a /admin una sola vez, desde el script.
+  [ "$BASH_SUBSHELL" -eq 0 ] || return 0
+  sleep 1
   report failed "$(tail -c 1500 "$LOG")"
 }
 
@@ -303,8 +310,10 @@ mtime() {
 # Huella de las traducciones automáticas (<idioma>.json en CACHE_DIR de
 # kit/i18n/core.ts), sin las fechas de uso (*.seen.json), la lista de textos ni las
 # correcciones: esos cambian con el contenido, que ya cuenta por CONTENT_STAMP.
+# Sin caché todavía (primer build, o se borró) da una huella vacía, no un error.
 cache_hash() {
-  find .cache/i18n -maxdepth 1 -name '*.json' ! -name '*.seen.json' ! -name 'sources.json' -print0 2>/dev/null |
+  [ -d .cache/i18n ] || { echo 'sin-cache'; return 0; }
+  find .cache/i18n -maxdepth 1 -name '*.json' ! -name '*.seen.json' ! -name 'sources.json' -print0 |
     sort -z | xargs -0 -r sha1sum | sha1sum | cut -c1-40
 }
 
@@ -366,7 +375,7 @@ main() {
     forced=1
     if [[ $request =~ ^[a-z0-9]{15}$ ]]; then ids+="$request "; fi
   done
-  trap on_error ERR
+  trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
   cd "$REPO"
   # Último commit publicado con éxito, no HEAD: si un build falla después del

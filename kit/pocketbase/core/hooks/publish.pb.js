@@ -74,6 +74,22 @@ routerAdd('POST', '/api/preview', (e) => {
   const requestDir = $os.getenv('BUILD_REQUEST_DIR') || ''
   if (!requestDir) return e.json(500, { message: 'Falta BUILD_REQUEST_DIR.' })
 
+  // Con una publicación en cola o armándose (botón o push) no: al terminar, el build
+  // rearma la vista previa. Las de más de 30 min no cuentan (el build nunca avisó;
+  // igual que STALE_MS en kit/admin/lib/publish.tsx).
+  const since = new Date(Date.now() - 30 * 60 * 1000).toISOString().replace('T', ' ')
+  const running = $app.findRecordsByFilter(
+    'publishes',
+    "kind != 'preview' && (status = 'queued' || status = 'building') && created > {:since}",
+    '-created',
+    1,
+    0,
+    { since: since },
+  )
+  if (running.length) {
+    return e.json(409, { message: 'Se está publicando: al terminar, la vista previa se rearma sola.' })
+  }
+
   const preview = new Record($app.findCollectionByNameOrId('publishes'))
   preview.set('requested_by', editor.id)
   preview.set('kind', 'preview')
