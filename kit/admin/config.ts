@@ -1,4 +1,4 @@
-// Contrato entre el núcleo de /admin (src/admin/core/, igual en todos los
+// Contrato entre el núcleo de /admin (kit/admin/, igual en todos los
 // proyectos) y la configuración de cada proyecto (src/admin/config.tsx). Ver
 // kit/README.md.
 import type { ComponentType, ReactNode } from 'react';

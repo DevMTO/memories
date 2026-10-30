@@ -5,9 +5,9 @@ PocketBase, el editor `/admin` con su vista previa y los builds. Se construye so
 Docker ni servicios externos de CI. Los visitantes ven el sitio público en otro lado
 (Cloudflare Pages o un hosting con cPanel, ver "Sitio público"): nunca pasan por la VM.
 
-Esta guía explica cómo funciona y prepara la VM una vez. Los comandos para instalar y operar
-cada sitio, ya con sus valores, están en su `deploy/despliegue.md` (generado por
-`kit/deploy/render.sh`). Aquí `<app>` es el nombre del sitio.
+Esta guía explica cómo funciona y prepara la VM una vez. Lo que necesita cada sitio (DNS,
+archivos y su contenido, webhook), ya con sus valores, está en su `deploy/despliegue.md`
+(generado por `kit/deploy/render.sh`). Aquí `<app>` es el nombre del sitio.
 
 | Qué | En la VM | En el repo |
 |---|---|---|
@@ -45,18 +45,18 @@ queda siempre en la VM.
 | **Cloudflare Pages**: gratis, sin límite de tráfico, despliegues de una vez | `/etc/<app>/cloudflare.env` | `kit/deploy/cloudflare-pages.md` |
 | **Hosting compartido con cPanel**: el sitio junto al correo, en el plan que ya se paga; sube por FTPS solo lo que cambió | `/etc/<app>/cpanel.env` | `kit/deploy/cpanel.md` |
 
-Cada guía dice qué hacer antes de instalar el sitio en la VM, durante (su archivo de
-entorno) y después del primer build (el dominio).
+Cada guía explica su opción; la configuración del sitio en ella (cuenta, archivo de entorno,
+dominio) está en la sección "Sitio público" de su `deploy/despliegue.md`.
 
 ## Cómo se despliega
 
 Todo pasa por `kit/deploy/build.sh` (ver `kit/deploy/README.md`), que corre como servicio
 aparte (no dentro de PocketBase, porque a veces tiene que reiniciarlo). Cada pedido de
 build es un archivo en `/srv/<app>/build/requests/`; `<app>-build.path` lanza el build en
-cuanto la carpeta tiene algo. El script consume los pedidos al empezar: los que lleguen
-durante un build se juntan en uno solo al terminar. Los builds de todos los sitios usan un
-candado común: si otro sitio está construyendo, este espera (en `/admin` la publicación
-sigue "En cola").
+cuanto la carpeta tiene algo. Los builds de todos los sitios usan un candado común: si otro
+sitio está construyendo, este espera (en `/admin` la publicación sigue "En cola"). Con el
+turno tomado consume los pedidos: los que llegaron durante la espera entran en ese build, y
+los que lleguen durante el build se juntan en uno solo al terminar.
 
 - **Botón "Publicar"** (cambios de contenido): el hook deja un archivo con el id de la
   publicación.
@@ -154,7 +154,7 @@ builds de los sitios nunca corren a la vez; la swap de 1 GB es margen. Los coman
 Debian/Ubuntu; en AlmaLinux/Rocky cambian la instalación de paquetes (`dnf`) y `adduser`
 (`useradd -m`).
 
-1. Paquetes: `git`, `rsync`, `curl`, `unzip`, `lftp` (para los sitios en cPanel) y Node 22
+1. Paquetes: `git`, `rsync`, `curl`, `unzip`, `lftp` (para los sitios en cPanel) y Node 22.12 o más nuevo
    (de [nodejs.org](https://nodejs.org/en/download) o NodeSource; el de la distro suele ser
    viejo). Swap de 1 GB:
    ```sh
@@ -194,14 +194,37 @@ su `deploy/despliegue.md`. Son dos, a la VM:
 Los dos sin proxy (si el DNS tiene uno): la VM los atiende con su propio certificado y el
 realtime de `/admin` no aguanta los cortes de un proxy.
 
+## HTTPS (por sitio)
+
+Los nombres que pide el navegador son `editor.<dominio>` y `pb.<dominio>`: el `CNAME` solo
+dice a qué IP conectarse. El certificado tiene que ser de esos nombres; uno de
+`SUBDOMINIO.duckdns.org` no sirve para ellos.
+
+- **Caddy:** los pide y los renueva solo, al recargar con los bloques del sitio, si el DNS
+  ya apunta a la VM.
+- **nginx:** con certbot, una vez por sitio:
+  1. El DNS ya apunta a la VM: `dig +short editor.<dominio>` y `dig +short pb.<dominio>`
+     dan su IP (Let's Encrypt comprueba el nombre por HTTP, en el puerto 80).
+  2. `/etc/nginx/conf.d/<app>.conf` en su lugar, con `CLAVE` reemplazada, y
+     `nginx -t && systemctl reload nginx` sin errores.
+  3. ```sh
+     certbot --nginx -d editor.<dominio> -d pb.<dominio>
+     ```
+     Pide el certificado y edita ese mismo archivo: agrega `listen 443 ssl`, las rutas del
+     certificado y la redirección de 80 a 443.
+
+  La renovación es automática (timer de certbot); `certbot renew --dry-run` la prueba. Al
+  reemplazar el archivo por un `nginx.conf` nuevo del repo se pierden esas líneas: volver a
+  correr el paso 3 (reusa el certificado que ya tiene).
+
 ## Instalar un sitio (una vez por sitio)
 
 Lo que necesita cada sitio (DNS, sitio público, archivos y su contenido, webhook) está en su
 `deploy/despliegue.md`, con sus valores. El orden:
 
 1. DNS y sitio público (sección "Sitio público" de la guía).
-2. En la VM: carpetas y clon del repo, archivos de `/etc/<app>/`, servicios, servidor web,
-   permiso en `sudoers.d`.
+2. En la VM: carpetas y clon del repo, archivos de `/etc/<app>/`, servicios, servidor web
+   con HTTPS (arriba), permiso en `sudoers.d`.
 3. Primer build (`systemctl start <app>-build`) y superusuario.
 4. Contenido desde tu máquina (`npm run pb:import:prod`), webhook de GitHub y reconstruir.
 5. Formularios, si el sitio los usa.
@@ -279,5 +302,12 @@ madrugada.
 
 Restaurar: **Upload backup** (si hace falta) y **Restore** en el mismo panel; PocketBase se
 reinicia solo. Después, "Publicar" o el pedido a mano para regenerar el sitio. Si el
-dashboard no arranca, por consola: los comandos están en "Backups" del
-`deploy/despliegue.md` del sitio.
+dashboard no arranca, por consola, con el servicio detenido:
+
+```sh
+systemctl stop <app>-pocketbase
+sudo -u sites mv /srv/<app>/pocketbase/pb_data /srv/<app>/pocketbase/pb_data.roto
+sudo -u sites unzip BACKUP.zip -d /srv/<app>/pocketbase/pb_data
+systemctl start <app>-pocketbase
+sudo -u sites touch /srv/<app>/build/requests/manual
+```

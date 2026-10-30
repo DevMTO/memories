@@ -1,4 +1,4 @@
-// Versiones anteriores de un registro (pocketbase/pb_hooks/revisions.pb.js):
+// Versiones anteriores de un registro (kit/pocketbase/core/hooks/revisions.pb.js):
 // qué cambió en cada una y cargarla en el formulario para revisarla y guardarla.
 import { useEffect, useState } from 'react';
 import { fieldsOf, isFileField, type Field, type FormItem } from '../config';

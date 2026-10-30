@@ -1,6 +1,6 @@
 // Estado de las publicaciones (realtime de PocketBase) y de lo que falta subir
 // al sitio, compartido por la barra, el tablero, las listas y las fichas. Ver
-// pocketbase/pb_hooks/publish.pb.js.
+// kit/pocketbase/core/hooks/publish.pb.js.
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { config, contentDefs } from '../config';
 import { Switch } from '../components/Switch';

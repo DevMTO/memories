@@ -108,11 +108,12 @@ update_pocketbase() {
 
 # Cloudflare Pages (kit/deploy/cloudflare-pages.md): el sitio con un _redirects
 # que manda /admin a EDITOR_URL (el editor, donde la vista previa está en el
-# mismo origen), por wrangler. Sin CF_PAGES_PROJECT (cloudflare.env) no hace nada.
+# mismo origen) y un _headers con la caché de /_astro/, por wrangler. Sin CF_PAGES_PROJECT (cloudflare.env) no hace nada.
 deploy_pages() {
   [ -n "${CF_PAGES_PROJECT:-}" ] || return 0
   echo 'Subiendo el sitio a Cloudflare Pages…'
   printf '/admin %s/admin/ 302\n/admin/* %s/admin/:splat 302\n' "$EDITOR_URL" "$EDITOR_URL" > dist/_redirects
+  printf '/_astro/*\n  Cache-Control: public, max-age=31536000, immutable\n' > dist/_headers
   if ! WRANGLER_SEND_METRICS=false npx wrangler pages deploy dist --project-name "$CF_PAGES_PROJECT" --branch main --commit-hash "$new"; then
     echo 'El sitio nuevo ya está en el VPS, pero no se pudo subir a Cloudflare Pages: los visitantes siguen viendo el anterior. Volver a publicar.' >&2
     return 1
@@ -239,12 +240,26 @@ affects_site() {
 main() {
   exec > >(tee "$LOG") 2>&1
 
+  # Un build a la vez en todo el servidor: con varios sitios en un VPS chico, dos
+  # builds juntos no entran en la memoria. Mientras espera, las publicaciones
+  # siguen "en cola" en /admin y sus pedidos en la carpeta: si el servicio muere
+  # esperando, no se pierden. El archivo lo comparten los usuarios de todos los
+  # sitios, por eso se crea con permisos para todos.
+  local lock=/run/lock/kit-build.lock
+  (umask 000 && : >> "$lock") 2>/dev/null || true
+  exec 9>>"$lock"
+  if ! flock -n 9; then
+    echo "Esperando a que termine el build de otro sitio ($(date -Is))…"
+    flock 9
+  fi
+
   # Un archivo por pedido: id de la publicación (botón Publicar o webhook),
   # push-<id> (webhook: construye solo si el diff afecta al sitio),
   # preview-<id>[-translate] (vista previa), push-recheck (solo revisa la
   # rama) o cualquier otro nombre (a mano: fuerza build).
-  # Se consumen antes de empezar: los que lleguen durante el build quedan en la
-  # carpeta y el path unit lanza otro al terminar.
+  # Se consumen ya con el turno tomado: los que llegaron durante la espera entran
+  # en este build, y los que lleguen durante el build quedan en la carpeta para el
+  # siguiente (el path unit lo lanza al terminar).
   mkdir -p "$REQUESTS"
   local request
   for request in "$REQUESTS"/*; do
@@ -266,18 +281,6 @@ main() {
     if [[ $request =~ ^[a-z0-9]{15}$ ]]; then ids+="$request "; fi
   done
   trap on_error ERR
-
-  # Un build a la vez en todo el servidor: con varios sitios en un VPS chico, dos
-  # builds juntos no entran en la memoria. Mientras espera, las publicaciones
-  # siguen "en cola" en /admin. El archivo lo comparten los usuarios de todos los
-  # sitios, por eso se crea con permisos para todos.
-  local lock=/run/lock/kit-build.lock
-  (umask 000 && : >> "$lock") 2>/dev/null || true
-  exec 9>>"$lock"
-  if ! flock -n 9; then
-    echo "Esperando a que termine el build de otro sitio ($(date -Is))…"
-    flock 9
-  fi
 
   cd "$REPO"
   # Último commit publicado con éxito, no HEAD: si un build falla después del

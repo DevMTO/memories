@@ -21,9 +21,9 @@ qué cambió, para llevarlo al origen.
 | `pocketbase/` | Migraciones y hooks por módulo (`core`, `i18n`) y scripts (binario, servidor local, tipos, importar el seed) | — |
 | `site/` | Componentes del sitio: hreflang y aviso de vista previa | — |
 | `forms/` | Formularios del sitio (`forms.ts`) por correo, con el relay PHP del hosting (`forms/relay/`) | — |
-| `deploy/` | Guía del VPS (`vps.md`), build y publicación (`build.sh`) y plantillas de systemd, Caddy y nginx | todo lo anterior |
+| `deploy/` | Guía del VPS (`vps.md`), build y publicación (`build.sh`), y `render.sh` con sus plantillas (systemd, Caddy, nginx y la guía de cada sitio) | todo lo anterior |
 
-Requisitos: Astro 7, Node 22+ (corre `.ts` directamente), `react`/`react-dom` y
+Requisitos: Astro 7, Node 22.12+ (corre `.ts` directamente), `react`/`react-dom` y
 `@astrojs/react` (para `/admin`), `pocketbase` (SDK), `sharp` y `pocketbase-typegen`
 (scripts).
 
@@ -389,7 +389,7 @@ copia). Trampa para bots: un `<input name="website">` oculto.
 - `kit/deploy/README.md`: `build.sh` y sus variables, `render.sh` para los archivos de
   systemd/Caddy/nginx, y varios sitios en un mismo VPS.
 
-Cada proyecto guarda sus valores (nombre, puerto, repo, dominios, idiomas, formularios) en
+Cada proyecto guarda sus valores (nombre, puerto, dominios, idiomas, formularios) en
 `deploy/site.env`; `kit/deploy/render.sh deploy` genera con ellos sus archivos de `deploy/` y
 su guía, `deploy/despliegue.md`. El sitio público va a Cloudflare
 Pages (`kit/deploy/cloudflare-pages.md`) o a un hosting compartido con cPanel

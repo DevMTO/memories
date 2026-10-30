@@ -36,8 +36,8 @@ La otra opción para el sitio público es Cloudflare Pages (`cloudflare-pages.md
 
 ## Instalarlo
 
-Los pasos, con los valores del sitio, están en su `deploy/despliegue.md`: "Antes del VPS",
-el `cpanel.env` en "En la VM" y "Después del primer build". Lo que conviene saber:
+La configuración, con los valores del sitio, está en su `deploy/despliegue.md`: secciones
+"DNS", "Sitio público" y `cpanel.env` en "Archivos en el VPS". Lo que conviene saber:
 
 - **DNS:** los nameservers del dominio son los del hosting (si el dominio se contrató con el
   hosting, ya lo son). `editor` y `pb` son solo registros DNS a la VM en el **Zone Editor**:

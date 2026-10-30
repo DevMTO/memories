@@ -9,7 +9,7 @@ La otra opción para el sitio público es un hosting compartido con cPanel (`cpa
 
 | Qué | Dónde | En el repo |
 |---|---|---|
-| Sitio para los visitantes | Cloudflare Pages (`example.com`), subido por el build con `wrangler` | `kit/deploy/build.sh` (`deploy_pages`), `public/_headers` |
+| Sitio para los visitantes | Cloudflare Pages (`example.com`), subido por el build con `wrangler` | `kit/deploy/build.sh` (`deploy_pages`) |
 | Sitio para el editor (`/admin`) y vista previa | VPS, `editor.example.com` | `deploy/Caddyfile` o `deploy/nginx.conf` |
 | PocketBase | VPS, `pb.example.com` | `pocketbase/`, `deploy/<PB_SERVICE>.service` |
 | Build (botón "Publicar", push a `deploy`, vista previa) | VPS, `<unit>-build.service` | `kit/deploy/build.sh`, `deploy/<unit>-build.*` |
@@ -28,8 +28,8 @@ La otra opción para el sitio público es un hosting compartido con cPanel (`cpa
 
 ## Instalarlo
 
-Los pasos, con los valores del sitio, están en su `deploy/despliegue.md`: "Antes del VPS",
-el `cloudflare.env` en "En la VM" y "Después del primer build". Lo que conviene saber:
+La configuración, con los valores del sitio, está en su `deploy/despliegue.md`: secciones
+"DNS", "Sitio público" y `cloudflare.env` en "Archivos en el VPS". Lo que conviene saber:
 
 - **DNS en Cloudflare:** los subdominios son registros gratis y sin límite; el dominio en sí
   se sigue pagando en su registrador. Con los nameservers en Cloudflare, el DNS de cualquier
@@ -40,7 +40,7 @@ el `cloudflare.env` en "En la VM" y "Después del primer build". Lo que conviene
 - **`editor` y `pb` en DNS only** (nube gris): la VM los atiende con su propio certificado.
   Los del correo también quedan DNS only.
 - **Token del build:** permiso **Account → Cloudflare Pages → Edit**, solo para tu cuenta.
-- **Cabeceras:** el proyecto tiene `public/_headers` con la caché de los archivos con hash
+- **Cabeceras:** el build agrega un `_headers` con la caché de los archivos con hash
   (`/_astro/*`: `Cache-Control: public, max-age=31536000, immutable`); el HTML usa el valor
   por defecto de Pages, que se revalida siempre.
 - **`build.env`:** `SITE_URL` es la dirección de Pages, no la del editor (canónicos y

@@ -10,9 +10,9 @@ El sitio se construye en el VPS cuando el editor pulsa **Publicar** o **Vista pr
    construye, publica en `/srv/$APP/site` (el sitio del editor) y en la copia pública, y
    le informa a PocketBase el estado. `/admin` lo muestra en vivo.
 
-Cómo funciona el VPS y cómo se prepara una vez: `vps.md`. Los comandos de cada sitio, con sus
-valores (instalarlo, el sitio público, backups, el día a día): su `deploy/despliegue.md`,
-generado desde `deploy/site.env` (abajo). Las guías del sitio público explican sus opciones
+Cómo funciona el VPS y cómo se prepara una vez: `vps.md`. Lo que necesita cada sitio, con sus
+valores (DNS, sitio público, archivos y su contenido, webhook, formularios, operación): su
+`deploy/despliegue.md`, generado desde `deploy/site.env` (abajo). Las guías del sitio público explican sus opciones
 (abajo).
 
 ## Dónde ven el sitio los visitantes
@@ -71,10 +71,10 @@ Escribe en `deploy/` del proyecto:
 - `<UNIT>-build.path` y `<UNIT>-build.service`
 - `<PB_SERVICE>.service`
 - `Caddyfile` y `nginx.conf`
-- `despliegue.md`: los comandos para instalar y operar el sitio, con sus valores: DNS y
-  sitio público, la VM (carpetas, deploy key, variables, servicios, servidor web, primer
-  build), contenido, webhook, formularios, backups y el día a día. Solo quedan por escribir
-  cuentas y secretos (`CAMBIAR`).
+- `despliegue.md`: la guía del sitio, en formato de referencia y con sus valores: DNS,
+  sitio público, archivos del VPS y su contenido (carpetas, deploy key, variables,
+  servicios, servidor web), webhook, formularios y operación. Cuentas y secretos quedan
+  como `CAMBIAR`.
 
 Por defecto `UNIT` es `APP`, `PB_SERVICE` es `<APP>-pocketbase` y `USER` es `sites` (el
 usuario común de todos los sitios, ver `vps.md`); la lista completa de valores está al

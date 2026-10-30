@@ -112,7 +112,7 @@ Dueño root, permisos `600`. Lo lee el build; sus valores quedan dentro del siti
 | `@UNIT@-build.service` | `/etc/systemd/system/` |
 | `@UNIT@-build.path` | `/etc/systemd/system/`, habilitado y arrancado |
 | `Caddyfile` | sus bloques en `/etc/caddy/Caddyfile` (con Caddy) |
-| `nginx.conf` | `/etc/nginx/conf.d/@APP@.conf`, sin su línea `map_hash_bucket_size` (con nginx; certificados de `certbot --nginx` para `@EDITOR_HOST@` y `@PB_HOST@`) |
+| `nginx.conf` | `/etc/nginx/conf.d/@APP@.conf`, sin su línea `map_hash_bucket_size` (con nginx; HTTPS con `certbot --nginx -d @EDITOR_HOST@ -d @PB_HOST@`, ver "HTTPS" en `kit/deploy/vps.md`) |
 
 En el `Caddyfile` / `nginx.conf`, `CLAVE` es el `PREVIEW_KEY` de `pocketbase.env`.
 
