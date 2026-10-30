@@ -106,7 +106,9 @@ export type AdminConfig = {
   sections: SectionDef[];
   // Formato de fechas (por defecto 'es-PE').
   locale?: string;
-  // Enlace "Ver sitio" (por defecto '/', el mismo origen que /admin).
+  // Sitio publicado, para "Sitio publicado" y "Ver en el sitio" (por defecto el `site` de
+  // astro.config, SITE_URL). /admin vive en editor.<dominio>, que solo sirve la
+  // vista previa: '/' sería la vista previa, no el sitio publicado.
   siteUrl?: string;
   // El sitio usa el traductor del kit (kit/i18n): la vista previa ofrece
   // "Traducir textos nuevos".
@@ -122,6 +124,12 @@ export function setConfig(config: AdminConfig) {
 export function config(): AdminConfig {
   if (!current) throw new Error('/admin sin configurar.');
   return current;
+}
+
+// Dirección de `path` en el sitio publicado.
+export function liveUrl(path = '/') {
+  const site = config().siteUrl ?? import.meta.env.SITE;
+  return site ? new URL(path, site).href : path;
 }
 
 export const collectionDefs = () => config().sections.filter((s): s is CollectionDef => s.kind === 'collection');

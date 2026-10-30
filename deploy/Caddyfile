@@ -1,10 +1,10 @@
-# Caddy en el VPS: sirve el sitio para el editor (/admin y la vista previa) y
-# hace de proxy a PocketBase, con HTTPS automático (Let's Encrypt). Sus bloques van
-# en /etc/caddy/Caddyfile; el DNS de los dos dominios debe apuntar al VPS antes de
-# recargar Caddy. Los visitantes ven el sitio público (example.com); aquí es una
-# copia para el editor, fuera de los buscadores.
+# Caddy en el VPS: sirve el editor (/admin y la vista previa) y hace de proxy a
+# PocketBase, con HTTPS automático (Let's Encrypt). Sus bloques van en
+# /etc/caddy/Caddyfile; el DNS de los dos dominios debe apuntar al VPS antes de
+# recargar Caddy. Los visitantes ven el sitio público (memoriestravelperu.com); aquí solo está
+# la vista previa, fuera de los buscadores.
 
-editor.example.com {
+editor.memoriestravelperu.com {
 	encode zstd gzip
 	header X-Robots-Tag "noindex, nofollow"
 
@@ -17,21 +17,19 @@ editor.example.com {
 	header @other Cache-Control "no-cache"
 	header Vary Cookie
 
-	# Vista previa del editor (kit/deploy/build.sh): las mismas URLs, servidas desde
-	# otra carpeta a quien tenga la cookie que pone /admin. CLAVE = PREVIEW_KEY de
-	# pocketbase.env. Sin vista previa, quitar este bloque.
-	@preview header Cookie *site_preview=CLAVE*
-	handle @preview {
-		root * /srv/memories/preview
-		file_server
+	# Solo la vista previa (kit/deploy/build.sh la rearma después de cada
+	# publicación), y solo a quien tenga la cookie que pone /admin mientras la sesión
+	# es válida. Sin ella, solo /admin (el login) y sus archivos (/_astro/); lo demás
+	# redirige a /admin/. CLAVE = PREVIEW_KEY de pocketbase.env (obligatoria).
+	root * /srv/memories/preview
+	@guest {
+		not header Cookie *site_preview=CLAVE*
+		not path /admin /admin/* /_astro/*
 	}
-
-	handle {
-		root * /srv/memories/site
-		file_server
-	}
+	redir @guest /admin/ 302
+	file_server
 }
 
-pb.example.com {
+pb.memoriestravelperu.com {
 	reverse_proxy 127.0.0.1:8091
 }

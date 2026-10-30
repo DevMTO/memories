@@ -50,12 +50,29 @@ mandar a cualquier destinatario porque la clave nunca sale del servidor.
 ## Agregar un sitio
 
 1. Una clave para el sitio: `openssl rand -hex 32`.
-2. Una línea en `sites` de `~/form-relay/config.php`, con esa clave y un buzón para los
-   envíos sin firma (opcional):
+2. Su entrada en `sites` de `~/form-relay/config.php`, con esa clave y un buzón para los
+   envíos sin firma (opcional). `copy` y `number` solo si un formulario lo necesita:
    ```php
-   'misitio.com' => ['key' => '…', 'to' => 'respaldo@misitio.com', 'name' => 'Mi Sitio'],
+   <?php
+   return [
+       // …
+       'sites' => [
+           'misitio.com' => [
+               'key' => '…',
+               'to' => 'respaldo@misitio.com',
+               'name' => 'Mi Sitio',
+           ],
+           'otrositio.com' => [    // ← sitio nuevo
+               'key' => '…',
+               'to' => 'respaldo@otrositio.com',
+               'name' => 'Otro Sitio',
+               'copy' => ['claims'],
+               'number' => ['claims'],
+           ],
+       ],
+   ];
    ```
-   Con `'copy' => ['claims']` y `'number' => ['claims']` si un formulario lo necesita.
+   El `deploy/despliegue.md` de cada sitio trae su entrada ya armada.
 3. En el build del sitio (`build.env` en el VPS, `.env` en local):
    `FORMS_RELAY_URL=https://relay.example.com/form.php` (la misma URL para todos) y
    `FORMS_RELAY_KEY=` la misma clave. Publicar.

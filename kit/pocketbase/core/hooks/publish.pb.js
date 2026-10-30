@@ -9,7 +9,16 @@
 //                                                   { translate: true }, preview-<id>-translate:
 //                                                   también traduce los textos nuevos.
 //   GET  /api/preview/key        (solo editores) → PREVIEW_KEY: con esa cookie el servidor
-//                                                   web sirve la vista previa en las mismas URLs.
+//                                                   web sirve la vista previa (editor.<dominio>
+//                                                   solo sirve la vista previa, y sin la cookie
+//                                                   solo /admin).
+//   POST /api/preview/auto       (con secreto)   → vista previa que build.sh arma sola después
+//                                                   de publicar (sin requested_by): crea el
+//                                                   registro y devuelve su id para reportarle.
+//   POST /api/backup             (con secreto)   → { publish }: copia de seguridad de PocketBase
+//                                                   (publish-<id>.zip), guarda las últimas 5.
+//   GET  /api/backup/:id         (solo editores) → baja esa copia UNA vez (cada descarga es
+//                                                   tráfico de salida de la VM).
 //   POST /api/publish/:id/status (con secreto)   → kit/deploy/build.sh reporta building|done|failed|skipped.
 //   POST /api/preview/token      (con secreto)   → token del editor para que build.sh lea lo
 //                                                   oculto en la vista previa, sin su contraseña
@@ -92,6 +101,98 @@ routerAdd('GET', '/api/preview/key', (e) => {
   const key = $os.getenv('PREVIEW_KEY') || ''
   if (!key) return e.json(404, { message: 'Vista previa sin configurar (PREVIEW_KEY).' })
   return e.json(200, { key: key })
+})
+
+// POST /api/preview/auto — solo kit/deploy/build.sh (con PUBLISH_CALLBACK_SECRET).
+routerAdd('POST', '/api/preview/auto', (e) => {
+  const secret = $os.getenv('PUBLISH_CALLBACK_SECRET') || ''
+  if (!secret) return e.json(500, { message: 'PUBLISH_CALLBACK_SECRET no definido.' })
+  if (e.request.header.get('X-Publish-Secret') !== secret) {
+    return e.json(401, { message: 'Secreto inválido.' })
+  }
+  const preview = new Record($app.findCollectionByNameOrId('publishes'))
+  preview.set('kind', 'preview')
+  preview.set('status', 'queued')
+  $app.save(preview)
+  return e.json(200, { id: preview.id })
+})
+
+// POST /api/backup — solo kit/deploy/build.sh (con PUBLISH_CALLBACK_SECRET), al
+// terminar una publicación con cambios de contenido. Queda en pb_data/backups (en
+// la VM; no sale sola). Mientras se arma, PocketBase queda unos segundos en solo
+// lectura.
+routerAdd('POST', '/api/backup', (e) => {
+  const secret = $os.getenv('PUBLISH_CALLBACK_SECRET') || ''
+  if (!secret) return e.json(500, { message: 'PUBLISH_CALLBACK_SECRET no definido.' })
+  if (e.request.header.get('X-Publish-Secret') !== secret) {
+    return e.json(401, { message: 'Secreto inválido.' })
+  }
+  const KEEP = 5
+  const id = (e.requestInfo().body || {}).publish || ''
+  let publish
+  try {
+    publish = $app.findRecordById('publishes', id)
+  } catch (err) {
+    return e.json(404, { message: 'Publicación no encontrada.' })
+  }
+
+  const name = 'publish-' + publish.id + '.zip'
+  $app.createBackup(e.request.context(), name)
+
+  const fsys = $app.newBackupsFilesystem()
+  try {
+    const size = fsys.attributes(name).size
+    // Las más nuevas primero; se borran las de publicaciones anteriores a las KEEP últimas.
+    // (list devuelve un slice de Go: se pasa a un array de JS para ordenarlo.)
+    const files = []
+    for (const f of fsys.list('')) {
+      if (f.key.indexOf('publish-') === 0) files.push({ key: f.key, time: f.modTime.unix() })
+    }
+    files.sort((a, b) => b.time - a.time)
+    const old = files.slice(KEEP)
+    for (const f of old) fsys.delete(f.key)
+
+    publish.set('backup', name)
+    publish.set('backup_size', size)
+    publish.set('backup_downloaded', false)
+    $app.save(publish)
+    return e.json(200, { name: name, size: size, removed: old.length })
+  } finally {
+    fsys.close()
+  }
+})
+
+// GET /api/backup/:id — solo editores, una vez por copia: después queda marcada y
+// se niega (el botón de /admin desaparece). Si ya se borró (quedan las 5 últimas),
+// también.
+routerAdd('GET', '/api/backup/{id}', (e) => {
+  const editor = e.auth
+  if (!editor || !editor.collection || editor.collection().name !== 'editors') {
+    return e.json(401, { message: 'Solo el editor puede bajar la copia de seguridad.' })
+  }
+  let publish
+  try {
+    publish = $app.findRecordById('publishes', e.request.pathValue('id'))
+  } catch (err) {
+    return e.json(404, { message: 'Publicación no encontrada.' })
+  }
+  const name = publish.getString('backup')
+  if (!name) return e.json(404, { message: 'Esta publicación no tiene copia de seguridad.' })
+  if (publish.getBool('backup_downloaded')) {
+    return e.json(410, { message: 'Esta copia ya se bajó una vez.' })
+  }
+
+  const fsys = $app.newBackupsFilesystem()
+  try {
+    if (!fsys.exists(name)) return e.json(410, { message: 'Esta copia ya no está (se guardan las 5 últimas).' })
+    // Se marca antes de mandarla: una descarga cortada no se repite.
+    publish.set('backup_downloaded', true)
+    $app.save(publish)
+    e.response.header().set('Content-Disposition', 'attachment; filename="' + name + '"')
+    fsys.serve(e.response, e.request, name, name)
+  } finally {
+    fsys.close()
+  }
 })
 
 // POST /api/preview/token — solo kit/deploy/build.sh (con PUBLISH_CALLBACK_SECRET): un

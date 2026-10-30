@@ -14,6 +14,7 @@
   --info-bg: #e6eef8;
   --error-bg: #fbe7e5;
   --radius: 8px;
+  --topbar-height: 3.4rem;
   color-scheme: light;
 }
 
@@ -179,16 +180,48 @@ label {
 }
 
 .sidebar {
+  /* Fijo bajo la barra superior, con el pie (copias, cuenta, salir) siempre abajo. */
+  position: sticky;
+  top: var(--topbar-height);
+  align-self: start;
+  height: calc(100vh - var(--topbar-height));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   padding: 1rem 0.5rem;
   border-right: 1px solid var(--border);
 }
 
-.sidebar a {
+.sidebar a,
+.sidebar-link {
   display: block;
+  width: 100%;
   padding: 0.45rem 0.75rem;
+  border: 0;
   border-radius: 6px;
+  background: none;
   color: var(--text);
+  font: inherit;
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.sidebar-footer a:not(.is-active),
+.sidebar-footer .sidebar-link {
+  color: var(--muted);
+}
+
+.sidebar a:hover,
+.sidebar-link:hover {
+  background: color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .sidebar a.is-active {
@@ -284,6 +317,34 @@ label {
 .topbar .preview-popover {
   left: auto;
   right: 0;
+}
+
+/* Vista previa en la barra: ver, estado y actualizar (lib/publish.tsx, PreviewControl). */
+.preview-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.preview-chip {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  color: var(--muted);
+}
+
+.preview-chip.is-current {
+  background: var(--ok-bg);
+  color: var(--primary);
+}
+
+.preview-chip.is-behind,
+.preview-chip.is-running {
+  background: var(--warn-bg);
+  color: var(--warn);
 }
 
 .preview-popover .field-help {
@@ -1103,12 +1164,15 @@ ul.plain {
     font-size: 0.9rem;
   }
 
-  .topbar-actions .btn-ghost {
+  .topbar-actions .btn-ghost,
+  .topbar-actions .preview-control {
     display: none;
   }
 
   .sidebar {
     display: none;
+    position: static;
+    height: auto;
     border-right: 0;
     border-bottom: 1px solid var(--border);
     background: var(--surface);

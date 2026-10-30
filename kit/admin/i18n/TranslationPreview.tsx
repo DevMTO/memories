@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { formatTime } from '../components/RecordEditor';
 import { errorMessage, fieldErrors, pb, type RecordModel } from '../lib/pocketbase';
-import { PREVIEW_COOKIE, PreviewButton, useConfirmPublish, usePublish } from '../lib/publish';
+import { NOTHING_TO_PUBLISH, PreviewButton, PreviewChip, useConfirmPublish, usePublish } from '../lib/publish';
 import { OriginBadge, TranslationOrigin, originOf, useAutoDictionary } from './origin';
 import {
   elementTexts,
@@ -68,15 +68,15 @@ export function TranslationPreview({ lang, basePath, overrides, onOverrideChange
   const [ids, setIds] = useState<Dictionary | null>(null);
   const [ready, setReady] = useState(false);
 
-  // Vista previa si ya hay una armada; si no, el sitio publicado.
+  // editor.<dominio> sirve solo la vista previa (se rearma después de cada
+  // publicación), con la cookie que pone /admin mientras la sesión es válida.
   const { previewEnabled, lastPreview, enterPreview, previewInProgress } = usePublish();
-  const preview = previewEnabled && lastPreview?.status === 'done' ? lastPreview : undefined;
-  const source = preview ? `preview:${preview.id}` : 'live';
+  const preview = lastPreview?.status === 'done' ? lastPreview : undefined;
+  const source = `preview:${preview?.id ?? ''}`;
   // Traducción automática de la misma versión del sitio (para mostrar el origen).
   const auto = useAutoDictionary(lang, source);
   useEffect(() => {
-    if (preview) enterPreview();
-    else document.cookie = `${PREVIEW_COOKIE}=; path=/; max-age=0`;
+    enterPreview();
     setReady(true);
   }, [source, enterPreview]);
   const editModeRef = useRef(editMode);
@@ -213,24 +213,11 @@ export function TranslationPreview({ lang, basePath, overrides, onOverrideChange
             ? 'Haz clic en un texto para corregir su traducción. Apaga el modo corrección para navegar por el sitio.'
             : 'Navega hasta la página que quieras corregir y vuelve a encender el modo corrección.'}
         </p>
-        <p className={preview ? 'notice-info' : 'notice-warn'}>
-          {preview ? (
-            <>
-              Mostrando la <strong>vista previa</strong> armada el {formatTime(preview.updated)}: incluye las
-              correcciones guardadas hasta entonces.{' '}
-            </>
-          ) : (
-            <>
-              Mostrando el <strong>sitio publicado</strong>: las correcciones se ven al publicar.{' '}
-            </>
-          )}
-          {previewInProgress ? (
-            <span className="muted">Armando una vista previa nueva…</span>
-          ) : (
-            previewEnabled && (
-              <PreviewButton className="btn btn-ghost" label={preview ? 'Actualizar vista previa' : 'Armar vista previa'} />
-            )
-          )}
+        <p className="notice-info">
+          Mostrando la <strong>vista previa</strong>
+          {preview ? <> armada el {formatTime(preview.updated)}</> : null}: las correcciones guardadas después se ven
+          al actualizarla. <PreviewChip />{' '}
+          {previewEnabled && !previewInProgress && <PreviewButton className="btn btn-ghost" label="Actualizar" />}
         </p>
         {ready && <iframe key={source} ref={iframe} className="preview-frame" src={path} title="Vista previa" />}
       </div>
@@ -405,14 +392,20 @@ function CandidateEditor({ lang, candidate, override, auto, draft, onDraft, onSa
 
 // Qué hacer para ver la corrección: actualizar la vista previa o publicar.
 function NextStep() {
-  const { previewEnabled } = usePublish();
+  const { previewEnabled, canPublish } = usePublish();
   const confirmPublish = useConfirmPublish();
   return (
     <p className="field-help inline-actions">
       {previewEnabled ? 'Para verla: ' : 'Para que se vea: '}
       <PreviewButton className="btn btn-ghost" label="Actualizar vista previa" />
       {previewEnabled && 'y, para que llegue al sitio, '}
-      <button type="button" className="btn btn-ghost" onClick={confirmPublish}>
+      <button
+        type="button"
+        className="btn btn-ghost"
+        disabled={!canPublish}
+        title={canPublish ? undefined : NOTHING_TO_PUBLISH}
+        onClick={confirmPublish}
+      >
         Publicar
       </button>
     </p>

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } 
 import { config, fieldsOf, isFileField, isSection, type Field, type FormItem } from '../config';
 import { clearDraft, loadDraft, saveDraft, type Draft } from '../lib/drafts';
 import { errorMessage, fieldErrors, fileUrl, pb, type RecordModel } from '../lib/pocketbase';
-import { PreviewButton, useConfirmPublish } from '../lib/publish';
+import { NOTHING_TO_PUBLISH, PreviewButton, useConfirmPublish, usePublish } from '../lib/publish';
 import { useUnsavedGuard } from '../lib/router';
 import { GalleryField, galleryOrder, galleryPayload, type GalleryItem } from './GalleryField';
 import { ImageField, type ImageChange } from './ImageField';
@@ -169,6 +169,7 @@ export function RecordEditor({ collection, items, record, defaults = {}, draftKe
   const [saving, setSaving] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const confirmPublish = useConfirmPublish();
+  const { canPublish } = usePublish();
 
   // Copia local de una sesión anterior que no se llegó a guardar.
   const [offer, setOffer] = useState<Draft | null>(() => {
@@ -492,7 +493,13 @@ export function RecordEditor({ collection, items, record, defaults = {}, draftKe
             {message.saved && (
               <span className="inline-actions">
                 <PreviewButton className="btn btn-ghost" />
-                <button type="button" className="btn btn-ghost" onClick={confirmPublish}>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  disabled={!canPublish}
+                  title={canPublish ? undefined : NOTHING_TO_PUBLISH}
+                  onClick={confirmPublish}
+                >
                   Publicar
                 </button>
               </span>

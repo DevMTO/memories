@@ -1,5 +1,5 @@
 # Copiar a /etc/systemd/system/memories-pocketbase.service.
-# Escucha solo en localhost: desde fuera se entra por Caddy o nginx (pb.example.com).
+# Escucha solo en localhost: desde fuera se entra por Caddy o nginx (pb.memoriestravelperu.com).
 [Unit]
 Description=PocketBase (memories)
 After=network.target

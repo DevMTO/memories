@@ -21,10 +21,9 @@ instalación y el porqué de cada parte están en `kit/deploy/vps.md` ("Instalar
 | Build | `@UNIT@-build.service`, lanzado por `@UNIT@-build.path` |
 | Rama que se publica | `deploy` |
 | Sitio público | @PUBLIC_LABEL@, `@SITE_HOST@` |
-| Editor y vista previa | `@EDITOR_HOST@` |
+| Editor (`/admin`) y vista previa | `@EDITOR_HOST@` (sin sesión, solo el login) |
 | API de PocketBase | `@PB_HOST@` |
 | Nombre fijo de la VM | `@DUCKDNS@.duckdns.org` |
-| Backups automáticos | cron `@BACKUP_CRON@` (UTC) |
 
 ## Requisitos
 
@@ -59,14 +58,15 @@ dig +short @EDITOR_HOST@ @PB_HOST@
 | Ruta | Dueño | Qué es |
 |---|---|---|
 | `/srv/@APP@/repo` | `@USER@` | Clon del repo, rama `deploy` |
-| `/srv/@APP@/site` | `@USER@` | Sitio del editor (lo que sirve `@EDITOR_HOST@`) |
-| `/srv/@APP@/preview` | `@USER@` | Vista previa |
+| `/srv/@APP@/site` | `@USER@` | Último sitio publicado (lo usa el build; no se sirve) |
+| `/srv/@APP@/preview` | `@USER@` | Vista previa: lo único que sirve `@EDITOR_HOST@` |
 | `/srv/@APP@/build/requests` | `@USER@` | Pedidos de build |
 | `/srv/@APP@/pocketbase/pb_data` | `@USER@` | Base y archivos de PocketBase |
 | `/etc/@APP@/` | root | Variables (abajo) |
 
 ```sh
-mkdir -p /srv/@APP@/{site,preview,build/requests,pocketbase/pb_data} /etc/@APP@
+mkdir -p /srv/@APP@/{site,preview,build/requests,pocketbase/pb_data}
+mkdir -p /etc/@APP@
 chown -R @USER@:@USER@ /srv/@APP@
 ```
 
@@ -90,7 +90,8 @@ key**, sin permiso de escritura. Después el clon, con `DUEÑO/REPO` el repo del
 primera vez pregunta por la huella de GitHub: `yes`):
 
 ```sh
-sudo -u @USER@ git clone -b deploy git@github-@APP@:DUEÑO/REPO.git /srv/@APP@/repo
+sudo -u @USER@ git clone -b deploy git@github-@APP@:DUEÑO/REPO.git \
+  /srv/@APP@/repo
 ```
 
 ### Archivos de variables
@@ -124,7 +125,7 @@ PREVIEW_KEY=CAMBIAR
 | `BUILD_REQUEST_DIR` | Carpeta donde PocketBase deja los pedidos de build |
 | `PUBLISH_CALLBACK_SECRET` | Secreto entre el build y PocketBase (`openssl rand -hex 32`) |
 | `DEPLOY_WEBHOOK_SECRET` | Secreto del webhook de GitHub (`openssl rand -hex 32`) |
-| `PREVIEW_KEY` | Clave de la vista previa (`openssl rand -hex 32`); va también en el `Caddyfile` / `nginx.conf` en lugar de `CLAVE`. Opcional |
+| `PREVIEW_KEY` | Clave de la vista previa y del acceso a `@EDITOR_HOST@` (`openssl rand -hex 32`); va también en el `Caddyfile` / `nginx.conf` en lugar de `CLAVE`. Obligatoria |
 
 ### `/etc/@APP@/build.env`
 
@@ -146,23 +147,27 @@ Lo lee el build; sus valores quedan dentro del sitio. Completarlo con:
 | `@UNIT@-build.service` | `/etc/systemd/system/` |
 | `@UNIT@-build.path` | `/etc/systemd/system/`, habilitado y arrancado |
 | `Caddyfile` | sus bloques en `/etc/caddy/Caddyfile` (con Caddy) |
-| `nginx.conf` | `/etc/nginx/conf.d/@APP@.conf`, sin su línea `map_hash_bucket_size` (con nginx; HTTPS con certbot, abajo; ver "HTTPS" en `kit/deploy/vps.md`) |
+| `nginx.conf` | `/etc/nginx/conf.d/@APP@.conf` (con nginx), sin `map_hash_bucket_size` |
 
 ```sh
-cp /srv/@APP@/repo/deploy/{@PB_SERVICE@.service,@UNIT@-build.service,@UNIT@-build.path} /etc/systemd/system/
+cp /srv/@APP@/repo/deploy/@PB_SERVICE@.service \
+   /srv/@APP@/repo/deploy/@UNIT@-build.service \
+   /srv/@APP@/repo/deploy/@UNIT@-build.path \
+   /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable @PB_SERVICE@
 systemctl enable --now @UNIT@-build.path
 ```
 
-En el `Caddyfile` / `nginx.conf`, `CLAVE` es el `PREVIEW_KEY` de `pocketbase.env`; estos
-comandos la toman de ahí y no hacen nada si falta (sin vista previa, quitar antes su bloque,
-como dice el comentario, y copiar el archivo a mano). Una sola vez: con Caddy, repetirlo
-agrega los bloques otra vez. Con Caddy:
+`@EDITOR_HOST@` sirve solo la vista previa, y solo a quien tenga la cookie que pone `/admin`
+con la sesión; sin ella, solo el login. En el `Caddyfile` / `nginx.conf`, `CLAVE` es el
+`PREVIEW_KEY` de `pocketbase.env`: estos comandos la toman de ahí y no hacen nada si falta.
+Una sola vez: con Caddy, repetirlo agrega los bloques otra vez. Con Caddy:
 
 ```sh
 key=$(sed -n 's/^PREVIEW_KEY=//p' /etc/@APP@/pocketbase.env)
-[ -n "$key" ] && sed "s/CLAVE/$key/" /srv/@APP@/repo/deploy/Caddyfile >> /etc/caddy/Caddyfile
+[ -n "$key" ] && sed "s/CLAVE/$key/" /srv/@APP@/repo/deploy/Caddyfile \
+  >> /etc/caddy/Caddyfile
 caddy validate --config /etc/caddy/Caddyfile && systemctl reload caddy
 ```
 
@@ -170,7 +175,8 @@ Con nginx:
 
 ```sh
 key=$(sed -n 's/^PREVIEW_KEY=//p' /etc/@APP@/pocketbase.env)
-[ -n "$key" ] && sed -e "s/CLAVE/$key/" -e '/^map_hash_bucket_size/d' /srv/@APP@/repo/deploy/nginx.conf > /etc/nginx/conf.d/@APP@.conf
+[ -n "$key" ] && sed -e "s/CLAVE/$key/" -e '/^map_hash_bucket_size/d' \
+  /srv/@APP@/repo/deploy/nginx.conf > /etc/nginx/conf.d/@APP@.conf
 nginx -t && systemctl reload nginx
 certbot --nginx -d @EDITOR_HOST@ -d @PB_HOST@
 ```
@@ -181,7 +187,8 @@ correrlo.
 `/etc/sudoers.d/@USER@` (permisos `440`) deja al build reiniciar este PocketBase:
 
 ```sh
-echo '@USER@ ALL=(root) NOPASSWD: /usr/bin/systemctl restart @PB_SERVICE@' >> /etc/sudoers.d/@USER@
+echo '@USER@ ALL=(root) NOPASSWD: /usr/bin/systemctl restart @PB_SERVICE@' \
+  >> /etc/sudoers.d/@USER@
 chmod 440 /etc/sudoers.d/@USER@ && visudo -c
 ```
 
@@ -193,8 +200,12 @@ En GitHub → el repo del sitio → Settings → Webhooks → **Add webhook**:
 |---|---|
 | Payload URL | `https://@PB_HOST@/api/deploy-hook` |
 | Content type | `application/json` |
-| Secret | `DEPLOY_WEBHOOK_SECRET` de `pocketbase.env`: `sed -n 's/^DEPLOY_WEBHOOK_SECRET=//p' /etc/@APP@/pocketbase.env` |
+| Secret | `DEPLOY_WEBHOOK_SECRET` de `pocketbase.env` (abajo) |
 | Events | Just the push event |
+
+```sh
+sed -n 's/^DEPLOY_WEBHOOK_SECRET=//p' /etc/@APP@/pocketbase.env
+```
 
 En Recent Deliveries, el ping tiene que dar 200.
 
@@ -206,14 +217,42 @@ En Recent Deliveries, el ping tiene que dar 200.
 
 | Para qué | Comando |
 |---|---|
-| Primer build (instala PocketBase y lo arranca) | `systemctl start @UNIT@-build && journalctl -u @UNIT@-build -n 50` |
 | Pasar el código a producción (en tu máquina) | `git push origin main:deploy` |
 | Reconstruir a mano | `sudo -u @USER@ touch /srv/@APP@/build/requests/manual` |
 | Log del build | `journalctl -u @UNIT@-build` |
 | Aplicar un cambio de `pocketbase.env` | `systemctl restart @PB_SERVICE@` |
 | Aplicar un cambio de `build.env` | reconstruir |
-| Superusuario del dashboard (`https://@PB_HOST@/_/`) | `sudo -u @USER@ /srv/@APP@/pocketbase/bin/pocketbase superuser upsert CORREO CONTRASEÑA --dir=/srv/@APP@/pocketbase/pb_data` |
-| Importar el contenido inicial (en tu máquina; en `.env.production`, `PUBLIC_POCKETBASE_URL=https://@PB_HOST@` y `POCKETBASE_SUPERUSER_EMAIL` / `POCKETBASE_SUPERUSER_PASSWORD`, los del superusuario de arriba) | `npm run pb:import:prod` |
 
-Backups: en `https://@PB_HOST@/_/` → Settings → Backups, con el cron de arriba (ver "Backups"
-en `kit/deploy/vps.md`). Lo que se respalda es `/srv/@APP@/pocketbase/pb_data`.
+Primer build (instala PocketBase y lo arranca; sin contenido todavía el sitio sale vacío o el
+build falla):
+
+```sh
+systemctl start @UNIT@-build
+journalctl -u @UNIT@-build -n 50
+```
+
+Superusuario del dashboard (`https://@PB_HOST@/_/`), la cuenta técnica, distinta de la del
+editor:
+
+```sh
+sudo -u @USER@ /srv/@APP@/pocketbase/bin/pocketbase superuser upsert \
+  CORREO CONTRASEÑA --dir=/srv/@APP@/pocketbase/pb_data
+```
+
+Importar el contenido inicial, en tu máquina, con el superusuario de arriba en
+`.env.production`:
+
+```sh
+PUBLIC_POCKETBASE_URL=https://@PB_HOST@
+POCKETBASE_SUPERUSER_EMAIL=CAMBIAR
+POCKETBASE_SUPERUSER_PASSWORD=CAMBIAR
+```
+
+```sh
+npm run pb:import:prod
+```
+
+Copias de seguridad: una por publicación con cambios de contenido, en
+`/srv/@APP@/pocketbase/pb_data/backups/` (las 5 últimas); el editor puede bajar cada una una
+vez desde `/admin`, y subir y restaurar copias en `/admin` → Copias de seguridad. Sin backups automáticos en el dashboard ni copia a S3 (ver "Copias de
+seguridad" en `kit/deploy/vps.md`).

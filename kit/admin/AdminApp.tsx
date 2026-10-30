@@ -1,11 +1,12 @@
 // Núcleo de /admin: sesión, menú y pantallas a partir de la configuración del
 // proyecto (navegación por hash). Ver kit/README.md.
 import { useEffect, useState } from 'react';
-import { setConfig, type AdminConfig, type SectionDef } from './config';
+import { liveUrl, setConfig, type AdminConfig, type SectionDef } from './config';
 import { connect, pb } from './lib/pocketbase';
-import { PreviewButton, PublishButton, PublishProvider, PublishStatus } from './lib/publish';
+import { PreviewControl, PublishButton, PublishProvider, PublishStatus } from './lib/publish';
 import { useRoute } from './lib/router';
 import { Account } from './screens/Account';
+import { Backups } from './screens/Backups';
 import { Dashboard } from './screens/Dashboard';
 import { FormScreen } from './screens/FormScreen';
 import { ListScreen } from './screens/ListScreen';
@@ -94,17 +95,11 @@ function Shell({ config, onLogout }: { config: AdminConfig; onLogout: () => void
           {config.brand} · Editor
         </a>
         <div className="topbar-actions">
-          <PreviewButton className="btn btn-ghost" />
+          <PreviewControl />
           <PublishButton />
-          <a className="btn btn-ghost" href={config.siteUrl ?? '/'} target="_blank" rel="noopener">
-            Ver sitio ↗
+          <a className="btn btn-ghost" href={liveUrl()} target="_blank" rel="noopener">
+            Sitio publicado ↗
           </a>
-          <a className={`btn btn-ghost${current === ACCOUNT ? ' is-active' : ''}`} href={`#/${ACCOUNT}`}>
-            Mi cuenta
-          </a>
-          <button type="button" className="btn btn-ghost" onClick={() => confirm('¿Cerrar sesión?') && onLogout()}>
-            Salir
-          </button>
         </div>
       </header>
       <nav className={`sidebar${menuOpen ? ' is-open' : ''}`}>
@@ -117,6 +112,18 @@ function Shell({ config, onLogout }: { config: AdminConfig; onLogout: () => void
             {s.kind === 'screen' && s.useBadge && <NavBadge useBadge={s.useBadge} />}
           </a>
         ))}
+        {/* Lo que se usa poco: abajo, aparte del contenido. */}
+        <div className="sidebar-footer">
+          <a href={`#/${BACKUPS}`} className={current === BACKUPS ? 'is-active' : ''}>
+            Copias de seguridad
+          </a>
+          <a href={`#/${ACCOUNT}`} className={current === ACCOUNT ? 'is-active' : ''}>
+            Mi cuenta
+          </a>
+          <button type="button" className="sidebar-link" onClick={() => confirm('¿Cerrar sesión?') && onLogout()}>
+            Cerrar sesión
+          </button>
+        </div>
       </nav>
       <main className="content">
         <PublishStatus showPending={current !== ''} />
@@ -126,13 +133,15 @@ function Shell({ config, onLogout }: { config: AdminConfig; onLogout: () => void
   );
 }
 
-// Pantalla propia del kit, fuera del menú del proyecto (enlace "Mi cuenta" arriba).
+// Pantallas propias del kit, fuera de las secciones del proyecto: al pie del menú.
 const ACCOUNT = 'cuenta';
+const BACKUPS = 'copias';
 
 function Screen({ section, route }: { section: SectionDef | undefined; route: string[] }) {
   const [key = '', id, extra] = route;
   if (!key) return <Dashboard />;
   if (key === ACCOUNT && !section) return <Account />;
+  if (key === BACKUPS && !section) return <Backups />;
   switch (section?.kind) {
     case 'collection':
       if (id === 'borrados') return <TrashScreen def={section} />;

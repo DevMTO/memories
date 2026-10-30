@@ -20,17 +20,16 @@ instalación y el porqué de cada parte están en `kit/deploy/vps.md` ("Instalar
 | PocketBase | servicio `memories-pocketbase`, en `127.0.0.1:8091` |
 | Build | `memories-build.service`, lanzado por `memories-build.path` |
 | Rama que se publica | `deploy` |
-| Sitio público | Hosting con cPanel, `example.com` |
-| Editor y vista previa | `editor.example.com` |
-| API de PocketBase | `pb.example.com` |
+| Sitio público | Hosting con cPanel, `memoriestravelperu.com` |
+| Editor (`/admin`) y vista previa | `editor.memoriestravelperu.com` (sin sesión, solo el login) |
+| API de PocketBase | `pb.memoriestravelperu.com` |
 | Nombre fijo de la VM | `SUBDOMINIO.duckdns.org` |
-| Backups automáticos | cron `30 9 * * *` (UTC) |
 
 ## Requisitos
 
 - La VM preparada con `kit/deploy/vps.md` (DuckDNS, paquetes, el usuario `sites` y el
   servidor web).
-- **El hosting con cPanel:** el dominio `example.com` con sus nameservers en el hosting (si
+- **El hosting con cPanel:** el dominio `memoriestravelperu.com` con sus nameservers en el hosting (si
   se contrató con el hosting, ya lo están). En el hosting no hay nada que instalar: el sitio
   son archivos que sube el build.
 
@@ -38,16 +37,16 @@ instalación y el porqué de cada parte están en `kit/deploy/vps.md` ("Instalar
 
 | Registro | Tipo | Apunta a |
 |---|---|---|
-| `editor.example.com` | `CNAME` | `SUBDOMINIO.duckdns.org` |
-| `pb.example.com` | `CNAME` | `SUBDOMINIO.duckdns.org` |
+| `editor.memoriestravelperu.com` | `CNAME` | `SUBDOMINIO.duckdns.org` |
+| `pb.memoriestravelperu.com` | `CNAME` | `SUBDOMINIO.duckdns.org` |
 
-En el Zone Editor de cPanel, zona de `example.com` (nombres con punto final). Son solo
+En el Zone Editor de cPanel, zona de `memoriestravelperu.com` (nombres con punto final). Son solo
 registros DNS: no se crean como subdominios en Domains, los atiende la VM.
 
 Antes del HTTPS, los dos tienen que dar la IP de la VM:
 
 ```sh
-dig +short editor.example.com pb.example.com
+dig +short editor.memoriestravelperu.com pb.memoriestravelperu.com
 ```
 
 ## Sitio público
@@ -59,11 +58,11 @@ El build sube el sitio por FTPS a `public_html` y borra solo lo que él mismo su
 | Cuenta FTP | Solo para el build, contraseña larga, **Directory** = `public_html` (o la carpeta del dominio, si no es el principal). Sus datos van en `cpanel.env` |
 | Servidor FTP | El nombre del servidor del hosting (el de **Configure FTP Client**), que es el del certificado del FTP |
 | `public_html` | Sin archivos previos del sitio, salvo `.well-known` y `cgi-bin` |
-| HTTPS | AutoSSL para `example.com` y `www.example.com` (SSL/TLS Status) |
-| `www` | Redirect permanente (301) de `www.example.com` a `https://example.com/` |
+| HTTPS | AutoSSL para `memoriestravelperu.com` y `www.memoriestravelperu.com` (SSL/TLS Status) |
+| `www` | Redirect permanente (301) de `www.memoriestravelperu.com` a `https://memoriestravelperu.com/` |
 
-Con el primer build, `https://example.com/` responde 200 con `Cache-Control: no-cache`, y
-`https://example.com/admin/` redirige (302) a `https://editor.example.com/admin/`.
+Con el primer build, `https://memoriestravelperu.com/` responde 200 con `Cache-Control: no-cache`, y
+`https://memoriestravelperu.com/admin/` redirige (302) a `https://editor.memoriestravelperu.com/admin/`.
 `/admin` vive en el editor porque tiene que estar en el mismo origen que la vista previa (la
 cookie `site_preview` y el iframe de Traducciones), que solo sirve el VPS: ver "Vista previa"
 en `kit/deploy/vps.md`.
@@ -75,14 +74,15 @@ en `kit/deploy/vps.md`.
 | Ruta | Dueño | Qué es |
 |---|---|---|
 | `/srv/memories/repo` | `sites` | Clon del repo, rama `deploy` |
-| `/srv/memories/site` | `sites` | Sitio del editor (lo que sirve `editor.example.com`) |
-| `/srv/memories/preview` | `sites` | Vista previa |
+| `/srv/memories/site` | `sites` | Último sitio publicado (lo usa el build; no se sirve) |
+| `/srv/memories/preview` | `sites` | Vista previa: lo único que sirve `editor.memoriestravelperu.com` |
 | `/srv/memories/build/requests` | `sites` | Pedidos de build |
 | `/srv/memories/pocketbase/pb_data` | `sites` | Base y archivos de PocketBase |
 | `/etc/memories/` | root | Variables (abajo) |
 
 ```sh
-mkdir -p /srv/memories/{site,preview,build/requests,pocketbase/pb_data} /etc/memories
+mkdir -p /srv/memories/{site,preview,build/requests,pocketbase/pb_data}
+mkdir -p /etc/memories
 chown -R sites:sites /srv/memories
 ```
 
@@ -106,7 +106,8 @@ key**, sin permiso de escritura. Después el clon, con `DUEÑO/REPO` el repo del
 primera vez pregunta por la huella de GitHub: `yes`):
 
 ```sh
-sudo -u sites git clone -b deploy git@github-memories:DUEÑO/REPO.git /srv/memories/repo
+sudo -u sites git clone -b deploy git@github-memories:DUEÑO/REPO.git \
+  /srv/memories/repo
 ```
 
 ### Archivos de variables
@@ -140,18 +141,18 @@ PREVIEW_KEY=CAMBIAR
 | `BUILD_REQUEST_DIR` | Carpeta donde PocketBase deja los pedidos de build |
 | `PUBLISH_CALLBACK_SECRET` | Secreto entre el build y PocketBase (`openssl rand -hex 32`) |
 | `DEPLOY_WEBHOOK_SECRET` | Secreto del webhook de GitHub (`openssl rand -hex 32`) |
-| `PREVIEW_KEY` | Clave de la vista previa (`openssl rand -hex 32`); va también en el `Caddyfile` / `nginx.conf` en lugar de `CLAVE`. Opcional |
+| `PREVIEW_KEY` | Clave de la vista previa y del acceso a `editor.memoriestravelperu.com` (`openssl rand -hex 32`); va también en el `Caddyfile` / `nginx.conf` en lugar de `CLAVE`. Obligatoria |
 
 ### `/etc/memories/build.env`
 
 Lo lee el build; sus valores quedan dentro del sitio. Completarlo con:
 
 ```sh
-SITE_URL=https://example.com
+SITE_URL=https://memoriestravelperu.com
 ENABLED_LANGS=es,en,pt
 DEFAULT_LANG=en
-PUBLIC_POCKETBASE_URL=https://pb.example.com
-EDITOR_URL=https://editor.example.com
+PUBLIC_POCKETBASE_URL=https://pb.memoriestravelperu.com
+EDITOR_URL=https://editor.memoriestravelperu.com
 ```
 
 Idiomas: `es,en,pt`; `en` va sin prefijo (`/`) y los demás en `/<idioma>/`.
@@ -175,23 +176,27 @@ CPANEL_FTP_PASSWORD=CAMBIAR
 | `memories-build.service` | `/etc/systemd/system/` |
 | `memories-build.path` | `/etc/systemd/system/`, habilitado y arrancado |
 | `Caddyfile` | sus bloques en `/etc/caddy/Caddyfile` (con Caddy) |
-| `nginx.conf` | `/etc/nginx/conf.d/memories.conf`, sin su línea `map_hash_bucket_size` (con nginx; HTTPS con certbot, abajo; ver "HTTPS" en `kit/deploy/vps.md`) |
+| `nginx.conf` | `/etc/nginx/conf.d/memories.conf` (con nginx), sin `map_hash_bucket_size` |
 
 ```sh
-cp /srv/memories/repo/deploy/{memories-pocketbase.service,memories-build.service,memories-build.path} /etc/systemd/system/
+cp /srv/memories/repo/deploy/memories-pocketbase.service \
+   /srv/memories/repo/deploy/memories-build.service \
+   /srv/memories/repo/deploy/memories-build.path \
+   /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable memories-pocketbase
 systemctl enable --now memories-build.path
 ```
 
-En el `Caddyfile` / `nginx.conf`, `CLAVE` es el `PREVIEW_KEY` de `pocketbase.env`; estos
-comandos la toman de ahí y no hacen nada si falta (sin vista previa, quitar antes su bloque,
-como dice el comentario, y copiar el archivo a mano). Una sola vez: con Caddy, repetirlo
-agrega los bloques otra vez. Con Caddy:
+`editor.memoriestravelperu.com` sirve solo la vista previa, y solo a quien tenga la cookie que pone `/admin`
+con la sesión; sin ella, solo el login. En el `Caddyfile` / `nginx.conf`, `CLAVE` es el
+`PREVIEW_KEY` de `pocketbase.env`: estos comandos la toman de ahí y no hacen nada si falta.
+Una sola vez: con Caddy, repetirlo agrega los bloques otra vez. Con Caddy:
 
 ```sh
 key=$(sed -n 's/^PREVIEW_KEY=//p' /etc/memories/pocketbase.env)
-[ -n "$key" ] && sed "s/CLAVE/$key/" /srv/memories/repo/deploy/Caddyfile >> /etc/caddy/Caddyfile
+[ -n "$key" ] && sed "s/CLAVE/$key/" /srv/memories/repo/deploy/Caddyfile \
+  >> /etc/caddy/Caddyfile
 caddy validate --config /etc/caddy/Caddyfile && systemctl reload caddy
 ```
 
@@ -199,9 +204,10 @@ Con nginx:
 
 ```sh
 key=$(sed -n 's/^PREVIEW_KEY=//p' /etc/memories/pocketbase.env)
-[ -n "$key" ] && sed -e "s/CLAVE/$key/" -e '/^map_hash_bucket_size/d' /srv/memories/repo/deploy/nginx.conf > /etc/nginx/conf.d/memories.conf
+[ -n "$key" ] && sed -e "s/CLAVE/$key/" -e '/^map_hash_bucket_size/d' \
+  /srv/memories/repo/deploy/nginx.conf > /etc/nginx/conf.d/memories.conf
 nginx -t && systemctl reload nginx
-certbot --nginx -d editor.example.com -d pb.example.com
+certbot --nginx -d editor.memoriestravelperu.com -d pb.memoriestravelperu.com
 ```
 
 `certbot` agrega el HTTPS a ese archivo; si se reemplaza por un `nginx.conf` nuevo, volver a
@@ -210,7 +216,8 @@ correrlo.
 `/etc/sudoers.d/sites` (permisos `440`) deja al build reiniciar este PocketBase:
 
 ```sh
-echo 'sites ALL=(root) NOPASSWD: /usr/bin/systemctl restart memories-pocketbase' >> /etc/sudoers.d/sites
+echo 'sites ALL=(root) NOPASSWD: /usr/bin/systemctl restart memories-pocketbase' \
+  >> /etc/sudoers.d/sites
 chmod 440 /etc/sudoers.d/sites && visudo -c
 ```
 
@@ -220,10 +227,14 @@ En GitHub → el repo del sitio → Settings → Webhooks → **Add webhook**:
 
 | Campo | Valor |
 |---|---|
-| Payload URL | `https://pb.example.com/api/deploy-hook` |
+| Payload URL | `https://pb.memoriestravelperu.com/api/deploy-hook` |
 | Content type | `application/json` |
-| Secret | `DEPLOY_WEBHOOK_SECRET` de `pocketbase.env`: `sed -n 's/^DEPLOY_WEBHOOK_SECRET=//p' /etc/memories/pocketbase.env` |
+| Secret | `DEPLOY_WEBHOOK_SECRET` de `pocketbase.env` (abajo) |
 | Events | Just the push event |
+
+```sh
+sed -n 's/^DEPLOY_WEBHOOK_SECRET=//p' /etc/memories/pocketbase.env
+```
 
 En Recent Deliveries, el ping tiene que dar 200.
 
@@ -235,14 +246,42 @@ El sitio no envía formularios por correo: no usa el relay de formularios.
 
 | Para qué | Comando |
 |---|---|
-| Primer build (instala PocketBase y lo arranca) | `systemctl start memories-build && journalctl -u memories-build -n 50` |
 | Pasar el código a producción (en tu máquina) | `git push origin main:deploy` |
 | Reconstruir a mano | `sudo -u sites touch /srv/memories/build/requests/manual` |
 | Log del build | `journalctl -u memories-build` |
 | Aplicar un cambio de `pocketbase.env` | `systemctl restart memories-pocketbase` |
 | Aplicar un cambio de `build.env` | reconstruir |
-| Superusuario del dashboard (`https://pb.example.com/_/`) | `sudo -u sites /srv/memories/pocketbase/bin/pocketbase superuser upsert CORREO CONTRASEÑA --dir=/srv/memories/pocketbase/pb_data` |
-| Importar el contenido inicial (en tu máquina; en `.env.production`, `PUBLIC_POCKETBASE_URL=https://pb.example.com` y `POCKETBASE_SUPERUSER_EMAIL` / `POCKETBASE_SUPERUSER_PASSWORD`, los del superusuario de arriba) | `npm run pb:import:prod` |
 
-Backups: en `https://pb.example.com/_/` → Settings → Backups, con el cron de arriba (ver "Backups"
-en `kit/deploy/vps.md`). Lo que se respalda es `/srv/memories/pocketbase/pb_data`.
+Primer build (instala PocketBase y lo arranca; sin contenido todavía el sitio sale vacío o el
+build falla):
+
+```sh
+systemctl start memories-build
+journalctl -u memories-build -n 50
+```
+
+Superusuario del dashboard (`https://pb.memoriestravelperu.com/_/`), la cuenta técnica, distinta de la del
+editor:
+
+```sh
+sudo -u sites /srv/memories/pocketbase/bin/pocketbase superuser upsert \
+  CORREO CONTRASEÑA --dir=/srv/memories/pocketbase/pb_data
+```
+
+Importar el contenido inicial, en tu máquina, con el superusuario de arriba en
+`.env.production`:
+
+```sh
+PUBLIC_POCKETBASE_URL=https://pb.memoriestravelperu.com
+POCKETBASE_SUPERUSER_EMAIL=CAMBIAR
+POCKETBASE_SUPERUSER_PASSWORD=CAMBIAR
+```
+
+```sh
+npm run pb:import:prod
+```
+
+Copias de seguridad: una por publicación con cambios de contenido, en
+`/srv/memories/pocketbase/pb_data/backups/` (las 5 últimas); el editor puede bajar cada una una
+vez desde `/admin`, y subir y restaurar copias en `/admin` → Copias de seguridad. Sin backups automáticos en el dashboard ni copia a S3 (ver "Copias de
+seguridad" en `kit/deploy/vps.md`).

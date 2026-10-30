@@ -1,12 +1,12 @@
 // Ficha de un registro de una colección: crear, editar, duplicar, historial y borrar.
 // Rutas: #/<sección>/<id>, #/<sección>/nuevo y #/<sección>/nuevo/<id a copiar>.
 import { useEffect, useState } from 'react';
-import { fieldsOf, type CollectionDef } from '../config';
+import { fieldsOf, liveUrl, type CollectionDef } from '../config';
 import { newGalleryItem, type GalleryItem } from '../components/GalleryField';
 import { History } from '../components/History';
 import { RecordEditor, initialValues, mainTextField, type Seed } from '../components/RecordEditor';
 import { errorMessage, fileUrl, pb, type RecordModel } from '../lib/pocketbase';
-import { useIsPending, usePublish } from '../lib/publish';
+import { PreviewButton, useIsPending, usePublish } from '../lib/publish';
 import { navigate, replaceRoute } from '../lib/router';
 import { StatusBadge } from './ListScreen';
 
@@ -80,7 +80,7 @@ export function FormScreen({ def, id, copyFrom }: { def: CollectionDef; id: stri
   // mantiene el aviso de "Guardado"). Restaurar una versión sí lo rearma.
   const [editorKey, setEditorKey] = useState(id);
   const isPending = useIsPending();
-  const { previewEnabled, openPreview, lastPreview } = usePublish();
+  const { previewEnabled, openPreview, previewAt, previewInProgress } = usePublish();
 
   useEffect(() => {
     setError('');
@@ -131,8 +131,18 @@ export function FormScreen({ def, id, copyFrom }: { def: CollectionDef; id: stri
 
   const label = record ? def.label(record) : `Nuevo ${def.singular}`;
   const sitePath = record?.status === 'published' && def.sitePath?.(record);
-  // En la última vista previa armada (incluye lo oculto, pero no lo guardado después).
-  const previewPath = previewEnabled && lastPreview?.status === 'done' && record && def.sitePath?.(record);
+  // En la vista previa (incluye lo oculto, pero no lo guardado después de armarla).
+  const previewPath = previewEnabled && record && def.sitePath?.(record);
+  // ¿La vista previa tiene la última versión de esta ficha? (Empezó a armarse
+  // antes de que se creara o guardara.)
+  const previewLacks =
+    !!record && !!previewAt && !previewInProgress
+      ? record.created > previewAt
+        ? { chip: 'No incluida', text: 'Esta ficha todavía no está en la vista previa: actualízala para verla' }
+        : record.updated > previewAt
+          ? { chip: 'Desactualizada', text: 'La vista previa tiene una versión anterior de esta ficha: actualízala' }
+          : null
+      : null;
   const hasStatus = fieldsOf(def.fields).some((f) => f.type === 'status');
 
   return (
@@ -146,7 +156,7 @@ export function FormScreen({ def, id, copyFrom }: { def: CollectionDef; id: stri
           {record && hasStatus && <StatusBadge status={record.status} />}
           {record && isPending(record) && <span className="badge badge-building">Sin publicar</span>}
           {sitePath && (
-            <a className="btn btn-ghost" href={sitePath} target="_blank" rel="noopener">
+            <a className="btn btn-ghost" href={liveUrl(sitePath)} target="_blank" rel="noopener">
               Ver en el sitio ↗
             </a>
           )}
@@ -155,10 +165,18 @@ export function FormScreen({ def, id, copyFrom }: { def: CollectionDef; id: stri
               type="button"
               className="btn btn-ghost"
               onClick={() => openPreview(previewPath)}
-              title="En la última vista previa armada; para ver lo último guardado, arma otra"
+              title={previewLacks?.text ?? 'En la vista previa, con lo guardado hasta ahora'}
             >
               Vista previa ↗
             </button>
+          )}
+          {previewPath && previewLacks && (
+            <>
+              <span className="preview-chip is-behind" title={previewLacks.text}>
+                {previewLacks.chip}
+              </span>
+              <PreviewButton className="btn btn-ghost" label="Actualizar" />
+            </>
           )}
           {record && (
             <>

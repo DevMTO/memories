@@ -4,6 +4,13 @@
 // mostrando en español y se reintenta en la próxima corrida. Con
 // TRANSLATE_OFFLINE=1 (vista previa sin "traducir textos nuevos") no se llama al
 // traductor: se usa lo que ya está en la caché.
+//
+// Lo que un build no usa NO se borra enseguida: el build público no ve lo oculto
+// (sí la vista previa), y borrarlo haría pedir otra vez esas traducciones al
+// volver a mostrarlo, al restaurar una copia o en la próxima vista previa; pedir
+// de más es lo que hace que el traductor gratuito bloquee. Cada texto guarda el
+// último día en que algún build lo usó (<idioma>.seen.json) y se borra recién
+// después de UNUSED_DAYS sin usarse.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Lang } from './locales.ts';
@@ -23,6 +30,9 @@ export type TranslationConfig = {
 
 const MAX_BATCH_ITEMS = 40;
 const PAUSE_MS = 400;
+const UNUSED_DAYS = 90;
+
+const today = () => Math.floor(Date.now() / 86_400_000);
 
 export type Logger = { info: (message: string) => void; warn: (message: string) => void };
 
@@ -67,7 +77,11 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function fillLang(root: string, lang: Lang, sources: Set<string>, log: Logger, protectedTerms: string[]) {
   const cachePath = join(root, CACHE_DIR, `${lang}.json`);
+  const seenPath = join(root, CACHE_DIR, `${lang}.seen.json`);
   const cache = await readJson(cachePath);
+  // Día (desde 1970) en que un build usó cada texto por última vez. Lo que ya está
+  // en la caché sin fecha (cachés de antes de esto) cuenta como usado hoy.
+  const seen = (await readJson(seenPath)) as unknown as Record<string, number>;
   const overrides = await readJson(join(root, OVERRIDES_DIR, `${lang}.json`));
 
   const missing = [...sources].filter((text) => !(text in overrides) && !(text in cache));
@@ -90,18 +104,23 @@ async function fillLang(root: string, lang: Lang, sources: Set<string>, log: Log
     await sleep(PAUSE_MS);
   }
 
-  // Se guardan solo las entradas que siguen existiendo en español.
+  const now = today();
+  for (const text of Object.keys(cache)) {
+    if (sources.has(text) || !(text in seen)) seen[text] = now;
+  }
   const kept = Object.entries(cache)
-    .filter(([text]) => sources.has(text))
+    .filter(([text]) => now - seen[text] <= UNUSED_DAYS)
     .sort(([a], [b]) => a.localeCompare(b, 'es'));
+  const keptSeen = Object.fromEntries(kept.map(([text]) => [text, seen[text]]));
   await mkdir(join(root, CACHE_DIR), { recursive: true });
   await writeFile(cachePath, JSON.stringify(Object.fromEntries(kept), null, 2) + '\n');
+  await writeFile(seenPath, JSON.stringify(keptSeen) + '\n');
 
   const pending = missing.length - done;
   const message =
     `[${lang}] ${done} traducidos, ${pending} pendientes` +
     (failed ? ` (${failed} fallaron)` : '') +
-    `, ${Object.keys(cache).length - kept.length} obsoletos eliminados.`;
+    `, ${Object.keys(cache).length - kept.length} sin usar en ${UNUSED_DAYS} días eliminados.`;
   if (pending) log.warn(message);
   else log.info(message);
 }

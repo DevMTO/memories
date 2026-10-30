@@ -43,12 +43,23 @@ type PublishState = {
   // Deploy que se vio terminar en esta sesión, para avisar (hasta que se cierre el aviso).
   finished: RecordModel | null;
   dismissFinished: () => void;
-  // Vista previa: el servidor web la sirve en las mismas URLs a quien tenga la
-  // cookie con la clave (GET /api/preview/key). Sin clave, no se ofrece.
+  // ¿Se puede publicar? No con una publicación en curso ni sin cambios guardados
+  // (si no se pudo calcular lo pendiente, sí: que el editor no quede bloqueado).
+  canPublish: boolean;
+  // Vista previa: editor.<dominio> la sirve solo a quien tenga la cookie con la
+  // clave (GET /api/preview/key), que /admin pone mientras la sesión es válida.
+  // Sin clave, no hay vista previa.
   previewEnabled: boolean;
   openPreview: (path?: string) => void;
   enterPreview: () => void;
   lastPreview: RecordModel | undefined;
+  // Cuándo empezó la última vista previa que terminó bien (lo guardado antes está
+  // en ella): null = nunca, undefined = cargando. La que el build arma después de
+  // publicar también cuenta.
+  previewAt: string | null | undefined;
+  // Cambios guardados que la vista previa todavía no tiene (mismo cálculo que lo
+  // pendiente de publicar). null = no se sabe (cargando, sin vista previa o error).
+  previewBehind: number | null;
   previewInProgress: boolean;
   // translate: también traducir los textos nuevos (llama al traductor automático).
   requestPreview: (translate: boolean) => void;
@@ -101,6 +112,14 @@ async function loadPending(publishedAt: string | null): Promise<{ rows: PendingR
   );
   const deleted = await countDeleted(publishedAt).catch(() => 0);
   if (deleted) rows.push({ label: 'Borrados', count: deleted });
+  // Una copia restaurada trae también su historial de publicaciones: lo restaurado
+  // cuenta como un cambio hasta la próxima publicación (hooks/backups.pb.js).
+  const restored = await pb()
+    .send('/api/editor/restored', { method: 'GET' })
+    .then((res) => (res.at as string) || '', () => '');
+  if (restored && (!publishedAt || restored > publishedAt.replace(' ', 'T'))) {
+    rows.push({ label: 'Copia de seguridad restaurada', href: '#/copias', count: 1 });
+  }
   return { rows: rows.filter((row) => row.count > 0 || row.reordered), changed };
 }
 
@@ -132,12 +151,30 @@ async function countDeleted(publishedAt: string | null) {
 
 export { PREVIEW_COOKIE };
 
+// Un reordenamiento cuenta una vez por lista.
+const totalOf = (rows: PendingRow[]) => rows.reduce((sum, row) => sum + row.count + (row.reordered ? 1 : 0), 0);
+
+// La cookie de la vista previa es también el acceso a editor.<dominio>: sin ella el
+// servidor web solo deja ver /admin (kit/deploy/templates). Dura lo que una sesión
+// larga; se renueva al abrir /admin y se borra al cerrar la sesión.
+const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
+
+function writePreviewCookie(key: string) {
+  const secure = location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${PREVIEW_COOKIE}=${encodeURIComponent(key)}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Strict${secure}`;
+}
+
+export function clearPreviewCookie() {
+  document.cookie = `${PREVIEW_COOKIE}=; path=/; max-age=0`;
+}
+
 export function PublishProvider({ children }: { children: ReactNode }) {
   const [all, setAll] = useState<RecordModel[] | null>(null);
   const [requesting, setRequesting] = useState(false);
   const [requestingPreview, setRequestingPreview] = useState(false);
   const [error, setError] = useState('');
   const [pending, setPending] = useState<PendingRow[] | null>(null);
+  const [previewBehind, setPreviewBehind] = useState<number | null>(null);
   const [changed, setChanged] = useState<Set<string>>(new Set());
   const [finished, setFinished] = useState<RecordModel | null>(null);
   const [previewKey, setPreviewKey] = useState<string | null>(null);
@@ -153,10 +190,15 @@ export function PublishProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const enterPreview = useCallback(() => {
-    if (!previewKey) return;
-    const secure = location.protocol === 'https:' ? '; Secure' : '';
-    document.cookie = `${PREVIEW_COOKIE}=${encodeURIComponent(previewKey)}; path=/; max-age=43200; SameSite=Strict${secure}`;
+    if (previewKey) writePreviewCookie(previewKey);
   }, [previewKey]);
+
+  // Con sesión, la cookie; sin sesión (cerrar sesión, token rechazado), sin cookie.
+  useEffect(() => {
+    const sync = () => (pb().authStore.isValid ? enterPreview() : clearPreviewCookie());
+    sync();
+    return pb().authStore.onChange(sync);
+  }, [enterPreview]);
 
   // Publicaciones (botón Publicar y push a deploy) y vistas previas van en la
   // misma colección; solo las publicaciones cambian el sitio.
@@ -171,6 +213,7 @@ export function PublishProvider({ children }: { children: ReactNode }) {
   }, [all]);
 
   const publishedAt = history ? (history.find((r) => r.status === 'done')?.created ?? null) : undefined;
+  const previewAt = previews ? (previews.find((r) => r.status === 'done')?.created ?? null) : undefined;
 
   const load = useCallback(
     () =>
@@ -197,26 +240,34 @@ export function PublishProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe?.();
   }, [load]);
 
-  // Se recalcula con cada cambio en lo que el build lee (también desde otra pestaña).
-  const publishedAtRef = useRef(publishedAt);
-  publishedAtRef.current = publishedAt;
+  // Se recalcula con cada cambio en lo que el build lee (también desde otra pestaña):
+  // lo que falta publicar y lo que falta en la vista previa.
+  const sinceRef = useRef({ publishedAt, previewAt });
+  sinceRef.current = { publishedAt, previewAt };
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const refresh = useCallback(() => {
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      const at = publishedAtRef.current;
-      if (at === undefined) return;
-      loadPending(at).then(
-        (result) => {
-          setPending(result.rows);
-          setChanged(result.changed);
-        },
-        () => setPending(null),
-      );
+      const { publishedAt: at, previewAt: previewed } = sinceRef.current;
+      if (at !== undefined) {
+        loadPending(at).then(
+          (result) => {
+            setPending(result.rows);
+            setChanged(result.changed);
+          },
+          () => setPending(null),
+        );
+      }
+      if (previewed) {
+        loadPending(previewed).then(
+          (result) => setPreviewBehind(totalOf(result.rows)),
+          () => setPreviewBehind(null),
+        );
+      } else setPreviewBehind(null);
     }, 300);
   }, []);
 
-  useEffect(refresh, [publishedAt, refresh]);
+  useEffect(refresh, [publishedAt, previewAt, refresh]);
 
   useEffect(() => {
     const collections = [...new Set([...contentDefs().map((d) => d.collection), 'revisions'])];
@@ -251,8 +302,8 @@ export function PublishProvider({ children }: { children: ReactNode }) {
 
   const inProgress = requesting || isInProgress(history?.[0]);
   const previewInProgress = requestingPreview || isInProgress(previews?.[0]);
-  // Un reordenamiento cuenta una vez por lista.
-  const pendingTotal = (pending ?? []).reduce((sum, row) => sum + row.count + (row.reordered ? 1 : 0), 0);
+  const pendingTotal = totalOf(pending ?? []);
+  const canPublish = !inProgress && (pending === null || pendingTotal > 0);
   return (
     <PublishContext.Provider
       value={{
@@ -263,6 +314,7 @@ export function PublishProvider({ children }: { children: ReactNode }) {
         publishedAt,
         pending,
         pendingTotal,
+        canPublish,
         changed,
         finished,
         dismissFinished: () => setFinished(null),
@@ -273,6 +325,8 @@ export function PublishProvider({ children }: { children: ReactNode }) {
           window.open(path, '_blank', 'noopener');
         },
         lastPreview: previews?.[0],
+        previewAt,
+        previewBehind,
         previewInProgress,
         requestPreview: (translate) => request('/api/preview', setRequestingPreview, { translate }),
       }}
@@ -305,18 +359,19 @@ export function useReordered() {
 
 const UNSAVED = '\n\nOjo: hay cambios sin guardar en esta pantalla; no entran hasta guardarlos.';
 
-// Publicar con la confirmación que lista lo que sube.
+// Publicar con la confirmación que lista lo que sube. Sin cambios no se llega
+// aquí: los botones usan `canPublish`.
 export function useConfirmPublish() {
-  const { publish, pending, pendingTotal } = usePublish();
+  const { publish, pending, canPublish } = usePublish();
   return () => {
+    if (!canPublish) return;
     const lines = (pending ?? []).map((row) => `• ${row.label}: ${pendingText(row)}`).join('\n');
     const unsaved = hasUnsaved() ? UNSAVED : '';
-    const text = pendingTotal
-      ? `¿Publicar? Se suben al sitio:\n${lines}${unsaved}\n\nTarda unos minutos.`
-      : `No hay cambios guardados desde la última publicación. ¿Publicar igual?${unsaved}`;
-    if (confirm(text)) publish();
+    if (confirm(`¿Publicar? Se suben al sitio:\n${lines}${unsaved}\n\nTarda unos minutos.`)) publish();
   };
 }
+
+export const NOTHING_TO_PUBLISH = 'No hay cambios para publicar';
 
 // Vista previa: arma el sitio con lo guardado (ocultos incluidos) sin publicarlo.
 export function useRequestPreview() {
@@ -338,10 +393,16 @@ const readTranslate = () => {
 };
 
 export function PublishButton() {
-  const { inProgress, pendingTotal } = usePublish();
+  const { inProgress, pendingTotal, canPublish } = usePublish();
   const confirmPublish = useConfirmPublish();
   return (
-    <button type="button" className="btn btn-primary" disabled={inProgress} onClick={confirmPublish}>
+    <button
+      type="button"
+      className="btn btn-primary"
+      disabled={!canPublish}
+      title={inProgress || canPublish ? undefined : NOTHING_TO_PUBLISH}
+      onClick={confirmPublish}
+    >
       {inProgress ? 'Publicando…' : 'Publicar'}
       {!inProgress && pendingTotal > 0 && <span className="btn-count">{pendingTotal}</span>}
     </button>
@@ -349,7 +410,14 @@ export function PublishButton() {
 }
 
 // Abre un panel con la opción de traducir lo nuevo y el botón para armarla.
-export function PreviewButton({ className = 'btn', label = 'Vista previa' }: { className?: string; label?: string }) {
+// Actualizar la vista previa: arma editor.<dominio> otra vez con lo guardado.
+export function PreviewButton({
+  className = 'btn',
+  label = 'Actualizar vista previa',
+}: {
+  className?: string;
+  label?: string;
+}) {
   const { previewEnabled, previewInProgress } = usePublish();
   const requestPreview = useRequestPreview();
   const [open, setOpen] = useState(false);
@@ -381,12 +449,13 @@ export function PreviewButton({ className = 'btn', label = 'Vista previa' }: { c
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
-        {previewInProgress ? 'Armando vista previa…' : label}
+        {previewInProgress ? 'Actualizando…' : label}
       </button>
       {open && (
         <span className="preview-popover" role="dialog" aria-label="Vista previa">
           <span className="field-help">
-            Arma el sitio con lo guardado (también lo oculto) sin publicarlo. Tarda uno o dos minutos.
+            Vuelve a armar la vista previa con todo lo guardado (también lo oculto). El sitio publicado no cambia. Tarda
+            uno o dos minutos.
           </span>
           {translations && (
             <Switch
@@ -416,10 +485,124 @@ export function PreviewButton({ className = 'btn', label = 'Vista previa' }: { c
               requestPreview(translate);
             }}
           >
-            Armar vista previa
+            Actualizar
           </button>
         </span>
       )}
+    </span>
+  );
+}
+
+// Estado de la vista previa en pocas palabras, para la barra, el tablero y las fichas.
+export function usePreviewStatus() {
+  const { previewEnabled, previewAt, previewBehind, previewInProgress } = usePublish();
+  if (!previewEnabled) return null;
+  if (previewInProgress) return { kind: 'running', text: 'Actualizando…' } as const;
+  if (previewAt === undefined) return { kind: 'loading', text: '' } as const;
+  if (previewAt === null) return { kind: 'none', text: 'Sin vista previa' } as const;
+  if (previewBehind === null) return { kind: 'loading', text: '' } as const;
+  if (previewBehind === 0) return { kind: 'current', text: 'Al día' } as const;
+  return {
+    kind: 'behind',
+    text: previewBehind === 1 ? 'Le falta 1 cambio' : `Le faltan ${previewBehind} cambios`,
+  } as const;
+}
+
+export function PreviewChip() {
+  const status = usePreviewStatus();
+  if (!status || !status.text) return null;
+  return (
+    <span
+      className={`preview-chip is-${status.kind}`}
+      title={
+        status.kind === 'behind'
+          ? 'Cambios guardados que la vista previa todavía no muestra: actualízala para verlos'
+          : status.kind === 'current'
+            ? 'La vista previa muestra todo lo guardado'
+            : undefined
+      }
+    >
+      {status.text}
+    </span>
+  );
+}
+
+// Barra superior: ver la vista previa (siempre), su estado y, si le falta algo,
+// actualizarla.
+export function PreviewControl() {
+  const { openPreview } = usePublish();
+  const status = usePreviewStatus();
+  if (!status) return null;
+  return (
+    <span className="preview-control">
+      <button
+        type="button"
+        className="btn btn-ghost"
+        disabled={status.kind === 'none'}
+        title="editor.<dominio>: el sitio con todo lo guardado hasta la última actualización (también lo oculto)"
+        onClick={() => openPreview()}
+      >
+        Ver vista previa ↗
+      </button>
+      <PreviewChip />
+      {(status.kind === 'behind' || status.kind === 'none') && (
+        <PreviewButton className="btn btn-ghost" label={status.kind === 'none' ? 'Armar' : 'Actualizar'} />
+      )}
+    </span>
+  );
+}
+
+// Copia de seguridad de una publicación (hooks/publish.pb.js): se baja una sola
+// vez, porque cada descarga es tráfico de salida de la VM (nivel gratuito).
+const canDownload = (r: RecordModel | null | undefined) => !!r?.backup && !r.backup_downloaded;
+const megabytes = (bytes: number) => `${(bytes / 1048576).toFixed(1)} MB`;
+
+async function downloadBackup(r: RecordModel) {
+  const res = await fetch(pb().buildURL(`/api/backup/${r.id}`), {
+    headers: { Authorization: pb().authStore.token },
+  });
+  if (!res.ok) throw new Error((await res.json().catch(() => null))?.message || 'No se pudo bajar la copia.');
+  const url = URL.createObjectURL(await res.blob());
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = r.backup;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
+
+export function BackupDownload({ publish }: { publish: RecordModel }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  if (!canDownload(publish)) return null;
+  const size = megabytes(publish.backup_size || 0);
+  return (
+    <span className="inline-actions">
+      <button
+        type="button"
+        className="btn btn-ghost"
+        disabled={busy}
+        onClick={async () => {
+          if (
+            !confirm(
+              `Copia de seguridad del contenido tal como quedó en esta publicación (${size}).\n\n` +
+                'Se puede bajar UNA sola vez: guárdala en un lugar seguro. ¿Bajarla ahora?',
+            )
+          )
+            return;
+          setBusy(true);
+          setError('');
+          try {
+            await downloadBackup(publish);
+          } catch (err) {
+            setError(errorMessage(err));
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        {busy ? 'Bajando…' : `Descargar copia de seguridad (${size}) — una sola vez`}
+      </button>
+      {error && <span className="notice-error">{error}</span>}
     </span>
   );
 }
@@ -431,16 +614,26 @@ const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1);
 // Avisos arriba de cada pantalla: publicación o vista previa en curso, cuando
 // terminan y, si no hay nada en curso, lo guardado que falta publicar.
 export function PublishStatus({ showPending }: { showPending: boolean }) {
-  const { history, finished, dismissFinished, pendingTotal, openPreview, lastPreview } = usePublish();
+  const { history, finished: seen, dismissFinished, pendingTotal, openPreview, lastPreview } = usePublish();
   const confirmPublish = useConfirmPublish();
   const current = history?.find(isInProgress);
+  // La vista previa en curso se ve en la barra (PreviewControl); aquí solo se avisa
+  // cuando termina la que pidió el editor. La que el build arma solo después de
+  // publicar (sin requested_by) no se anuncia.
   const preview = lastPreview && isInProgress(lastPreview) ? lastPreview : undefined;
+  // El aviso con el registro al día (la copia de seguridad se marca al bajarla).
+  const finished = (seen && history?.find((r) => r.id === seen.id)) || seen;
+  const hidden = finished?.kind === 'preview' && !finished.requested_by;
 
   useEffect(() => {
-    if (finished?.status === 'failed' || finished?.kind === 'preview') return;
-    const timer = setTimeout(dismissFinished, 10_000);
+    if (hidden) {
+      dismissFinished();
+      return;
+    }
+    if (finished?.status === 'failed' || canDownload(finished)) return;
+    const timer = setTimeout(dismissFinished, finished?.kind === 'preview' ? 6_000 : 10_000);
     return () => clearTimeout(timer);
-  }, [finished]);
+  }, [seen]);
 
   const close = (
     <button type="button" className="icon-btn" aria-label="Cerrar aviso" onClick={dismissFinished}>
@@ -456,22 +649,17 @@ export function PublishStatus({ showPending }: { showPending: boolean }) {
           puedes seguir editando (lo que guardes ahora sale con la próxima publicación).
         </div>
       )}
-      {preview && (
-        <div className="publish-status is-running" role="status">
-          Armando la vista previa con lo guardado… Tarda uno o dos minutos.
-        </div>
-      )}
-      {finished?.kind === 'preview' && !preview && (
+      {finished?.kind === 'preview' && !hidden && !preview && (
         <div className={`publish-status ${finished.status === 'done' ? 'is-done' : 'is-failed'}`} role="status">
           {finished.status === 'done' ? (
             <span>
-              Vista previa lista.{' '}
+              Vista previa actualizada.{' '}
               <button type="button" className="btn btn-ghost" onClick={() => openPreview()}>
-                Abrir ↗
+                Ver ↗
               </button>
             </span>
           ) : (
-            <span>No se pudo armar la vista previa; el sitio publicado no cambió.</span>
+            <span>No se pudo actualizar la vista previa; muestra lo de antes. El sitio publicado no cambió.</span>
           )}
           {close}
         </div>
@@ -479,7 +667,9 @@ export function PublishStatus({ showPending }: { showPending: boolean }) {
       {finished && finished.kind !== 'preview' && !current && (
         <div className={`publish-status ${finished.status === 'failed' ? 'is-failed' : 'is-done'}`} role="status">
           {finished.status === 'done' ? (
-            <span>El sitio se actualizó con {what(finished)}.</span>
+            <span>
+              El sitio se actualizó con {what(finished)}. <BackupDownload publish={finished} />
+            </span>
           ) : finished.status === 'skipped' ? (
             <span>{capitalize(what(finished))} no afecta al sitio; no hizo falta publicar.</span>
           ) : (
@@ -497,7 +687,6 @@ export function PublishStatus({ showPending }: { showPending: boolean }) {
             {pendingTotal === 1 ? 'está' : 'están'} en el sitio. <a href="#/">Ver cuáles</a>
           </span>
           <span className="inline-actions">
-            <PreviewButton className="btn btn-ghost" />
             <button type="button" className="btn" onClick={confirmPublish}>
               Publicar
             </button>

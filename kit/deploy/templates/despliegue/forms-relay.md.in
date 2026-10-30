@@ -3,10 +3,10 @@ que los manda al buzón de "Datos de la empresa" en `/admin`; nada pasa por la V
 
 La clave del sitio (`openssl rand -hex 32`) es la misma en tres lugares: `FORMS_RELAY_KEY` de
 `build.env`, `FORMS_RELAY_KEY` de `.env.production` en tu máquina y la línea del sitio en la
-tabla del relay (`~/form-relay/config.php` del hosting del relay):
+tabla del relay, `~/form-relay/config.php` en el hosting del relay:
 
 ```php
-'@SITE_HOST@' => ['key' => 'CAMBIAR', 'to' => 'CAMBIAR@@SITE_HOST@', 'name' => '@SITE_NAME@'@RELAY_OPTIONS_SUFFIX@],
+@RELAY_ENTRY@
 ```
 
 `to` es el buzón de respaldo para los envíos sin firma. Un cambio de clave pide reconstruir

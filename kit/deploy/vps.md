@@ -12,8 +12,8 @@ archivos y su contenido, webhook), ya con sus valores, está en su `deploy/despl
 | Qué | En la VM | En el repo |
 |---|---|---|
 | Repo (rama `deploy`) y caché de traducciones | `/srv/<app>/repo/` | — |
-| Sitio para el editor (`/admin`) | `/srv/<app>/site/`, servido por Caddy o nginx en `editor.<dominio>` | `deploy/Caddyfile` o `deploy/nginx.conf` |
-| Vista previa del editor (opcional) | `/srv/<app>/preview/`, en las mismas URLs de `editor.<dominio>` para quien tenga la cookie | ídem |
+| Editor (`/admin`) y vista previa | `/srv/<app>/preview/`, servido por Caddy o nginx en `editor.<dominio>` solo a quien tenga la cookie de `/admin` (sin ella, solo el login) | `deploy/Caddyfile` o `deploy/nginx.conf` |
+| Último sitio publicado | `/srv/<app>/site/` (lo usa el build; no se sirve) | — |
 | PocketBase (base, API, auth, archivos) | `/srv/<app>/pocketbase/`, servicio `<app>-pocketbase` en un puerto local propio | `pocketbase/`; `deploy/<app>-pocketbase.service` |
 | Build | `<app>-build.service`, lanzado por `<app>-build.path` | `kit/deploy/build.sh`, `deploy/<app>-build.*` |
 | Variables | `/etc/<app>/` (`pocketbase.env`, `build.env`, `cpanel.env` o `cloudflare.env`) | — |
@@ -23,16 +23,13 @@ Todos los sitios corren con un solo usuario del sistema, `sites`: un solo usuari
 mantener, a cambio de que el build de un sitio (que corre `npm ci`, código de terceros)
 pueda leer los archivos de los demás.
 
-La VM atiende, por sitio, `editor.<dominio>` (el mismo sitio, `noindex`, con `/admin` y la
-vista previa) y `pb.<dominio>` (proxy a PocketBase). `/admin` y la vista previa tienen que
-estar en el mismo origen (la pestaña Traducciones lee la página dentro de un iframe), por eso
-el editor trabaja en `editor.<dominio>/admin`; `<dominio>/admin` redirige ahí (el build lo
-configura en el sitio público).
+La VM atiende, por sitio, `editor.<dominio>` (`/admin` y la vista previa, `noindex`) y
+`pb.<dominio>` (proxy a PocketBase). `/admin` y la vista previa tienen que estar en el mismo
+origen (la pestaña Traducciones lee la página dentro de un iframe), por eso el editor trabaja
+en `editor.<dominio>/admin`; `<dominio>/admin` redirige ahí (el build lo configura en el sitio
+público). Quien llega a `editor.<dominio>` sin sesión solo ve el login.
 
-Costo: la VM y su disco entran en el nivel gratuito, que es **una** e2-micro por cuenta de
-facturación: todos los sitios van en la misma. Lo único que puede cobrar Google es la IP
-externa (revisar Billing el primer mes) y el tráfico de salida que pase de 1 GB al mes (el
-del editor y, con cPanel, las subidas de los sitios).
+Costo: ver "Nivel gratuito" (abajo).
 
 ## Sitio público
 
@@ -154,7 +151,8 @@ builds de los sitios nunca corren a la vez; la swap de 1 GB es margen. Los coman
 Debian/Ubuntu; en AlmaLinux/Rocky cambian la instalación de paquetes (`dnf`) y `adduser`
 (`useradd -m`).
 
-1. Paquetes: `git`, `rsync`, `curl`, `unzip`, `lftp` (para los sitios en cPanel) y Node 22.12 o más nuevo
+1. Paquetes: `git`, `rsync`, `curl`, `unzip`, `lftp` (para los sitios en cPanel), `vnstat`
+   (tráfico del mes, ver "Nivel gratuito") y Node 22.12 o más nuevo
    (de [nodejs.org](https://nodejs.org/en/download) o NodeSource; el de la distro suele ser
    viejo). Swap de 1 GB:
    ```sh
@@ -247,20 +245,25 @@ Lo que conviene saber:
 
 ## Vista previa
 
-El editor arma con un botón el sitio con lo guardado (ocultos incluidos) y lo ve en las
-**mismas URLs** de `editor.<dominio>`: `/admin` pide la clave a PocketBase y pone la cookie
-`site_preview`; con esa cookie el servidor web sirve `/srv/<app>/preview/` en lugar de
-`site/`. La cinta "Vista previa · Salir" quita la cookie. La pestaña Traducciones de
-`/admin` muestra la vista previa cuando hay una.
+`editor.<dominio>` sirve **solo la vista previa**: el sitio con lo guardado (ocultos
+incluidos), en las mismas URLs que el sitio público, con una barra "EDITOR · Vista previa"
+(botones **Editar**, a `/admin`, y **Sitio publicado**). El sitio publicado está solo en el
+hosting.
 
-Para activarla (sin `PREVIEW_KEY`, `/admin` no ofrece el botón): `PREVIEW_KEY` en
-`pocketbase.env` y `sudo systemctl restart <app>-pocketbase`; la misma clave en lugar de `CLAVE`
-en el `Caddyfile` / `nginx.conf` del sitio, y recargar el servidor web.
-
-Cada vista previa es un build completo y queda en la cola junto con las publicaciones. Por
-defecto no llama al traductor automático: lo nuevo se ve en el idioma de origen en los otros
-idiomas hasta publicar, salvo que el editor pida "Traducir textos nuevos". Los formularios de
-la vista previa son los de verdad: lo que se envíe llega al buzón del sitio.
+- **Acceso:** al entrar a `/admin`, este pide la clave a PocketBase (`PREVIEW_KEY`, solo para
+  el editor) y pone la cookie `site_preview` (30 días; se renueva al abrir `/admin` y se borra
+  al cerrar la sesión). Sin la cookie, el servidor web solo sirve `/admin` y `/_astro/`; lo
+  demás redirige a `/admin/`. `PREVIEW_KEY` es obligatoria: en `pocketbase.env` y en lugar de
+  `CLAVE` en el `Caddyfile` / `nginx.conf`.
+- **Al día:** después de cada publicación el build la rearma (unos segundos o un minuto más,
+  sin tráfico de salida), salvo que ya muestre lo mismo: armada con el mismo código, sin
+  cambios de contenido desde entonces (`/srv/<app>/build/content-changed`, que reescribe
+  PocketBase) y sin traducciones nuevas en esa publicación. El botón "Vista previa" de
+  `/admin` la rearma con lo guardado en cualquier momento.
+- Cada vista previa es un build completo y queda en la cola junto con las publicaciones. La
+  del botón, por defecto, no llama al traductor: lo nuevo se ve en el idioma de origen en los
+  otros idiomas hasta publicar, salvo que el editor pida "Traducir textos nuevos". Los
+  formularios de la vista previa son los de verdad: lo que se envíe llega al buzón del sitio.
 
 ## Correo del dominio
 
@@ -279,27 +282,38 @@ en la zona de cPanel (sitio público en cPanel) o en Cloudflare (sitio público 
 Los formularios de los sitios van por el relay de formularios (`kit/forms/relay/`), no por la
 VM.
 
-## Backups
+## Copias de seguridad
 
 Lo único que hay que respaldar de cada sitio es `/srv/<app>/pocketbase/pb_data` (base SQLite
-y archivos subidos): el sitio se regenera desde el repo y PocketBase. **No hay backups
-automáticos hasta activarlos**, en `https://pb.<dominio>/_/` → Settings → Backups:
+y archivos subidos): el sitio se regenera desde el repo y PocketBase.
 
-1. **Enable auto backups**, con un cron en UTC a una hora distinta por sitio (su
-   `deploy/despliegue.md`), para no generar dos a la vez.
-2. **Max @auto backups to keep**: `7`.
-3. Copia fuera de la VM: **Store backups in S3 storage** con un bucket compatible (Cloudflare
-   R2 tiene 10 GB gratis) y **Test connection**. Sin eso, los zips quedan en
-   `pb_data/backups/`, en el mismo disco: no sirven si se pierde la VM. O bajarlos a mano
-   desde el panel.
-4. Probar con **Initialize new backup**.
+- **Una por publicación con cambios de contenido:** al terminar de publicar, el build pide a
+  PocketBase una copia (`publish-<id>.zip` en `pb_data/backups/`) si algo cambió desde la
+  anterior. Quedan las 5 últimas. Mientras se arma, PocketBase queda unos segundos en solo
+  lectura.
+- **El editor la baja una vez:** en `/admin` (aviso de "Publicado" e Inicio) aparece
+  "Descargar copia de seguridad (NN MB) — una sola vez". Bajada, el botón desaparece y el
+  servidor no la vuelve a dar: cada descarga es tráfico de salida de la VM (ver "Nivel
+  gratuito"). Es la copia fuera de la VM: conviene guardarla.
+- **Sin backups automáticos del dashboard ni copia a S3:** el zip es entero (imágenes
+  incluidas) y subirlo cada día a un bucket pasaría el GB de salida gratis. En
+  `https://pb.<dominio>/_/` → Settings → Backups, **Enable auto backups** queda apagado.
 
-Mientras se genera un backup, PocketBase queda unos segundos en solo lectura: por eso de
-madrugada.
+**Restaurar**, desde `/admin` → **Copias de seguridad** (el editor): la lista de las copias de la
+VM con **Restaurar**, y **Subir una copia** (un zip bajado antes; subir no gasta tráfico de
+salida). Restaurar pide escribir RESTAURAR y:
 
-Restaurar: **Upload backup** (si hace falta) y **Restore** en el mismo panel; PocketBase se
-reinicia solo. Después, "Publicar" o el pedido a mano para regenerar el sitio. Si el
-dashboard no arranca, por consola, con el servicio detenido:
+1. guarda antes una copia del estado actual (`before-restore-<fecha>.zip`, para deshacerlo;
+   quedan las 3 últimas, igual que las subidas);
+2. reemplaza `pb_data` y PocketBase se reinicia solo (unos segundos);
+3. al arrancar, PocketBase pide la vista previa con lo restaurado (`preview-auto`);
+4. el sitio publicado no cambia hasta **Publicar**, que queda disponible aunque la base
+   restaurada diga que todo estaba publicado (`/srv/<app>/build/restored`).
+
+Lo mismo hace el superusuario en `https://pb.<dominio>/_/` → Settings → Backups (**Upload
+backup** y **Restore**), sin la copia previa ni la vista previa automática: después, el
+pedido a mano para regenerar el sitio. nginx deja subir hasta 1 GB a `pb.<dominio>`
+(`client_max_body_size`). Si el dashboard no arranca, por consola, con el servicio detenido:
 
 ```sh
 systemctl stop <app>-pocketbase
@@ -308,3 +322,27 @@ sudo -u sites unzip BACKUP.zip -d /srv/<app>/pocketbase/pb_data
 systemctl start <app>-pocketbase
 sudo -u sites touch /srv/<app>/build/requests/manual
 ```
+
+## Nivel gratuito
+
+La VM y su disco entran en el nivel gratuito de Google Cloud, que es **una** e2-micro por
+cuenta de facturación (todos los sitios van en la misma), con 30 GB de disco y **1 GB de
+tráfico de salida al mes** para toda la VM. La CPU no se cobra por uso: los builds y las
+vistas previas no cuestan. Lo que puede cobrar:
+
+| Qué | Cuánto sale | Cómo se controla |
+|---|---|---|
+| Subidas por FTPS al hosting (sitios en cPanel) | Solo lo que cambió; un cambio que toca todas las páginas (menú, pie) sube todo el HTML | El build lo dice en cada publicación ("Subidos N MB; este sitio lleva M MB en el mes", en `/srv/<app>/build/egress-<año>-<mes>`) |
+| El editor viendo la vista previa | Páginas e imágenes que abre; comprimido y con caché larga para `/_astro/` | Sin sesión no se sirve nada más que el login (ni bots ni curiosos) |
+| Descargas de copias de seguridad | El zip entero cada vez | Una por publicación con cambios |
+| IP externa | Revisar en Billing el primer mes | — |
+| Snapshots de disco | No son gratis | No programarlos |
+
+Lo que entra (npm, git, PocketBase, lo que sube el editor) no cuenta.
+
+Redes de seguridad, una vez:
+
+- **Alerta de presupuesto:** Billing → Budgets & alerts → Create budget, USD 1, con aviso por
+  correo. Si algo empieza a cobrar, llega el mismo día.
+- **Tráfico del mes:** `apt install vnstat` y después `vnstat -m` (cuenta toda la interfaz;
+  la columna `tx` es la salida).

@@ -1,7 +1,16 @@
 // Tablero: estado del último deploy, cambios sin publicar e historial.
 import { config } from '../config';
 import type { RecordModel } from '../lib/pocketbase';
-import { PublishButton, STATUS_LABEL, pendingText, usePublish } from '../lib/publish';
+import {
+  BackupDownload,
+  PreviewButton,
+  PreviewChip,
+  PublishButton,
+  STATUS_LABEL,
+  pendingText,
+  usePreviewStatus,
+  usePublish,
+} from '../lib/publish';
 
 const formatDate = (iso: string) =>
   new Date(iso.replace(' ', 'T')).toLocaleString(config().locale ?? 'es-PE', { dateStyle: 'medium', timeStyle: 'short' });
@@ -26,9 +35,37 @@ function Reason({ publish }: { publish: RecordModel }) {
   );
 }
 
+// La vista previa (editor.<dominio>): de cuándo es, si le falta algo, verla y actualizarla.
+function PreviewCard() {
+  const { openPreview, previewAt } = usePublish();
+  const status = usePreviewStatus();
+  if (!status) return null;
+  return (
+    <article className="card">
+      <h2>Vista previa</h2>
+      <p>
+        <PreviewChip />{' '}
+        {previewAt && <span className="muted">Armada el {formatDate(previewAt)}</span>}
+      </p>
+      <p className="inline-actions">
+        <button type="button" className="btn btn-ghost" disabled={status.kind === 'none'} onClick={() => openPreview()}>
+          Ver vista previa ↗
+        </button>
+        <PreviewButton className="btn btn-ghost" label={status.kind === 'none' ? 'Armar' : 'Actualizar'} />
+      </p>
+      <p className="field-help">
+        El sitio con todo lo guardado, también lo oculto, solo para ti. Se actualiza sola al publicar; para ver cambios
+        guardados antes de publicar, actualízala.
+      </p>
+    </article>
+  );
+}
+
 export function Dashboard() {
   const { history, error, pending } = usePublish();
   const latest = history?.[0];
+  // La copia de seguridad de la última publicación que la tiene (se baja una vez).
+  const withBackup = history?.find((r) => r.status === 'done' && r.backup);
 
   return (
     <section>
@@ -62,6 +99,11 @@ export function Dashboard() {
               )}
             </>
           )}
+          {withBackup && (
+            <p>
+              <BackupDownload publish={withBackup} />
+            </p>
+          )}
         </article>
 
         <article className="card">
@@ -79,6 +121,8 @@ export function Dashboard() {
           )}
           <p className="field-help">Guardar no cambia el sitio: esto sube con el próximo "Publicar".</p>
         </article>
+
+        <PreviewCard />
       </div>
 
       {history && history.length > 1 && (

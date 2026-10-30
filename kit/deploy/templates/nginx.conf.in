@@ -1,12 +1,13 @@
-# nginx en el VPS (alternativa al Caddyfile): sirve el sitio para el editor
-# (/admin y la vista previa) y hace de proxy a PocketBase. Va en
-# /etc/nginx/conf.d/@APP@.conf; HTTPS lo agrega `certbot --nginx` sobre ese archivo
-# (ver "HTTPS" en kit/deploy/vps.md). Los visitantes ven el sitio público
-# (@SITE_HOST@); aquí es una copia para el editor, fuera de los buscadores.
+# nginx en el VPS (alternativa al Caddyfile): sirve el editor (/admin y la vista
+# previa) y hace de proxy a PocketBase. Va en /etc/nginx/conf.d/@APP@.conf; HTTPS lo
+# agrega `certbot --nginx` sobre ese archivo (ver "HTTPS" en kit/deploy/vps.md). Los
+# visitantes ven el sitio público (@SITE_HOST@); aquí solo está la vista previa,
+# fuera de los buscadores.
 
-# Vista previa del editor (kit/deploy/build.sh): las mismas URLs, servidas desde otra
-# carpeta a quien tenga la cookie que pone /admin. CLAVE = PREVIEW_KEY de
-# pocketbase.env. Sin vista previa, dejar solo la línea default.
+# editor.<dominio> sirve solo la vista previa (kit/deploy/build.sh la rearma después
+# de cada publicación) y solo a quien tenga la cookie que pone /admin mientras la
+# sesión es válida. Sin ella, solo /admin (el login) y sus archivos; lo demás
+# redirige a /admin/. CLAVE = PREVIEW_KEY de pocketbase.env (obligatoria).
 # La clave (64 caracteres) no entra en la tabla por defecto de los map de nginx.
 # Va una sola vez en todo nginx y antes del primer `map` que lea (si no, nginx -t:
 # "map_hash_bucket_size directive is duplicate"). Con un solo sitio, aquí. Si
@@ -15,29 +16,46 @@
 # borra de aquí.
 map_hash_bucket_size 128;
 
-map $cookie_site_preview $@NGINX_ID@_root {
-  "CLAVE" /srv/@APP@/preview;
-  default /srv/@APP@/site;
+map $cookie_site_preview $@NGINX_ID@_editor {
+  "CLAVE" 1;
+  default 0;
 }
 
 server {
   listen 80;
   server_name @EDITOR_HOST@;
-  root $@NGINX_ID@_root;
+  root /srv/@APP@/preview;
   index index.html;
 
+  # Todo lo que sale de aquí es tráfico de salida de la VM: comprimido. El HTML
+  # (text/html) nginx lo comprime siempre con gzip on; ponerlo aquí da "duplicate
+  # MIME type".
   gzip on;
-  gzip_types text/css application/javascript application/json image/svg+xml;
+  gzip_types text/plain text/css application/javascript application/json image/svg+xml;
 
-  # Archivos con hash en el nombre: nunca cambian.
+  # Archivos con hash en el nombre: nunca cambian. Sin cookie también (los usa el
+  # login de /admin; los nombres no se adivinan).
   location /_astro/ {
     add_header Cache-Control "public, max-age=31536000, immutable";
     add_header X-Robots-Tag "noindex, nofollow";
     try_files $uri =404;
   }
 
-  # HTML y demás: siempre se revalida para ver el contenido recién publicado.
+  # El login: siempre.
+  location = /admin {
+    return 301 /admin/;
+  }
+  location /admin/ {
+    add_header Cache-Control "no-cache";
+    add_header X-Robots-Tag "noindex, nofollow";
+    try_files $uri $uri/ =404;
+  }
+
+  # La vista previa: solo con la cookie. HTML y demás se revalidan siempre.
   location / {
+    if ($@NGINX_ID@_editor = 0) {
+      return 302 /admin/;
+    }
     add_header Cache-Control "no-cache";
     add_header Vary Cookie;
     add_header X-Robots-Tag "noindex, nofollow";
@@ -49,8 +67,10 @@ server {
   listen 80;
   server_name @PB_HOST@;
 
-  # Imágenes subidas desde /admin.
-  client_max_body_size 20m;
+  # Imágenes y copias de seguridad (zip entero) subidas desde /admin o el dashboard.
+  # PocketBase pone sus propios límites por ruta (imágenes 5 MB, el resto 32 MB; las
+  # copias, hasta 1 GB: kit/pocketbase/core/hooks/backups.pb.js).
+  client_max_body_size 1g;
 
   location / {
     proxy_pass http://127.0.0.1:@PB_PORT@;

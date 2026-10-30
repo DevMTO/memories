@@ -7,8 +7,12 @@ El sitio se construye en el VPS cuando el editor pulsa **Publicar** o **Vista pr
    `deploy.pb.js` del módulo `core`).
 2. Un path unit de systemd ve el archivo y lanza `build.sh`.
 3. `build.sh` actualiza el repo, el binario, las migraciones y los hooks de PocketBase,
-   construye, publica en `/srv/$APP/site` (el sitio del editor) y en la copia pública, y
-   le informa a PocketBase el estado. `/admin` lo muestra en vivo.
+   construye, sube el sitio a la copia pública (y lo guarda en `/srv/$APP/site`), hace una
+   copia de seguridad de PocketBase si cambió el contenido y le informa a PocketBase el
+   estado. `/admin` lo muestra en vivo.
+4. Después rearma la vista previa (`/srv/$APP/preview`, lo único que sirve
+   `editor.<dominio>`), salvo que ya muestre lo mismo. Ver "Vista previa" y "Copias de
+   seguridad" en `vps.md`.
 
 Cómo funciona el VPS y cómo se prepara una vez: `vps.md`. Lo que necesita cada sitio, con sus
 valores (DNS, sitio público, archivos y su contenido, webhook, formularios, operación): su
@@ -22,7 +26,8 @@ valores (DNS, sitio público, archivos y su contenido, webhook, formularios, ope
 | Cloudflare Pages | `/etc/$APP/cloudflare.env` (`CF_PAGES_PROJECT`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`) | `cloudflare-pages.md` |
 | Hosting compartido con cPanel (FTPS) | `/etc/$APP/cpanel.env` (`CPANEL_FTP_HOST`, `CPANEL_FTP_USER`, `CPANEL_FTP_PASSWORD`, `CPANEL_FTP_DIR`) | `cpanel.md` |
 
-Sin ninguno de los dos, el sitio queda solo en el VPS. Con los dos, el build sube a ambos.
+Sin ninguno de los dos, nadie ve el sitio publicado (el VPS solo sirve la vista previa, al
+editor). Con los dos, el build sube a ambos.
 El dominio apunta a uno solo.
 
 ## build.sh
@@ -49,12 +54,10 @@ SITE_NAME="Mi Sitio"
 APP=misitio
 PB_PORT=8091
 PUBLIC=cpanel                 # cpanel | cloudflare
-SITE_HOST=misitio.com
-EDITOR_HOST=editor.misitio.com
-PB_HOST=pb.misitio.com
+SITE_HOST=misitio.com         # editor.misitio.com y pb.misitio.com salen de aquí
+# EDITOR_HOST=… / PB_HOST=…   # solo si son otros nombres
 DUCKDNS=mivm                  # nombre de DuckDNS de la VM (mivm.duckdns.org)
-BACKUP_CRON="30 9 * * *"      # backups de PocketBase (UTC), uno distinto por sitio
-ENABLED_LANGS=es,en,pt        # vacío si el sitio fija sus idiomas en código
+ENABLED_LANGS=es,en,pt
 DEFAULT_LANG=en
 FORMS=relay                   # none | relay (kit/forms/relay/)
 RELAY_OPTIONS=""              # claves extra de su línea en la tabla del relay
