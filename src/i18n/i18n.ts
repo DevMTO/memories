@@ -18,8 +18,15 @@ export const pageLang = (params: Record<string, string | undefined>) => getLang(
 
 export const useT = (lang: Lang) => getTranslate(lang);
 
-// Ruta interna del sitio en un idioma (con BASE_URL): pagePath('en', '/tours') → /en/tours.
-export const pagePath = (lang: Lang, path: string) => sitePath(`${getBasePath(lang)}${path}`);
+// Ruta interna del sitio en un idioma (con BASE_URL), con / final como las
+// páginas del build: pagePath('en', '/tours') → /en/tours/.
+export const pagePath = (lang: Lang, path: string) => sitePath(`${getBasePath(lang)}${withSlash(path)}`);
+
+// '/tours' → '/tours/', '/tours#x' → '/tours/#x'; los archivos ('/foto.webp') quedan igual.
+function withSlash(path: string) {
+  const [, route, rest] = path.match(/^([^?#]*)(.*)$/)!;
+  return route === '' || route.endsWith('/') || /\.\w+$/.test(route) ? path : `${route}/${rest}`;
+}
 
 // La misma página en otro idioma (selector de idioma y hreflang).
 export function localeHref(url: URL, from: Lang, to: Lang) {
