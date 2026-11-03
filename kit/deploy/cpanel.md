@@ -58,8 +58,9 @@ La configuración, con los valores del sitio, está en su `deploy/despliegue.md`
 - Nada que configurar para PHP, bases de datos ni Node.js: el sitio son archivos.
 - **`build.env`:** `SITE_URL` es la dirección del hosting, no la del editor (canónicos y
   `hreflang`); `EDITOR_URL` va en la redirección de `/admin`.
-- **HTTPS y `www`:** AutoSSL de cPanel emite y renueva el certificado; `www` se redirige con
-  un 301 en **Redirects**.
+- **HTTPS y `www`:** AutoSSL de cPanel emite y renueva el certificado (también para `www`).
+  El `.htaccess` del sitio redirige `http://` y `www.` a `https://<dominio>` con un 301: no
+  hace falta nada en **Redirects**.
 
 ## Cómo se reconstruye
 
@@ -75,7 +76,7 @@ de cada build, `deploy_ftp`:
 Cada subida:
 
 - **`.htaccess`:** con el sitio van dos `.htaccess` generados por el build: el de la raíz
-  redirige `/admin` a `EDITOR_URL`, marca el HTML como `no-cache` y, si el sitio tiene
+  redirige `http://` y `www.` a `https://<dominio>` (301) y `/admin` a `EDITOR_URL`, marca el HTML como `no-cache` y, si el sitio tiene
   `404.html`, lo usa como página de error; el de `_astro/` guarda un año los archivos con
   hash.
 - **Qué sube:** compara el sitio nuevo con `/srv/<app>/build/ftp-state/` (copia de lo último

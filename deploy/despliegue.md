@@ -59,7 +59,7 @@ El build sube el sitio por FTPS a `public_html` y borra solo lo que él mismo su
 | Servidor FTP | El nombre del servidor del hosting (el de **Configure FTP Client**), que es el del certificado del FTP |
 | `public_html` | Sin archivos previos del sitio, salvo `.well-known` y `cgi-bin` |
 | HTTPS | AutoSSL para `memoriestravelperu.com` y `www.memoriestravelperu.com` (SSL/TLS Status) |
-| `www` | Redirect permanente (301) de `www.memoriestravelperu.com` a `https://memoriestravelperu.com/` |
+| `www` y `http://` | Los redirige el `.htaccess` del sitio a `https://memoriestravelperu.com/` (301); nada en **Redirects** |
 
 Con el primer build, `https://memoriestravelperu.com/` responde 200 con `Cache-Control: no-cache`, y
 `https://memoriestravelperu.com/admin/` redirige (302) a `https://editor.memoriestravelperu.com/admin/`.

@@ -30,6 +30,8 @@ editor.memoriestravelperu.com {
 	file_server
 }
 
+# PocketBase (API, archivos y su panel en /_/): fuera de los buscadores.
 pb.memoriestravelperu.com {
+	header X-Robots-Tag "noindex, nofollow"
 	reverse_proxy 127.0.0.1:8091
 }

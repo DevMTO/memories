@@ -6,6 +6,15 @@ ErrorDocument 404 /404.html
 
 # /admin vive en el editor, en el mismo origen que la vista previa.
 RewriteEngine On
+
+# Una sola dirección por página, para los buscadores: https y sin www (301).
+# /.well-known/ queda fuera: AutoSSL valida el dominio por http.
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
 RewriteRule ^admin/?$ @EDITOR_URL@/admin/ [R=302,L]
 RewriteRule ^admin/(.+)$ @EDITOR_URL@/admin/$1 [R=302,L]
 

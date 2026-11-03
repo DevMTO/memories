@@ -43,3 +43,11 @@ export function getBasePath(lang: Lang) {
 export function getHomePath(lang: Lang) {
   return `${getBasePath(lang)}/`;
 }
+
+// Opción `i18n` de @astrojs/sitemap: el sitemap lista cada página con sus
+// versiones en los otros idiomas. Lee DEFAULT_LANG al llamarla, no al importar:
+// astro.config.mjs importa este archivo antes de que setupEnv() cargue el .env.
+export function sitemapI18n(langs: Lang[]) {
+  const unprefixed = process.env.DEFAULT_LANG?.trim() || sourceLang;
+  return { defaultLocale: unprefixed, locales: Object.fromEntries(langs.map((lang) => [lang, lang])) };
+}

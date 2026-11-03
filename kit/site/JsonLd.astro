@@ -1,0 +1,13 @@
+---
+// Datos estructurados (schema.org) en JSON-LD: un <script> por objeto. Los
+// `<` se escapan para que un texto del contenido no pueda cerrar el <script>.
+// Nada en la vista previa, que no se indexa.
+import { isPreview } from './preview.ts';
+
+type Props = { data?: object | (object | undefined)[] };
+
+const items = isPreview() ? [] : ([Astro.props.data ?? []].flat().filter(Boolean) as object[]);
+const json = (item: object) => JSON.stringify({ '@context': 'https://schema.org', ...item }).replace(/</g, '\\u003c');
+---
+
+{items.map((item) => <script type="application/ld+json" set:html={json(item)} />)}

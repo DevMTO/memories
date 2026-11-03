@@ -72,6 +72,10 @@ server {
   # copias, hasta 1 GB: kit/pocketbase/core/hooks/backups.pb.js).
   client_max_body_size 1g;
 
+  # API, archivos y el panel de PocketBase (/_/): fuera de los buscadores, también
+  # en las respuestas de error.
+  add_header X-Robots-Tag "noindex, nofollow" always;
+
   location / {
     proxy_pass http://127.0.0.1:@PB_PORT@;
     proxy_http_version 1.1;

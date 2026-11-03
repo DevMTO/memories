@@ -30,6 +30,8 @@
 	file_server
 }
 
+# PocketBase (API, archivos y su panel en /_/): fuera de los buscadores.
 @PB_HOST@ {
+	header X-Robots-Tag "noindex, nofollow"
 	reverse_proxy 127.0.0.1:@PB_PORT@
 }

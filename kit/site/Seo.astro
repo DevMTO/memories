@@ -1,0 +1,51 @@
+---
+// Etiquetas del <head> para buscadores y redes sociales: título, descripción,
+// URL canónica, Open Graph y noindex. Las URLs absolutas salen de `site` en
+// astro.config.mjs; sin él, de la URL de la página.
+import { isPreview } from './preview.ts';
+
+type Props = {
+  title: string;
+  description?: string;
+  // Nombre del sitio (og:site_name).
+  siteName: string;
+  // Imagen al compartir: ruta o URL; se vuelve absoluta.
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  // Fuera de los buscadores. En la vista previa (isPreview) siempre.
+  noindex?: boolean;
+  // URL de la versión principal, si esta página es una copia (ruta o URL).
+  canonical?: string;
+  // Formato de Open Graph: idioma_PAÍS (p. ej. 'es_PE').
+  locale?: string;
+  alternateLocales?: string[];
+};
+
+const { title, description, siteName, image, imageAlt, type = 'website', noindex = false, locale, alternateLocales = [] } = Astro.props;
+
+const base = Astro.site ?? Astro.url;
+const canonical = new URL(Astro.props.canonical ?? Astro.url.pathname, base).href;
+const imageUrl = image ? new URL(image, base).href : undefined;
+// La vista previa no se indexa ni se comparte: solo el título y noindex.
+const preview = isPreview();
+---
+
+<title>{title}</title>
+{(noindex || preview) && <meta name="robots" content="noindex, nofollow" />}
+{!preview && (
+  <>
+    {description && <meta name="description" content={description} />}
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonical} />
+    {locale && <meta property="og:locale" content={locale} />}
+    {alternateLocales.map((code) => <meta property="og:locale:alternate" content={code} />)}
+    {imageUrl && <meta property="og:image" content={imageUrl} />}
+    {imageUrl && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+    <meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
+  </>
+)}

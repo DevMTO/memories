@@ -19,7 +19,7 @@ qué cambió, para llevarlo al origen.
 | `admin/` | Editor `/admin` (isla de React) | PocketBase módulo `core` |
 | `admin/i18n/` | Pantalla "Traducciones" de `/admin` | `i18n/`, PocketBase módulo `i18n` |
 | `pocketbase/` | Migraciones y hooks por módulo (`core`, `i18n`) y scripts (binario, servidor local, tipos, importar el seed) | — |
-| `site/` | Componentes del sitio: hreflang y aviso de vista previa | — |
+| `site/` | Componentes del sitio: SEO del `<head>`, datos estructurados, hreflang y aviso de vista previa | — |
 | `forms/` | Formularios del sitio (`forms.ts`) por correo, con el relay PHP del hosting (`forms/relay/`) | — |
 | `deploy/` | Guía del VPS (`vps.md`), build y publicación (`build.sh`), y `render.sh` con sus plantillas (systemd, Caddy, nginx y la guía de cada sitio) | todo lo anterior |
 
@@ -379,6 +379,19 @@ copia). Trampa para bots: un `<input name="website">` oculto.
 ## site/
 
 - `<Hreflang alternates={[{ code, href }]} defaultHref="/…" />` en el `<head>`.
+- `<Seo title description siteName image? imageAlt? noindex? canonical? locale? alternateLocales? />`
+  en el `<head>`: `<title>`, descripción, canónica, Open Graph y `noindex`. En la vista
+  previa, solo el título y `noindex` (tampoco hay `JsonLd` ni `Hreflang`). La canónica es la página misma, o `canonical` si es una copia de otra.
+  Las URLs absolutas salen de `site`.
+- `<JsonLd data={objeto | [objetos]} />`: datos estructurados de schema.org (agrega
+  `@context` y escapa el JSON).
+- `robotsTxt(site)` (`site/robots.ts`): `robots.txt` sin `/admin` (en la vista previa, sin
+  nada) y con el sitemap. Va en `src/pages/robots.txt.ts`:
+  `export const GET: APIRoute = ({ site }) => robotsTxt(site);`
+- Sitemap: `integrations: [..., ...sitemaps(langs)]` en `astro.config.mjs` (`site/sitemap.ts`,
+  requiere `@astrojs/sitemap`): cada página con sus otros idiomas, sin las que tienen
+  `noindex` o una canónica a otra URL. En la vista previa no hay sitemap.
+- `src/pages/404.astro` (del proyecto): el `.htaccess` del build la usa como página de error.
 - `<PreviewRibbon />` al principio del `<body>`.
 - `isPreview()` para el `noindex` en la vista previa.
 

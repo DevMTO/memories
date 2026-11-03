@@ -1,6 +1,9 @@
 ---
 // <link rel="alternate" hreflang> de una página en cada idioma, más x-default.
-// Solo con `site` en astro.config.mjs (hacen falta URLs absolutas) y más de un idioma.
+// Solo con `site` en astro.config.mjs (hacen falta URLs absolutas) y más de un
+// idioma; nada en la vista previa, que no se indexa.
+import { isPreview } from './preview.ts';
+
 type Props = {
   // Ruta de la página en cada idioma (p. ej. { code: 'en', href: '/en/tours/' }).
   alternates: { code: string; href: string }[];
@@ -11,7 +14,7 @@ type Props = {
 const { alternates, defaultHref } = Astro.props;
 ---
 
-{alternates.length > 1 && Astro.site && (
+{alternates.length > 1 && Astro.site && !isPreview() && (
   <>
     {alternates.map(({ code, href }) => <link rel="alternate" hreflang={code} href={new URL(href, Astro.site).href} />)}
     <link rel="alternate" hreflang="x-default" href={new URL(defaultHref, Astro.site).href} />
