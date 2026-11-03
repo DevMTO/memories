@@ -7,7 +7,10 @@ import WhatsAppFab from '../components/ui/WhatsAppFab.astro';
 import { sitePath } from '../lib/site-path';
 import Hreflang from '#kit/site/Hreflang.astro';
 import PreviewRibbon from '#kit/site/PreviewRibbon.astro';
-import { isPreview } from '#kit/site/preview.ts';
+import Seo from '#kit/site/Seo.astro';
+import JsonLd from '#kit/site/JsonLd.astro';
+import { SITE_NAME } from '../lib/schema';
+import { summarize } from '../lib/text';
 import { defaultLang, enabledLangs, localeHref, pageLang, useT } from '../i18n/i18n';
 import '../styles/global.scss';
 
@@ -17,6 +20,9 @@ interface Props {
   description?: string;
   preloadImage?: string;
   socialImage?: string;
+  // Datos estructurados de la página (ver src/lib/schema.ts).
+  schema?: object | object[];
+  noindex?: boolean;
 }
 
 const lang = pageLang(Astro.params);
@@ -28,34 +34,39 @@ const {
   description = t('Memories Travel Perú: tours, trekkings y paquetes personalizados con atención local desde Cusco.'),
   preloadImage,
   socialImage,
+  schema,
+  noindex = false,
 } = Astro.props;
 
 const documentTitle = /memories travel/i.test(title)
   ? title
-  : `${title} | Memories Travel Perú`;
-const metaDescription = description.trim().replace(/\s+/g, ' ').slice(0, 160);
-// La misma página en cada idioma (hreflang).
-const alternates = enabledLangs.map((code) => ({ code, href: localeHref(Astro.url, lang, code) }));
-
-const absoluteSocialImage = socialImage
-  ? new URL(sitePath(socialImage), Astro.url).toString()
-  : undefined;
+  : `${title} | ${SITE_NAME}`;
+const metaDescription = summarize([description]);
+// La misma página en cada idioma (hreflang); no en las que están fuera de los buscadores.
+const alternates = noindex ? [] : enabledLangs.map((code) => ({ code, href: localeHref(Astro.url, lang, code) }));
+// Open Graph pide idioma_PAÍS.
+const OG_LOCALE: Record<string, string> = { es: 'es_PE', en: 'en_US', pt: 'pt_BR' };
+const ogLocale = (code: string) => OG_LOCALE[code] ?? code;
 ---
 
 <!doctype html>
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={metaDescription} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/webp" href={sitePath('/images/ISOTIPOS/ISOTIPO-MEMORIES-TRAVEL-1.webp')} />
     <meta name="generator" content={Astro.generator} />
-    <meta property="og:title" content={documentTitle} />
-    <meta property="og:description" content={metaDescription} />
-    <meta property="og:type" content="website" />
-    {absoluteSocialImage && <meta property="og:image" content={absoluteSocialImage} />}
-    <title>{documentTitle}</title>
-    {isPreview() && <meta name="robots" content="noindex, nofollow" />}
+    <Seo
+      title={documentTitle}
+      description={metaDescription}
+      siteName={SITE_NAME}
+      image={socialImage && sitePath(socialImage)}
+      imageAlt={title}
+      noindex={noindex}
+      locale={ogLocale(lang)}
+      alternateLocales={enabledLangs.filter((code) => code !== lang).map(ogLocale)}
+    />
+    <JsonLd data={schema} />
     <Hreflang alternates={alternates} defaultHref={localeHref(Astro.url, lang, defaultLang)} />
     {preloadImage && (
       <link rel="preload" as="image" href={sitePath(preloadImage)} fetchpriority="high" />
