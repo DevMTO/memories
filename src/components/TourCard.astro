@@ -39,7 +39,7 @@ const resolvedImageUrl = sitePath(imageUrl);
 
 <article class="tour-card">
   <a href={detailUrl} class="tour-card__image">
-    <img src={resolvedImageUrl} alt={tour.title} />
+    <img src={resolvedImageUrl} alt={tour.title} loading="lazy" decoding="async" />
 
     <span class="tour-card__badge">
       <span>{durationDays} {t('días')}</span>

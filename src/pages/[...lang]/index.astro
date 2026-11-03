@@ -204,10 +204,10 @@ const displayDestinations = destinationPriority
       <span>{t('Reconocidos estratégicamente por')}</span>
     </div>
     <div class="recognitions-row">
-      <img src={sitePath('/images/mincetur.png')}    alt={t('Mincetur')} />
-      <img src={sitePath('/images/promperu.png')}    alt={t('PromPerú')} />
-      <img src={sitePath('/images/marcaperu.png')}   alt={t('Marca Perú')} />
-      <img src={sitePath('/images/tripadvisor.png')} alt={t('Tripadvisor')} />
+      <img src={sitePath('/images/mincetur.png')}    alt={t('Mincetur')} loading="lazy" decoding="async" />
+      <img src={sitePath('/images/promperu.png')}    alt={t('PromPerú')} loading="lazy" decoding="async" />
+      <img src={sitePath('/images/marcaperu.png')}   alt={t('Marca Perú')} loading="lazy" decoding="async" />
+      <img src={sitePath('/images/tripadvisor.png')} alt={t('Tripadvisor')} loading="lazy" decoding="async" />
     </div>
   </section>
 
@@ -248,7 +248,7 @@ const displayDestinations = destinationPriority
       </div>
 
       <div class="transform-image">
-        <img src={sitePath('/images/viajes.png')} alt={t('Viajes que transforman')} />
+        <img src={sitePath('/images/viajes.png')} alt={t('Viajes que transforman')} loading="lazy" decoding="async" />
       </div>
     </div>
   </section>
@@ -296,7 +296,7 @@ const displayDestinations = destinationPriority
               <article class="home-tour-card">
                 <a href={pagePath(lang, `/tours/${tour.slug || tour.id}`)} class="home-tour-card__link">
                   <figure class="home-tour-card__figure">
-                    <img src={sitePath(imageUrl)} alt={tour.title} />
+                    <img src={sitePath(imageUrl)} alt={tour.title} loading="lazy" decoding="async" />
                     <span class="home-tour-card__badge">{durationLabel}</span>
                   </figure>
 
@@ -358,7 +358,7 @@ const displayDestinations = destinationPriority
                   index === 0 ? 'destination-card--large' : index === 1 ? 'destination-card--wide' : ''
                 }`}
               >
-                <img src={sitePath(destination.imageUrl)} alt={destination.name} />
+                <img src={sitePath(destination.imageUrl)} alt={destination.name} loading="lazy" decoding="async" />
                 <div class="destination-card__overlay"></div>
                 <div class="destination-card__content">
                   <span class="destination-card__index">0{index + 1}</span>

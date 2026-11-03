@@ -41,7 +41,7 @@ const resolvedImageUrl = sitePath(imageUrl);
 
 <article class="package-card">
   <a href={detailUrl} class="package-card__image">
-    <img src={resolvedImageUrl} alt={pkg.title} />
+    <img src={resolvedImageUrl} alt={pkg.title} loading="lazy" decoding="async" />
 
     <span class="package-card__badge">
       <span>{durationDays} {t('días')}</span>
