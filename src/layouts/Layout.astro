@@ -12,6 +12,12 @@ import JsonLd from '#kit/site/JsonLd.astro';
 import { SITE_NAME } from '../lib/schema';
 import { summarize } from '../lib/text';
 import { defaultLang, enabledLangs, localeHref, pageLang, useT } from '../i18n/i18n';
+// Fuentes servidas desde el propio sitio.
+import '@fontsource-variable/montserrat';
+import '@fontsource-variable/playfair-display';
+import '@fontsource-variable/playfair-display/wght-italic.css';
+import '@fontsource-variable/cormorant-garamond';
+import '@fontsource-variable/cormorant-garamond/wght-italic.css';
 import '../styles/global.scss';
 
 interface Props {
