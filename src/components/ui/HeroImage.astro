@@ -1,0 +1,16 @@
+---
+// Foto de un hero: <img> con prioridad, para que Google la indexe y cargue
+// primero. Va debajo del overlay y del texto (.hero-img en global.scss); el
+// recorte de cada hero se ajusta con --hero-img-position.
+interface Props {
+  src: string;
+  // Versión de 960 px para pantallas chicas, si la hay.
+  srcSmall?: string;
+  alt: string;
+}
+
+const { src, srcSmall, alt } = Astro.props;
+const srcset = srcSmall && srcSmall !== src ? `${srcSmall} 960w, ${src} 1600w` : undefined;
+---
+
+<img class="hero-img" src={src} srcset={srcset} sizes={srcset && '100vw'} alt={alt} fetchpriority="high" />

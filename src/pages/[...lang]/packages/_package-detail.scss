@@ -16,8 +16,7 @@
   min-height: clamp(570px, 68svh, 720px);
   display: flex;
   align-items: flex-end;
-  background-size: cover;
-  background-position: center 44%;
+  --hero-img-position: center 44%;
   color: $color-white;
   isolation: isolate;
   overflow: hidden;
@@ -928,7 +927,7 @@
 
 /* Mobile refinement: compact information without losing hierarchy. */
 @include respond-to($bp-mobile) {
-  .package-hero { min-height: 500px; background-position: center 42%; }
+  .package-hero { min-height: 500px; --hero-img-position: center 42%; }
   .package-hero__content { padding: 46px 0 68px; }
   .package-hero__eyebrow { margin-bottom: 10px; font-size: .64rem; }
   .package-hero h1 { font-size: clamp(2.45rem, 12vw, 3.65rem); line-height: .98; }

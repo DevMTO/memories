@@ -5,12 +5,13 @@ import { localizeRecord } from '#kit/i18n/core.ts';
 import { getTranslate } from '#kit/i18n/runtime.ts';
 import { sourceLang, type Lang } from '#kit/i18n/locales.ts';
 import { destinationFields } from '../../i18n/fields';
-import { IMAGE_WIDTH } from '../image-sizes';
+import { IMAGE_WIDTH, IMAGE_WIDTH_SMALL } from '../image-sizes';
 
 export type DestinationPage = {
   slug: string;
   name: string;
   imageUrl: string;
+  imageUrlSmall?: string;
   eyebrow: string;
   title: string;
   description: string;
@@ -25,7 +26,11 @@ export async function getDestinationPages(lang: Lang = sourceLang): Promise<Dest
   return Promise.all(
     entries.map(async ({ data: { sortOrder, imageUrl, ...data } }) =>
       localizeRecord(
-        { ...data, imageUrl: (await localImage(imageUrl, IMAGE_WIDTH)) ?? '/images/hero.webp' },
+        {
+          ...data,
+          imageUrl: (await localImage(imageUrl, IMAGE_WIDTH)) ?? '/images/hero.webp',
+          imageUrlSmall: await localImage(imageUrl, IMAGE_WIDTH_SMALL),
+        },
         destinationFields,
         translate,
       ),

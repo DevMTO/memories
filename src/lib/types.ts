@@ -25,6 +25,7 @@ export interface TravelProductBase {
   location?: string;
   cities?: string[];
   imageUrl: string;
+  imageUrlSmall?: string;
   gallery?: string[];
   features?: string[];
   highlights?: string[];
@@ -63,4 +64,5 @@ export interface Destination {
   name: string;
   slug: string;
   imageUrl: string;
+  imageUrlSmall?: string;
 }

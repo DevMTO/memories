@@ -32,9 +32,10 @@
   position: absolute;
   inset: 0;
   z-index: -2;
-  background:
-    linear-gradient(rgba($color-primary-dark, 0.18), rgba($color-primary-dark, 0.26)),
-    var(--about-hero-image) center/cover no-repeat;
+  background: linear-gradient(rgba($color-primary-dark, 0.18), rgba($color-primary-dark, 0.26));
+}
+
+.about-hero .hero-img {
   animation: aboutHeroBgZoom 26s ease-in-out infinite alternate;
 }
 

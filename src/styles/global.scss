@@ -318,3 +318,15 @@ ul { list-style: none; }
   color: $color-white;
   cursor: pointer;
 }
+
+// Foto de un hero (components/ui/HeroImage.astro): debajo del overlay y del
+// texto. Cada hero ajusta el recorte con --hero-img-position.
+.hero-img {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--hero-img-position, center);
+}

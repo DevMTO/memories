@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import HeroImage from '../../../components/ui/HeroImage.astro';
 import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
 import { destination as destinationSchema } from '../../../lib/schema';
 import { summarize } from '../../../lib/text';
@@ -119,7 +120,8 @@ const withSafeImage = (item: any, index: number) => ({
   schema={destinationSchema(destination, description, pageUrl, Astro.site ?? Astro.url)}
   mainClass="destination-detail-main"
 >
-  <section class="destination-hero" style={`background-image: url('${destinationImage}');`}>
+  <section class="destination-hero">
+    <HeroImage src={destinationImage} srcSmall={destination.imageUrlSmall && sitePath(destination.imageUrlSmall)} alt={destination.name} />
     <div class="destination-hero__overlay"></div>
 
     <div class="container destination-hero__content">

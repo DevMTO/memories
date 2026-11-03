@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import HeroImage from '../../components/ui/HeroImage.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import { sitePath } from '../../lib/site-path';
 import './_about.scss';
@@ -14,7 +15,8 @@ const t = useT(lang);
 
 <Layout title={t('Acerca de Nosotros | Memories Travel Perú')} mainClass="about-main">
   <!-- HERO -->
-  <section class="about-hero" style={`--about-hero-image: url('${sitePath('/images/about.png')}')`}>
+  <section class="about-hero">
+    <HeroImage src={sitePath('/images/about.png')} alt={t('Acerca de Nosotros')} />
     <div class="about-hero__overlay"></div>
     <div class="container about-hero__content">
       <Breadcrumbs items={[{ name: t('Nosotros'), href: Astro.url.pathname }]} />

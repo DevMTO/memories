@@ -13,8 +13,7 @@
   min-height: clamp(560px, 66svh, 700px);
   display: flex;
   align-items: flex-end;
-  background-size: cover;
-  background-position: center 46%;
+  --hero-img-position: center 46%;
   color: $color-white;
   isolation: isolate;
   overflow: hidden;
@@ -379,7 +378,7 @@
 }
 
 @include respond-to($bp-mobile) {
-  .destination-hero { min-height: 500px; background-position: center 44%; }
+  .destination-hero { min-height: 500px; --hero-img-position: center 44%; }
   .destination-hero__content { padding: 46px 0 68px; }
   .destination-hero__content span { margin-bottom: 10px; font-size: .62rem; }
   .destination-hero__content h1 { font-size: clamp(2.9rem, 14vw, 4.2rem); line-height: .95; }

@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import HeroImage from '../../components/ui/HeroImage.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import PackageCard from '../../components/PackageCard.astro';
 import { getPackages } from '../../lib/services/catalog';
@@ -64,7 +65,8 @@ const filteredPackages = allPackages.filter((pkg) => {
 
 <Layout title={t('Nuestros Paquetes | Memories Travel Perú')} mainClass="packages-page">
   <!-- HERO -->
-  <section class="packages-hero" style={`--packages-hero-image: url('${sitePath('/images/hero.webp')}')`}>
+  <section class="packages-hero">
+    <HeroImage src={sitePath('/images/hero.webp')} alt={t('Nuestros paquetes')} />
     <div class="packages-hero__overlay"></div>
 
     <div class="container packages-hero__content">

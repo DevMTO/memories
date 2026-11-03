@@ -12,9 +12,7 @@
   min-height: 360px;
   display: flex;
   align-items: flex-end;
-  background:
-    linear-gradient(rgba($color-primary-dark, 0.14), rgba($color-primary-dark, 0.2)),
-    var(--packages-hero-image) center 46%/cover no-repeat;
+  --hero-img-position: center 46%;
   overflow: hidden;
   isolation: isolate;
 
@@ -37,7 +35,8 @@
   background:
     radial-gradient(circle at 80% 20%, rgba($color-accent, 0.15), transparent 34%),
     linear-gradient(100deg, rgba($color-primary-dark, 0.58), rgba($color-primary-dark, 0.26) 58%, rgba($color-primary-dark, 0.05)),
-    linear-gradient(180deg, transparent 28%, rgba($color-primary-dark, 0.42));
+    linear-gradient(180deg, transparent 28%, rgba($color-primary-dark, 0.42)),
+    linear-gradient(rgba($color-primary-dark, 0.14), rgba($color-primary-dark, 0.2));
 }
 
 .packages-hero__content {
@@ -330,7 +329,7 @@
 @include respond-to($bp-mobile) {
   .packages-hero {
     min-height: 280px;
-    background-position: center;
+    --hero-img-position: center;
   }
 
   .packages-hero__content {

@@ -7,7 +7,7 @@ import { localizeRecord } from '#kit/i18n/core.ts';
 import { getTranslate } from '#kit/i18n/runtime.ts';
 import { sourceLang, type Lang } from '#kit/i18n/locales.ts';
 import { productFields } from '../../i18n/fields';
-import { IMAGE_WIDTH } from '../image-sizes';
+import { IMAGE_WIDTH, IMAGE_WIDTH_SMALL } from '../image-sizes';
 import type { Package, Tour, TravelProduct } from '../types';
 
 // Orden por sortOrder y después por título, comparado por código de carácter.
@@ -26,6 +26,7 @@ function loadSource() {
           id: data.slug,
           isActive: true,
           imageUrl: (await localImage(data.imageUrl, IMAGE_WIDTH)) ?? '/images/hero.webp',
+          imageUrlSmall: await localImage(data.imageUrl, IMAGE_WIDTH_SMALL),
           gallery: (await Promise.all(data.gallery.map((url) => localImage(url, IMAGE_WIDTH)))).filter(
             (url): url is string => !!url,
           ),

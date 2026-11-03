@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import HeroImage from '../../../components/ui/HeroImage.astro';
 import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
 import { trip } from '../../../lib/schema';
 import { summarize } from '../../../lib/text';
@@ -138,7 +139,8 @@ const description = summarize([tour.seoDescription, tour.shortDescription, tour.
   mainClass="tour-detail-main"
 >
   <!-- HERO -->
-  <section class="tour-hero" style={`background-image: url('${heroImage}');`}>
+  <section class="tour-hero">
+    <HeroImage src={heroImage} srcSmall={tour.imageUrlSmall && sitePath(tour.imageUrlSmall)} alt={tour.title} />
     <div class="tour-hero__overlay"></div>
 
     <div class="container tour-hero__content">
