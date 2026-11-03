@@ -1,0 +1,22 @@
+---
+// Página de error: el servidor la sirve con estado 404 (ErrorDocument en el
+// .htaccess que genera kit/deploy/build.sh). Va en el idioma sin prefijo.
+import Layout from '../layouts/Layout.astro';
+import ComingSoon from '../components/ui/ComingSoon.astro';
+import { pageLang, useT } from '../i18n/i18n';
+
+const t = useT(pageLang(Astro.params));
+---
+
+<Layout title={t('Página no encontrada')} description={t('La página que buscas no existe o cambió de dirección.')} noindex>
+  <ComingSoon
+    eyebrow="404"
+    title={t('Página no encontrada')}
+    message={t('La página que buscas no existe o cambió de dirección. Te ayudamos a encontrar tu próximo viaje.')}
+  >
+    <svg slot="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
+      <path d="m14.8 9.2-1.9 3.7-3.7 1.9 1.9-3.7 3.7-1.9Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+    </svg>
+  </ComingSoon>
+</Layout>
