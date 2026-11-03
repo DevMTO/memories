@@ -1,0 +1,68 @@
+---
+// Migas de pan visibles y su BreadcrumbList, de la misma lista. "Inicio" se
+// agrega solo.
+import JsonLd from '#kit/site/JsonLd.astro';
+import { pageLang, pagePath, useT } from '../../i18n/i18n';
+import { breadcrumbs, type Crumb } from '../../lib/schema';
+
+interface Props {
+  items: Crumb[];
+}
+
+const lang = pageLang(Astro.params);
+const t = useT(lang);
+const crumbs = [{ name: t('Inicio'), href: pagePath(lang, '/') }, ...Astro.props.items];
+---
+
+<nav class="breadcrumbs" aria-label={t('Ruta de navegación')}>
+  <ol>
+    {crumbs.map(({ name, href }, i) => (
+      <li>{i < crumbs.length - 1 ? <a href={href}>{name}</a> : <span class="breadcrumbs__current" aria-current="page">{name}</span>}</li>
+    ))}
+  </ol>
+</nav>
+<JsonLd data={breadcrumbs(crumbs, Astro.site ?? Astro.url)} />
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+
+  // inline-flex: sigue la alineación del hero (centrada o a la izquierda).
+  .breadcrumbs ol {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 14px;
+    padding: 0;
+    list-style: none;
+    font-family: $font-sans;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgba($color-white, 0.78);
+  }
+
+  .breadcrumbs li + li::before {
+    content: '/';
+    margin-right: 6px;
+    opacity: 0.6;
+  }
+
+  // Sin los estilos que el hero da a sus <span>.
+  .breadcrumbs__current {
+    display: inline;
+    margin: 0;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: none;
+  }
+
+  .breadcrumbs a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+</style>

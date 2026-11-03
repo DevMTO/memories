@@ -1,5 +1,8 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import { trip } from '../../../lib/schema';
+import { summarize } from '../../../lib/text';
 import { sitePath } from '../../../lib/site-path';
 import { buildWhatsAppUrl } from '../../../config/site';
 import { getContact } from '../../../lib/services/site';
@@ -124,12 +127,14 @@ const pageText = {
   photo: t('Foto'),
   of: t('de'),
 };
+const description = summarize([tour.seoDescription, tour.shortDescription, tour.description]);
 ---
 
 <Layout
   title={tour.seoTitle || tour.title}
-  description={tour.seoDescription || tour.shortDescription || tour.description}
+  description={description}
   socialImage={tour.imageUrl}
+  schema={trip(tour, description, new URL(Astro.url.pathname, Astro.site ?? Astro.url).href, Astro.site ?? Astro.url)}
   mainClass="tour-detail-main"
 >
   <!-- HERO -->
@@ -137,6 +142,7 @@ const pageText = {
     <div class="tour-hero__overlay"></div>
 
     <div class="container tour-hero__content">
+      <Breadcrumbs items={[tour.kind === 'trekking' ? { name: t('Trekkings'), href: pagePath(lang, '/trekkings/') } : { name: t('Tours'), href: pagePath(lang, '/tours/') }, { name: tour.title, href: Astro.url.pathname }]} />
       <span class="tour-hero__eyebrow">
         {tour.kind === 'trekking' ? 'TREKKING' : 'TOUR'} · {heroDuration.toUpperCase()} {durationNights ? t('(PRIVADO O GRUPO PEQUEÑO)') : t('(EXPERIENCIA PERSONALIZADA)')}
       </span>

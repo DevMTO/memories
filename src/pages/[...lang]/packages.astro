@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import PackageCard from '../../components/PackageCard.astro';
 import { getPackages } from '../../lib/services/catalog';
 import { sitePath } from '../../lib/site-path';
@@ -67,6 +68,7 @@ const filteredPackages = allPackages.filter((pkg) => {
     <div class="packages-hero__overlay"></div>
 
     <div class="container packages-hero__content">
+      <Breadcrumbs items={[{ name: t('Paquetes'), href: Astro.url.pathname }]} />
       <h1>{t('Nuestros paquetes')}</h1>
     </div>
   </section>

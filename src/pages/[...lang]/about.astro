@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import { sitePath } from '../../lib/site-path';
 import './_about.scss';
 import { getLangParams, pageLang, pagePath, useT } from '../../i18n/i18n';
@@ -16,6 +17,7 @@ const t = useT(lang);
   <section class="about-hero" style={`--about-hero-image: url('${sitePath('/images/about.png')}')`}>
     <div class="about-hero__overlay"></div>
     <div class="container about-hero__content">
+      <Breadcrumbs items={[{ name: t('Nosotros'), href: Astro.url.pathname }]} />
       <span class="about-eyebrow">{t('Un equipo consolidado')}</span>
 
       <h1>{t('Acerca de Nosotros')}</h1>

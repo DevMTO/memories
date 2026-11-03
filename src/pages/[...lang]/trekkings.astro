@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import TourCard from '../../components/TourCard.astro';
 import { getAll } from '../../lib/services/catalog';
 import { sitePath } from '../../lib/site-path';
@@ -26,6 +27,7 @@ const durations = [
   <section class="tours-hero" style={`--tours-hero-image: url('${sitePath('/images/cusco/camino-inka.webp')}')`}>
     <div class="tours-hero__overlay"></div>
     <div class="container tours-hero__content">
+      <Breadcrumbs items={[{ name: t('Trekkings'), href: Astro.url.pathname }]} />
       <h1>{t('Nuestros trekkings')}</h1>
     </div>
   </section>

@@ -6,10 +6,13 @@ import heroReelManifest from "../../data/hero_reel_manifest.json";
 import "./_home.scss";
 import "./_hero_video_carousel.scss";
 import { getLangParams, pageLang, pagePath, useT } from '../../i18n/i18n';
+import { getContact } from '../../lib/services/site';
+import { organization, website } from '../../lib/schema';
 
 export const getStaticPaths = () => getLangParams().map((params) => ({ params }));
 
 const lang = pageLang(Astro.params);
+const site = Astro.site ?? Astro.url;
 const t = useT(lang);
 
 
@@ -100,6 +103,7 @@ const displayDestinations = destinationPriority
   mainClass="home-main"
   preloadImage={heroReelManifest.video.poster}
   socialImage={heroReelManifest.video.poster}
+  schema={[website(site), organization(await getContact(), site, heroReelManifest.video.poster)]}
 >
 
   <!-- ==================== HERO VIDEO REEL ==================== -->

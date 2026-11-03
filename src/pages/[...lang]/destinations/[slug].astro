@@ -1,5 +1,8 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import { destination as destinationSchema } from '../../../lib/schema';
+import { summarize } from '../../../lib/text';
 import PackageCard from '../../../components/PackageCard.astro';
 import TourCard from '../../../components/TourCard.astro';
 import { sitePath } from '../../../lib/site-path';
@@ -38,6 +41,8 @@ if (!destination) {
 }
 
 const destinationImage = sitePath(destination.imageUrl);
+const description = summarize([destination.description]);
+const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 const destinationTitleSuffix = destination.title.startsWith(destination.name)
   ? destination.title.slice(destination.name.length)
   : destination.title;
@@ -109,12 +114,16 @@ const withSafeImage = (item: any, index: number) => ({
 
 <Layout
   title={`${destination.name} | ${t('Destinos')} Memories Travel Perú`}
+  description={description}
+  socialImage={destination.imageUrl}
+  schema={destinationSchema(destination, description, pageUrl, Astro.site ?? Astro.url)}
   mainClass="destination-detail-main"
 >
   <section class="destination-hero" style={`background-image: url('${destinationImage}');`}>
     <div class="destination-hero__overlay"></div>
 
     <div class="container destination-hero__content">
+      <Breadcrumbs items={[{ name: destination.name, href: Astro.url.pathname }]} />
       <span>{destination.eyebrow}</span>
       <h1 class="notranslate" translate="no">{destination.name}</h1>
       <p>{destination.description}</p>

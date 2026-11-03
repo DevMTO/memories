@@ -1,5 +1,8 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import { trip } from '../../../lib/schema';
+import { summarize } from '../../../lib/text';
 import { sitePath } from '../../../lib/site-path';
 import { buildWhatsAppUrl } from '../../../config/site';
 import { getContact } from '../../../lib/services/site';
@@ -128,12 +131,14 @@ const pageText = {
   photo: t('Foto'),
   of: t('de'),
 };
+const description = summarize([pkg.seoDescription, pkg.shortDescription, pkg.description]);
 ---
 
 <Layout
   title={pkg.seoTitle || pkg.title}
-  description={pkg.seoDescription || pkg.shortDescription || pkg.description}
+  description={description}
   socialImage={pkg.imageUrl}
+  schema={trip(pkg, description, new URL(Astro.url.pathname, Astro.site ?? Astro.url).href, Astro.site ?? Astro.url)}
   mainClass="package-detail-main"
 >
   <!-- HERO -->
@@ -141,6 +146,7 @@ const pageText = {
     <div class="package-hero__overlay"></div>
 
     <div class="container package-hero__content">
+      <Breadcrumbs items={[{ name: t('Paquetes'), href: pagePath(lang, '/packages/') }, { name: pkg.title, href: Astro.url.pathname }]} />
       <span class="package-hero__eyebrow">
         {heroDuration.toUpperCase()} {durationNights ? t('(PRIVADO O GRUPO PEQUEÑO)') : t('(EXPERIENCIA PERSONALIZADA)')}
       </span>
